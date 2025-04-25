@@ -20,28 +20,36 @@
       overflow-x: hidden;
       text-transform: uppercase;
     }
-    /* Gallery grid using CSS Grid */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjust min width for desired thumbnail size */
-      gap: 10px;
-      padding: 20px;
-      /* You can adjust the height or add overflow-y if needed */
-      overflow-y: auto;
-      /* Center the gallery within the page */
-      position: absolute;
-      top: 10%;       /* Adjust to position the gallery vertically */
-      bottom: 20%;    /* Leave room for the footer */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-    }
     .gallery img {
       width: 100%;
       height: auto;
       cursor: pointer;
       border: 1px solid #ccc;
     }
+    .gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:10px;
+    padding:20px;
+    overflow-y:auto;
+
+    /* center the gallery block */
+    position:absolute;
+    top:10%; bottom:20%; left:50%;
+    transform:translateX(-50%);
+    width:90%;
+  }
+    .gallery img {
+      width: 100%;
+      height: auto;
+      cursor: pointer;
+      border: 1px solid #ccc;
+    }
+
+  /* 🆕  cap at 4 columns on wide screens */
+  @media (min-width: 801px){         /* adjust breakpoint if you like */
+    .gallery{ grid-template-columns:repeat(4,1fr); }
+  }
     /* Footer (same across pages) */
     .left-links {
       position: absolute; 
