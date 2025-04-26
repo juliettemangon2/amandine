@@ -1,221 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Amandine Mangon</title>
+  <meta charset="UTF-8" />
+  <title>Postcards – Amandine Mangon</title>
   <style>
-    /* Reset styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* ---------- reset & base -------------------------------------- */
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{
+      width:100%;height:100%;
+      font:400 15px/1.3 "Helvetica Neue",Helvetica,Arial,sans-serif;
+      background:#000;color:#fff;overflow-x:hidden;
+      text-transform:uppercase;
     }
-    html, body {
-      width: 100%;
-      height: 100%;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-      background: #000;
-      color: #fff;
-      position: relative;
-      overflow-x: hidden;
-      text-transform: uppercase;
+
+    /* ---------- top-left Home button ------------------------------- */
+    .home-btn{
+      position:fixed;top:15px;left:15px;z-index:100;
+      padding:6px 12px;border-radius:4px;
+      background:#fff;color:#000;text-decoration:none;
+      font-weight:600;font-size:.75rem;letter-spacing:.05em;
     }
-    .gallery img {
-      width: 100%;
-      height: auto;
-      cursor: pointer;
-      border: 1px solid #ccc;
-    }
+    .home-btn:hover{background:#ddd}
+
+    /* ---------- masonry gallery ----------------------------------- */
     .gallery{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:10px;
-    padding:20px;
-    overflow-y:auto;
+      column-count:2;
+      column-gap:10px;
+      padding:60px 10px 20px;       /* space for the fixed button */
+    }
+    @media(min-width:640px){ .gallery{column-count:3} }
+    @media(min-width:900px){ .gallery{column-count:4} }
 
-    /* center the gallery block */
-    position:absolute;
-    top:10%; bottom:20%; left:50%;
-    transform:translateX(-50%);
-    width:90%;
-  }
-    .gallery img {
-      width: 100%;
-      height: auto;
-      cursor: pointer;
-      border: 1px solid #ccc;
+    .gallery img{
+      width:100%;height:auto;margin:0 0 10px;
+      border:1px solid #444;cursor:pointer;
+      transition:transform .2s;
     }
+    .gallery img:hover{transform:scale(1.03)}
 
-  /* 🆕  cap at 4 columns on wide screens */
-  @media (min-width: 801px){         /* adjust breakpoint if you like */
-    .gallery{ grid-template-columns:repeat(4,1fr); }
-  }
-    /* Footer (same across pages) */
-    .left-links {
-      position: absolute; 
-      bottom: 8%;
-      left: 5%;
+    /* ---------- lightbox ------------------------------------------ */
+    .lightbox{
+      display:none;position:fixed;inset:0;z-index:200;
+      background:rgba(0,0,0,.8);justify-content:center;align-items:center;
     }
-    .left-links .info {
-      font-weight: 600; 
-      font-size: 2rem;
-      line-height: 1;
-      color: #fff;
-      margin-bottom: 0.75rem;
-    }
-    .left-links .info a {
-      color: #fff;
-      text-decoration: none;
-      display: block;
-      margin-bottom: 0.75rem;
-    }
-    .left-links a:hover { 
-      text-decoration: none;
-    }
-    .bottom-right {
-      position: absolute;
-      bottom: 12%;
-      right: 5%;
-      text-align: right;
-    }
-    .bottom-right .mateo {
-      font-size: 2rem;
-      font-weight: 500;
-      line-height: 0.8;
-      margin-bottom: 0.5rem;
-    }
-    .bottom-right .mateo a {
-      font-size: 2rem;
-      color: inherit;
-      text-decoration: none;
-    }
-    .bottom-right a {
-      line-height: 1;
-      font-weight: 600;
-      font-size: 2rem;
-      color: #fff;
-      text-decoration: none;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-    .bottom-right a:hover { 
-      text-decoration: none;
-    }
-    /* Active link styling: current page's link appears white */
-    .active { 
-      color: #000 !important;
-    }
-    /* Lightbox modal */
-    .lightbox {
-      display: none;
-      position: fixed;
-      top: 0; 
-      left: 0;
-      width: 100%; 
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .lightbox img {
-      max-width: 90%;
-      max-height: 90%;
+    .lightbox img{
+      max-width:90%;max-height:90%;
+      border:1px solid #fff;
     }
   </style>
 </head>
 <body>
-  <!-- Gallery Grid -->
-  <div class="gallery" id="gallery">
-    <!-- Images loaded dynamically via JavaScript -->
-  </div>
-  
-  <!-- Footer Navigation (same on every page) -->
-  <div class="left-links">
-    <div class="info"><a href="postcards.html" class="active">postcards</a></div>
-    <a>  </a>
-  </div>
-  <div class="bottom-right">
-    <div class="mateo"><a href="index.html">amandine mangon</a></div>
-    
-  </div>
-  
-  <!-- Lightbox Modal -->
-  <div class="lightbox" id="lightbox">
-    <img src="" alt="Enlarged Photo" id="lightbox-img">
-  </div>
-  
-<script>
-  const gallery      = document.getElementById('gallery');
-  const lightbox     = document.getElementById('lightbox');
-  const lightboxImg  = document.getElementById('lightbox-img');
 
-  let imgPaths = [];        // all photo URLs
-  let current  = -1;        // index of the image shown in the lightbox
+  <a class="home-btn" href="index.html">← HOME</a>
 
-  /* ---------- 1. build the gallery grid ---------- */
-  fetch('images.json')
-    .then(r => r.json())
-    .then(images => {
-      imgPaths = images.map(name => `photos/${name}`);
+  <div id="gallery" class="gallery"><!-- images injected by JS --></div>
 
-      imgPaths.forEach((src, i) => {
-        const img = document.createElement('img');
-        img.src   = src;
-        img.alt   = src;
-        img.addEventListener('click', () => openLightbox(i));
-        gallery.appendChild(img);
+  <div id="lightbox" class="lightbox">
+    <img id="lightbox-img" src="" alt="enlarged"/>
+  </div>
+
+  <script>
+    /* ---------- build gallery ------------------------------------ */
+    const gallery  = document.getElementById('gallery');
+    const box      = document.getElementById('lightbox');
+    const lbImg    = document.getElementById('lightbox-img');
+    let paths = [], idx=-1;
+
+    fetch('images.json')
+      .then(r=>r.json())
+      .then(imgs=>{
+        paths = imgs.map(name=>`photos/${name}`);
+        paths.forEach((src,i)=>{
+          const img=document.createElement('img');
+          img.src=src;img.alt=src;
+          img.onclick=()=>{idx=i;open();}
+          gallery.appendChild(img);
+        });
       });
+
+    /* ---------- lightbox helpers --------------------------------- */
+    function open(){ lbImg.src=paths[idx]; box.style.display='flex'; }
+    function close(){ box.style.display='none'; idx=-1; }
+    function next(d){ idx=(idx+d+paths.length)%paths.length; open(); }
+
+    box.onclick = e => { if(e.target===box) close(); };
+
+    document.addEventListener('keydown',e=>{
+      if(idx===-1) return;
+      if(e.key==='Escape') close();
+      if(e.key==='ArrowRight') next(1);
+      if(e.key==='ArrowLeft')  next(-1);
     });
 
-  /* ---------- 2. lightbox helpers ---------- */
-  function openLightbox(index){
-    current          = index;
-    lightboxImg.src  = imgPaths[current];
-    lightbox.style.display = 'flex';
-  }
-
-  function closeLightbox(){
-    lightbox.style.display = 'none';
-    current = -1;
-  }
-
-  function showNext(delta){
-    if (current === -1) return;
-    current = (current + delta + imgPaths.length) % imgPaths.length;
-    lightboxImg.src = imgPaths[current];
-  }
-
-  /* ---------- 3. mouse / tap to close ---------- */
-  lightbox.addEventListener('click', e => {
-    if (e.target === lightbox) closeLightbox();
-  });
-
-  /* ---------- 4. keyboard navigation ---------- */
-  document.addEventListener('keydown', e => {
-    if (current === -1) return;          // lightbox not open
-    if (e.key === 'Escape')  closeLightbox();
-    if (e.key === 'ArrowRight') showNext(+1);
-    if (e.key === 'ArrowLeft')  showNext(-1);
-  });
-
-  /* ---------- 5. swipe navigation (touch) ---------- */
-  let startX = 0;
-  lightbox.addEventListener('touchstart', e => {
-    if (e.touches.length === 1) startX = e.touches[0].clientX;
-  });
-
-  lightbox.addEventListener('touchend', e => {
-    if (startX === 0 || current === -1) return;
-    const endX = e.changedTouches[0].clientX;
-    const dx   = endX - startX;
-    const threshold = 40;                // px needed to count as swipe
-    if (dx > threshold)  showNext(-1);   // swipe right → previous
-    if (dx < -threshold) showNext(+1);   // swipe left  → next
-    startX = 0;
-  });
-</script>
-
+    let startX=0;
+    box.addEventListener('touchstart',e=>{
+      if(e.touches.length===1) startX=e.touches[0].clientX;
+    });
+    box.addEventListener('touchend',e=>{
+      if(idx===-1||!startX) return;
+      const dx=e.changedTouches[0].clientX-startX;
+      if(dx>40)  next(-1);
+      if(dx<-40) next(1);
+      startX=0;
+    });
+  </script>
 </body>
 </html>
-
