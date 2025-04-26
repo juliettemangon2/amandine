@@ -4,132 +4,65 @@
   <meta charset="UTF-8">
   <title>Amandine Mangon</title>
   <style>
-    /* Reset styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     html, body {
       width: 100%;
       height: 100%;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
       background: #000;
       color: #fff;
-      position: relative;
-      overflow-x: hidden;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       text-transform: uppercase;
     }
-    /* Gallery grid using CSS Grid */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjust min width for desired thumbnail size */
-      gap: 10px;
-      padding: 20px;
-      /* You can adjust the height or add overflow-y if needed */
-      overflow-y: auto;
-      /* Center the gallery within the page */
-      position: absolute;
-      top: 10%;       /* Adjust to position the gallery vertically */
-      bottom: 20%;    /* Leave room for the footer */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-    }
-    .gallery img {
-      width: 100%;
-      height: auto;
-      cursor: pointer;
-      border: 1px solid #ccc;
-    }
-    /* Footer (same across pages) */
-    .left-links {
-      position: absolute; 
-      bottom: 8%;
-      left: 5%;
-    }
-    .left-links .info {
-      font-weight: 600; 
-      font-size: 2rem;
-      line-height: 1;
-      color: #fff;
-      margin-bottom: 0.75rem;
-    }
-    .left-links .info a {
-      color: #fff;
-      text-decoration: none;
-      display: block;
-      margin-bottom: 0.75rem;
-    }
-    .left-links a:hover { 
-      text-decoration: none;
-    }
-    .bottom-right {
-      position: absolute;
-      bottom: 12%;
-      right: 5%;
-      text-align: right;
-    }
-    .bottom-right .mateo {
-      font-size: 2rem;
-      font-weight: 500;
-      line-height: 0.8;
-      margin-bottom: 0.5rem;
-    }
-    .bottom-right .mateo a {
-      font-size: 2rem;
-      color: inherit;
-      text-decoration: none;
-    }
-    .bottom-right a {
-      line-height: 1;
-      font-weight: 600;
-      font-size: 2rem;
-      color: #fff;
-      text-decoration: none;
-      display: block;
-      margin-bottom: 0.5rem;
-    }
-    .bottom-right a:hover { 
-      text-decoration: none;
-    }
-    /* Active link styling: current page's link appears white */
-    .active { 
-      color: #fff !important;
-    }
-    /* Lightbox modal */
-    .lightbox {
-      display: none;
-      position: fixed;
-      top: 0; 
-      left: 0;
-      width: 100%; 
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
+
+    /* Centered content, nudged slightly upward */
+    body {
+      display: flex;
       align-items: center;
-      z-index: 1000;
+      justify-content: center;
     }
-    .lightbox img {
-      max-width: 90%;
-      max-height: 90%;
+
+    .wrapper {
+      text-align: center;
+      transform: translateY(-8%); /* moves everything a bit up */
+    }
+
+    h1 {
+      font-size: 3rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .statement {
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.4;
+    }
+
+    .link {
+      display: inline-block;
+      padding: 0.6rem 1.8rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #fff;
+      border: 1px solid #fff;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .link:hover {
+      background: #fff;
+      color: #000;
     }
   </style>
 </head>
 <body>
-  <!-- Gallery Grid -->
-  <div class="gallery" id="gallery">
-    <!-- Images loaded dynamically via JavaScript -->
-  </div>
-  
-  <!-- Footer Navigation (same on every page) -->
-  <div class="left-links">
-    <div class="info"><a href="postcards.html" >postcards</a></div>
-    <a>  </a>
-  </div>
-  <div class="bottom-right">
-    <div class="mateo"><a href="index.html" >Amandine Mangon</a></div>
-    
+  <div class="wrapper">
+    <h1>Amandine Mangon</h1>
+    <p class="statement">[insert artist statement here]</p>
+    <a class="link" href="postcards.html">Postcards</a>
   </div>
 </body>
 </html>
