@@ -145,29 +145,77 @@
     <img src="" alt="Enlarged Photo" id="lightbox-img">
   </div>
   
-  <script>
-    // Fetch images from images.json and populate the gallery grid.
-    fetch('images.json')
-      .then(response => response.json())
-      .then(images => {
-        const gallery = document.getElementById('gallery');
-        images.forEach(name => {
-          const img = document.createElement('img');
-          img.src = `photos/${name}`;
-          img.alt = name;
-          // Open lightbox on image click.
-          img.addEventListener('click', () => {
-            document.getElementById('lightbox-img').src = img.src;
-            document.getElementById('lightbox').style.display = 'flex';
-          });
-          gallery.appendChild(img);
-        });
+<script>
+  const gallery      = document.getElementById('gallery');
+  const lightbox     = document.getElementById('lightbox');
+  const lightboxImg  = document.getElementById('lightbox-img');
+
+  let imgPaths = [];        // all photo URLs
+  let current  = -1;        // index of the image shown in the lightbox
+
+  /* ---------- 1. build the gallery grid ---------- */
+  fetch('images.json')
+    .then(r => r.json())
+    .then(images => {
+      imgPaths = images.map(name => `photos/${name}`);
+
+      imgPaths.forEach((src, i) => {
+        const img = document.createElement('img');
+        img.src   = src;
+        img.alt   = src;
+        img.addEventListener('click', () => openLightbox(i));
+        gallery.appendChild(img);
       });
-    // Close lightbox when clicking anywhere on the modal.
-    document.getElementById('lightbox').addEventListener('click', () => {
-      document.getElementById('lightbox').style.display = 'none';
     });
-  </script>
+
+  /* ---------- 2. lightbox helpers ---------- */
+  function openLightbox(index){
+    current          = index;
+    lightboxImg.src  = imgPaths[current];
+    lightbox.style.display = 'flex';
+  }
+
+  function closeLightbox(){
+    lightbox.style.display = 'none';
+    current = -1;
+  }
+
+  function showNext(delta){
+    if (current === -1) return;
+    current = (current + delta + imgPaths.length) % imgPaths.length;
+    lightboxImg.src = imgPaths[current];
+  }
+
+  /* ---------- 3. mouse / tap to close ---------- */
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  /* ---------- 4. keyboard navigation ---------- */
+  document.addEventListener('keydown', e => {
+    if (current === -1) return;          // lightbox not open
+    if (e.key === 'Escape')  closeLightbox();
+    if (e.key === 'ArrowRight') showNext(+1);
+    if (e.key === 'ArrowLeft')  showNext(-1);
+  });
+
+  /* ---------- 5. swipe navigation (touch) ---------- */
+  let startX = 0;
+  lightbox.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) startX = e.touches[0].clientX;
+  });
+
+  lightbox.addEventListener('touchend', e => {
+    if (startX === 0 || current === -1) return;
+    const endX = e.changedTouches[0].clientX;
+    const dx   = endX - startX;
+    const threshold = 40;                // px needed to count as swipe
+    if (dx > threshold)  showNext(-1);   // swipe right → previous
+    if (dx < -threshold) showNext(+1);   // swipe left  → next
+    startX = 0;
+  });
+</script>
+
 </body>
 </html>
 
