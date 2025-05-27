@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Postcards – Amandine Mangon</title>
+  <title>Collages for Friends – Amandine Mangon</title>
   <style>
     /* ---------- reset & base -------------------------------------- */
     *{margin:0;padding:0;box-sizing:border-box}
@@ -69,7 +69,7 @@
     fetch('friends.json')
       .then(r=>r.json())
       .then(imgs=>{
-        paths = imgs.map(name=>`photos/${name}`);
+        paths = imgs.map(name=>`friends/${name}`);
         paths.forEach((src,i)=>{
           const img=document.createElement('img');
           img.src=src;img.alt=src;
