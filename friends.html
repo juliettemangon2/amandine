@@ -81,30 +81,26 @@
         .join('/');
 
       // 2) load your JSON from that same folder
-      fetch(`${baseURL}/friends.json`)
+      fetch('./friends.json')
         .then(r => r.json())
         .then(list => {
-          images = list.map(name => `${baseURL}/friends/${name}`);
-          images.forEach((src, i) => {
-            console.log('loading', src);
+          list.forEach((name,i) => {
+            // build a purely relative URL:
+            const src = `friends/${name}`;
+      
             const img = document.createElement('img');
             img.src = src;
-            img.alt = src;
-            img.onerror = () => {
-              console.warn('failed to load', src);
-              img.style.display = 'none';
-            };
+            img.alt = name;
+            img.onerror = () => img.style.display = 'none';
             img.onclick = () => open(i);
-
+      
             const container = document.createElement('div');
             container.className = 'gallery-item';
-
+      
             const cap = document.createElement('div');
             cap.className = 'caption';
-            cap.textContent = src
-              .split('/').pop()     // "santi.jpeg"
-              .split('.')[0];       // "santi"
-
+            cap.textContent = name.replace(/\.[^.]+$/, '');
+      
             container.append(img, cap);
             gallery.appendChild(container);
           });
