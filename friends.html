@@ -17,7 +17,7 @@
       background:#fff; color:#000; text-decoration:none;
       font-weight:600; font-size:.75rem; letter-spacing:.05em;
     }
-    .home-btn:hover {background:#ddd}
+    .home-btn:hover { background:#ddd }
 
     .gallery {
       display:grid;
@@ -26,7 +26,7 @@
       padding:60px 10px 20px;
     }
     @media(min-width:640px){
-      .gallery {grid-template-columns:repeat(3,1fr)}
+      .gallery { grid-template-columns:repeat(3,1fr) }
     }
     .gallery-item {
       display:flex; flex-direction:column; align-items:center;
@@ -37,7 +37,7 @@
       cursor:pointer;
       transition:transform .2s;
     }
-    .gallery img:hover {transform:scale(1.03)}
+    .gallery img:hover { transform:scale(1.03) }
     .caption {
       margin-top:5px;
       font-size:.75rem;
@@ -62,7 +62,9 @@
 <body>
 
   <a class="home-btn" href="index.html">HOME</a>
+
   <div id="gallery" class="gallery"></div>
+
   <div id="lightbox" class="lightbox">
     <img id="lightbox-img" src="" alt="enlarged"/>
   </div>
@@ -74,37 +76,35 @@
       const lbImg = document.getElementById('lightbox-img');
       let images = [], current = -1;
 
-      // 1) figure out base URL for this page (e.g. ".../amandine")
-      const baseURL = window.location.href
-        .split('/')
-        .slice(0, -1)      // drop "friends.html"
-        .join('/');
-
-      // 2) load your JSON from that same folder
-      fetch('./friends.json')
-        .then(r => r.json())
+      fetch('friends.json')
+        .then(response => {
+          if (!response.ok) throw new Error('Could not load friends.json');
+          return response.json();
+        })
         .then(list => {
-          list.forEach((name,i) => {
-            // build a purely relative URL:
-            const src = `friends/${name}`;
-      
+          images = list.map(name => `friends/${name}`);
+          images.forEach((src, i) => {
             const img = document.createElement('img');
             img.src = src;
-            img.alt = name;
-            img.onerror = () => img.style.display = 'none';
+            img.alt = src;
+            img.onerror = () => {
+              console.warn('Failed to load', src);
+              img.style.display = 'none';
+            };
             img.onclick = () => open(i);
-      
+
             const container = document.createElement('div');
             container.className = 'gallery-item';
-      
+
             const cap = document.createElement('div');
             cap.className = 'caption';
-            cap.textContent = name.replace(/\.[^.]+$/, '');
-      
+            cap.textContent = src.split('/').pop().split('.')[0];
+
             container.append(img, cap);
             gallery.appendChild(container);
           });
-        });
+        })
+        .catch(err => console.error(err));
 
       function open(i) {
         current = i;
@@ -120,12 +120,14 @@
         open(current);
       }
 
-      lightbox.onclick = e => { if(e.target === lightbox) close() };
+      lightbox.onclick = e => {
+        if (e.target === lightbox) close();
+      };
       document.addEventListener('keydown', e => {
         if (current < 0) return;
         if (e.key === 'Escape') close();
         if (e.key === 'ArrowRight') next(1);
-        if (e.key === 'ArrowLeft')  next(-1);
+        if (e.key === 'ArrowLeft') next(-1);
       });
 
       let startX = 0;
