@@ -111,6 +111,7 @@
         paths = imgs.map(name => `friends/${name}`);
         paths.forEach((src, i) => {
           const img = document.createElement('img');
+          console.log('Trying to load:', src);
           img.src = src;
           img.alt = src;
           img.onclick = () => { idx = i; open(); };
