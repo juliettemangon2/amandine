@@ -36,7 +36,7 @@
     .gallery {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      gap: 20px;
       padding: 60px 10px 20px;
     }
 
@@ -70,6 +70,7 @@
       letter-spacing: 0.05em;
       color: #aaa;
       text-align: center;
+      text-transform: lowercase;
     }
 
     .lightbox {
@@ -110,18 +111,28 @@
       .then(imgs => {
         paths = imgs.map(name => `friends/${name}`);
         paths.forEach((src, i) => {
+          console.log('Trying to load:', src); // Debug log
+
           const img = document.createElement('img');
-          console.log('Trying to load:', src);
           img.src = src;
           img.alt = src;
-          img.onclick = () => { idx = i; open(); };
+
+          img.onerror = () => {
+            console.warn('Image failed to load:', src);
+            img.style.display = 'none';
+          };
+
+          img.onclick = () => {
+            idx = i;
+            open();
+          };
 
           const container = document.createElement('div');
           container.className = 'gallery-item';
 
           const caption = document.createElement('div');
           caption.className = 'caption';
-          caption.textContent = src.split('/').pop().split('.')[0];
+          caption.textContent = src.split('/').pop().split('.')[0]; // lowercase caption
 
           container.appendChild(img);
           container.appendChild(caption);
@@ -168,5 +179,6 @@
       startX = 0;
     });
   </script>
+
 </body>
 </html>
