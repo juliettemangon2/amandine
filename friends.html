@@ -4,149 +4,160 @@
   <meta charset="UTF-8" />
   <title>Collages for Friends – Amandine Mangon</title>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     html, body {
-      width:100%; height:100%;
-      font:400 15px/1.3 "Helvetica Neue",Helvetica,Arial,sans-serif;
-      background:#000; color:#fff; overflow-x:hidden;
-      text-transform:uppercase;
+      width: 100%;
+      height: 100%;
+      font: 400 15px/1.3 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      text-transform: uppercase;
     }
-    .home-btn {
-      position:fixed; top:15px; left:15px; z-index:100;
-      padding:6px 12px;
-      background:#fff; color:#000; text-decoration:none;
-      font-weight:600; font-size:.75rem; letter-spacing:.05em;
-    }
-    .home-btn:hover { background:#ddd }
 
     .gallery {
-      display:grid;
-      grid-template-columns:repeat(2,1fr);
-      gap:20px;
-      padding:60px 10px 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 60px 10px 20px;
     }
-    @media(min-width:640px){
-      .gallery { grid-template-columns:repeat(3,1fr) }
+
+    @media (min-width: 640px) {
+      .gallery {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
+
     .gallery-item {
-      display:flex; flex-direction:column; align-items:center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
     }
+
     .gallery img {
-      width:100%; height:auto;
-      border:1px solid #444;
-      cursor:pointer;
-      transition:transform .2s;
+      width: 100%;
+      height: auto;
+      border: 1px solid #444;
+      transition: transform 0.2s;
     }
-    .gallery img:hover { transform:scale(1.03) }
+
+    .gallery img:hover {
+      transform: scale(1.03);
+    }
+
     .caption {
-      margin-top:5px;
-      font-size:1.25rem;
-      letter-spacing:.05em;
-      color:#fff;
-      text-align:center;
-      text-transform:uppercase;
-      font-weight:bold;
+      margin-top: 5px;
+      font-size: 1.25rem;
+      letter-spacing: .05em;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
     }
 
     .lightbox {
-      display:none;
-      position:fixed; inset:0; z-index:200;
-      background:rgba(0,0,0,.8);
-      justify-content:center; align-items:center;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 30px;
     }
+
+    .lightbox:target {
+      display: flex;
+    }
+
+    .lightbox-content {
+      display: flex;
+      flex-direction: row;
+      gap: 30px;
+      flex-wrap: wrap;
+      align-items: center;
+      max-width: 90%;
+    }
+
     .lightbox img {
-      max-width:90%; max-height:90%;
-      border:1px solid #fff;
+      max-width: 400px;
+      border: 1px solid #fff;
+    }
+
+    .lightbox-caption {
+      max-width: 400px;
+      font-size: 1.25rem;
+      line-height: 1.4;
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
+      color: #fff;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
 
-  <a class="home-btn" href="index.html">HOME</a>
+  <div class="gallery">
+    <a href="#alex">
+      <div class="gallery-item">
+        <img src="friends/alex.jpg" alt="Alex" />
+        <div class="caption">Alex</div>
+      </div>
+    </a>
 
-  <div id="gallery" class="gallery"></div>
+    <a href="#jordan">
+      <div class="gallery-item">
+        <img src="friends/jordan.jpg" alt="Jordan" />
+        <div class="caption">Jordan</div>
+      </div>
+    </a>
 
-  <div id="lightbox" class="lightbox">
+    <a href="#sam">
+      <div class="gallery-item">
+        <img src="friends/sam.jpg" alt="Sam" />
+        <div class="caption">Sam</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Lightboxes -->
+  <div id="alex" class="lightbox">
+    <a href="#" class="close-btn">&times;</a>
     <div class="lightbox-content">
-      <img id="lightbox-img" src="" alt="enlarged"/>
-      <div id="lightbox-caption" class="lightbox-caption"></div>
+      <img src="friends/alex.jpg" alt="Alex" />
+      <div class="lightbox-caption">Alex is my oldest friend from Paris.</div>
     </div>
   </div>
 
-  <script>
-    (function(){
-      const gallery = document.getElementById('gallery');
-      const lightbox = document.getElementById('lightbox');
-      const lbImg = document.getElementById('lightbox-img');
-      let images = [], current = -1;
+  <div id="jordan" class="lightbox">
+    <a href="#" class="close-btn">&times;</a>
+    <div class="lightbox-content">
+      <img src="friends/jordan.jpg" alt="Jordan" />
+      <div class="lightbox-caption">We met on a summer trip to Maine.</div>
+    </div>
+  </div>
 
-      fetch('friends.json')
-        .then(response => {
-          if (!response.ok) throw new Error('Could not load friends.json');
-          return response.json();
-        })
-        .then(list => {
-          images = list.map(name => `friends/${name}`);
-          images.forEach((src, i) => {
-            const img = document.createElement('img');
-            img.src = src;
-            img.alt = src;
-            img.onerror = () => {
-              console.warn('Failed to load', src);
-              img.style.display = 'none';
-            };
-            img.onclick = () => open(i);
-
-            const container = document.createElement('div');
-            container.className = 'gallery-item';
-
-            const cap = document.createElement('div');
-            cap.className = 'caption';
-            cap.textContent = src.split('/').pop().split('.')[0];
-
-            container.append(img, cap);
-            gallery.appendChild(container);
-          });
-        })
-        .catch(err => console.error(err));
-
-      function open(i) {
-        current = i;
-        lbImg.src = images[i];
-        lightbox.style.display = 'flex';
-      }
-      function close() {
-        current = -1;
-        lightbox.style.display = 'none';
-      }
-      function next(dir) {
-        current = (current + dir + images.length) % images.length;
-        open(current);
-      }
-
-      lightbox.onclick = e => {
-        if (e.target === lightbox) close();
-      };
-      document.addEventListener('keydown', e => {
-        if (current < 0) return;
-        if (e.key === 'Escape') close();
-        if (e.key === 'ArrowRight') next(1);
-        if (e.key === 'ArrowLeft') next(-1);
-      });
-
-      let startX = 0;
-      lightbox.addEventListener('touchstart', e => {
-        if (e.touches.length === 1) startX = e.touches[0].clientX;
-      });
-      lightbox.addEventListener('touchend', e => {
-        if (current < 0 || !startX) return;
-        const dx = e.changedTouches[0].clientX - startX;
-        if (dx > 40)  next(-1);
-        if (dx < -40) next(1);
-        startX = 0;
-      });
-    })();
-  </script>
+  <div id="sam" class="lightbox">
+    <a href="#" class="close-btn">&times;</a>
+    <div class="lightbox-content">
+      <img src="friends/sam.jpg" alt="Sam" />
+      <div class="lightbox-caption">Sam taught me how to surf in California.</div>
+    </div>
+  </div>
 
 </body>
 </html>
+
