@@ -29,11 +29,6 @@
       letter-spacing: .05em;
     }
 
-    .home-btn:hover {
-      background: #ddd;
-    }
-
-    /* Updated gallery layout using CSS Grid */
     .gallery {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -74,11 +69,33 @@
       max-height: 90%;
       border: 1px solid #fff;
     }
+
+    /* ✨ POPUP OVERLAY */
+    .popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 40px;
+      text-align: center;
+      font-size: 1.2rem;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      text-transform: uppercase;
+      color: white;
+    }
   </style>
 </head>
 <body>
 
-  <a class="home-btn" href="index.html"> HOME</a>
+  <a class="home-btn" href="index.html">HOME</a>
+
+  <!-- ✨ POPUP ELEMENT -->
+  <div id="popup" class="popup-overlay">
+    This page is dedicated to my collage archive. Press ESC or click anywhere to continue.
+  </div>
 
   <div id="gallery" class="gallery"><!-- images injected by JS --></div>
 
@@ -87,6 +104,18 @@
   </div>
 
   <script>
+    // ✨ POPUP HANDLING
+    const popup = document.getElementById('popup');
+    popup.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        popup.style.display = 'none';
+      }
+    });
+
+    // ✨ GALLERY FUNCTIONALITY
     const gallery = document.getElementById('gallery');
     const box = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
@@ -146,3 +175,4 @@
 
 </body>
 </html>
+
