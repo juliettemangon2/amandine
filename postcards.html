@@ -27,6 +27,7 @@
       font-weight: 600;
       font-size: .75rem;
       letter-spacing: .05em;
+      border: none;
     }
 
     .gallery {
@@ -70,21 +71,28 @@
       border: 1px solid #fff;
     }
 
-    /* ✨ POPUP OVERLAY */
+    /* ✨ POPUP STYLING */
     .popup-overlay {
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 9999;
-      padding: 40px;
+    }
+
+    .popup-box {
+      background: #000;
+      border: 1px solid white;
+      padding: 40px 30px;
+      max-width: 400px;
+      color: white;
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 1rem;
+      line-height: 1.5;
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       text-transform: uppercase;
-      color: white;
     }
   </style>
 </head>
@@ -94,7 +102,12 @@
 
   <!-- ✨ POPUP ELEMENT -->
   <div id="popup" class="popup-overlay">
-I make postcards by collaging photos and text from old National Geographic magazines from the 80s and 90s. I like pairing words with images in unexpected ways, using irony to create new meanings out of familiar scenes. Collage is my way to experiment and tell stories, and this project is a space for me to be playful and creative.
+    <div class="popup-box">
+      I make postcards by collaging photos and text from old National Geographic magazines from the 80s and 90s. I like pairing words with images in unexpected ways, using irony to create new meanings out of familiar scenes. Collage is my way to experiment and tell stories, and this project is a space for me to be playful and creative.
+      <br><br>Press ESC or click anywhere to continue.
+    </div>
+  </div>
+
   <div id="gallery" class="gallery"><!-- images injected by JS --></div>
 
   <div id="lightbox" class="lightbox">
@@ -173,4 +186,3 @@ I make postcards by collaging photos and text from old National Geographic magaz
 
 </body>
 </html>
-
