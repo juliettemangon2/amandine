@@ -13,18 +13,19 @@
       background: #000;
       color: #fff;
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      
     }
+
     body {
       display: flex;
       align-items: center;
       justify-content: center;
       text-transform: uppercase;
+      position: relative;
     }
 
     .wrapper {
       text-align: center;
-      transform: translateY(-8%); /* moves everything a bit up */
+      transform: translateY(-8%);
     }
 
     h1 {
@@ -51,11 +52,28 @@
       text-decoration: none;
       transition: background 0.3s ease;
       text-transform: uppercase;
+      margin: 0 0.5rem;
     }
 
     .link:hover {
       background: #fff;
       color: #000;
+    }
+
+    .inquiries-btn {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      background: #fff;
+      color: #000;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 0.75rem;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: none;
+      z-index: 1000;
     }
   </style>
 </head>
@@ -65,8 +83,9 @@
     <p class="statement">A collection of collage-based work exploring memory, relationships, and visual storytelling. From reimagined National Geographic archives to pieces inspired by close friends, this site is a space to play with image and language, sometimes serious, often strange, always personal.</p>
     <a class="link" href="postcards.html">Postcards</a>
     <a class="link" href="friends.html">Friends</a>
-
   </div>
+
+  <!-- Inquiries Button -->
   <a href="inquiries.html" class="inquiries-btn">Inquiries</a>
 </body>
 </html>
