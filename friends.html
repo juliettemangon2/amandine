@@ -4,11 +4,7 @@
   <meta charset="UTF-8" />
   <title>Friends – Amandine Mangon</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html, body {
       width: 100%;
@@ -61,16 +57,6 @@
       text-decoration: none;
     }
 
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    a:visited {
-      color: inherit;
-      text-decoration: none;
-    }
-
     .lightbox {
       display: none;
       position: fixed;
@@ -80,19 +66,12 @@
       align-items: center;
       z-index: 100;
       padding: 30px;
+      text-align: center;
     }
 
-    .lightbox:target {
+    .lightbox.active {
       display: flex;
-    }
-
-    .lightbox-content {
-      display: flex;
-      flex-direction: row;
-      gap: 30px;
-      flex-wrap: wrap;
-      align-items: center;
-      max-width: 90%;
+      flex-direction: column;
     }
 
     .lightbox img {
@@ -103,7 +82,7 @@
     .lightbox-caption {
       max-width: 400px;
       font-size: 1.25rem;
-      line-height: 1.4;
+      margin-top: 20px;
       color: #fff;
       text-transform: uppercase;
       font-weight: bold;
@@ -115,196 +94,105 @@
       right: 30px;
       font-size: 2rem;
       color: #fff;
-      text-decoration: none;
+      cursor: pointer;
     }
 
-   .home-btn {
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 1000;
-  background: #fff;
-  color: #000;
-  padding: 6px 12px;
-  font-weight: bold;
-  font-size: 0.75rem;
-  text-decoration: none;
-  letter-spacing: 0.05em;
-  border: none;
-}
+    .home-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+      background: #fff;
+      color: #000;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 0.75rem;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      border: none;
+    }
 
-.home-btn:visited {
-  color: #000;
-  text-decoration: none;
-}
-
-.home-btn:hover {
-  color: #000;
-  background: #fff;
-  text-decoration: none;
-}
-
+    .home-btn:hover {
+      background: #fff;
+      color: #000;
+    }
   </style>
 </head>
 <body>
 
-  <a class="home-btn" href="index.html">HOME</a>
+<a class="home-btn" href="index.html">HOME</a>
 
-  <div class="gallery">
-    <a href="#santi">
-      <div class="gallery-item">
-        <img src="friends/santi.jpeg" alt="Santi" />
-        <div class="caption">Santi</div>
-      </div>
-    </a>
+<div class="gallery" id="gallery"></div>
 
-    <a href="#laura">
-      <div class="gallery-item">
-        <img src="friends/laura.jpeg" alt="Laura" />
-        <div class="caption">Laura</div>
-      </div>
-    </a>
+<div class="lightbox" id="lightbox">
+  <div class="close-btn" id="closeBtn">&times;</div>
+  <img id="lightbox-img" src="" alt="Friend photo" />
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
 
-    <a href="#justice">
-      <div class="gallery-item">
-        <img src="friends/justice.jpeg" alt="Justice" />
-        <div class="caption">Justice</div>
-      </div>
-    </a>
+<script>
+  const friends = [
+    { name: "Santi", src: "friends/santi.jpeg", caption: "Santi likes to go rock climbing with his friends. He enjoys a black coffee for breakfast, and that's it. He indulges in a cigarette once in a while, and always has a shoulder to lean on." },
+    { name: "Laura", src: "friends/laura.jpeg", caption: "Laura’s favorite color is pink and she likes to spend time outdoors. She also enjoys nicotine products." },
+    { name: "Justice", src: "friends/justice.jpeg", caption: "Justice is known for wearing an ERD rat broach on his hat. He wears silver jewelry and likes to smoke with friends." },
+    { name: "Frankie", src: "friends/frankie.jpeg", caption: "Frankie lives in NYC and plays many instruments including the piano. She has a lighter with her name engraved on it. She likes florals and going on walks." },
+    { name: "Mateo", src: "friends/mateo.jpeg", caption: "Mateo used to live in Iowa and now lives in New York City. In both his personal and work life he is a photographer. He wears black broken rosary beads." },
+    { name: "Juliette", src: "friends/juliette.jpeg", caption: "Juliette spends her summers in the south of France going to the beach. She loves clothes, especially dresses, and has a growing collection of perfumes." },
+    { name: "Sophia", src: "friends/sophia.jpeg", caption: "Sophia lives in London, but is also part Danish. She has a great taste in fashion and enjoys going out for drinks with her friends. She also has horses." },
+    { name: "Ava", src: "friends/ava.jpeg", caption: "Ava studies politics and likes the cold weather. She likes listening to music, and has a poster of John Coltrane in her room. She also enjoys hot sauce." },
+    { name: "Chris", src: "friends/chris.jpeg", caption: "Chris is full of energy and loves being on AUX or queuing songs during group gatherings. He studies Photography and goes skiing every winter." }
+  ];
 
-    <a href="#frankie">
-      <div class="gallery-item">
-        <img src="friends/frankie.jpeg" alt="Frankie" />
-        <div class="caption">Frankie</div>
-      </div>
-    </a>
+  const gallery = document.getElementById("gallery");
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxCaption = document.getElementById("lightbox-caption");
+  const closeBtn = document.getElementById("closeBtn");
 
-    <a href="#mateo">
-      <div class="gallery-item">
-        <img src="friends/mateo.jpeg" alt="Mateo" />
-        <div class="caption">Mateo</div>
-      </div>
-    </a>
+  let currentIndex = -1;
 
-    <a href="#juliette">
-      <div class="gallery-item">
-        <img src="friends/juliette.jpeg" alt="Juliette" />
-        <div class="caption">Juliette</div>
-      </div>
-    </a>
+  function openLightbox(index) {
+    currentIndex = index;
+    lightboxImg.src = friends[index].src;
+    lightboxCaption.textContent = friends[index].caption;
+    lightbox.classList.add("active");
+  }
 
-    <a href="#sophia">
-      <div class="gallery-item">
-        <img src="friends/sophia.jpeg" alt="Sophia" />
-        <div class="caption">Sophia</div>
-      </div>
-    </a>
+  function closeLightbox() {
+    lightbox.classList.remove("active");
+    currentIndex = -1;
+  }
 
-    <a href="#ava">
-      <div class="gallery-item">
-        <img src="friends/ava.jpeg" alt="Ava" />
-        <div class="caption">Ava</div>
-      </div>
-    </a>
+  friends.forEach((friend, index) => {
+    const item = document.createElement("div");
+    item.className = "gallery-item";
+    item.innerHTML = `
+      <img src="${friend.src}" alt="${friend.name}" />
+      <div class="caption">${friend.name}</div>
+    `;
+    item.onclick = () => openLightbox(index);
+    gallery.appendChild(item);
+  });
 
-    <a href="#chris">
-      <div class="gallery-item">
-        <img src="friends/chris.jpeg" alt="Chris" />
-        <div class="caption">Chris</div>
-      </div>
-    </a>
-  </div>
+  closeBtn.onclick = closeLightbox;
 
-  <!-- Lightboxes -->
-  <div id="santi" class="lightbox">
-    <a href="#" class="close-btn">&times;</a>
-    <div class="lightbox-content">
-      <img src="friends/santi.jpeg" alt="Santi" />
-      <div class="lightbox-caption">
-        Santi likes to go rock climbing with his friends. He enjoys a black coffee for breakfast, and that's it. He indulges in a cigarette once in a while, and always has a shoulder to lean on.
-      </div>
-    </div>
-  </div>
+  lightbox.onclick = (e) => {
+    if (e.target === lightbox) closeLightbox();
+  };
 
-  <div id="laura" class="lightbox">
-    <a href="#" class="close-btn">&times;</a>
-    <div class="lightbox-content">
-      <img src="friends/laura.jpeg" alt="Laura" />
-      <div class="lightbox-caption">
-        Laura’s favorite color is pink and she likes to spend time outdoors. She also enjoys nicotine products.
-      </div>
-    </div>
-  </div>
+  document.addEventListener("keydown", (e) => {
+    if (currentIndex === -1) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") {
+      currentIndex = (currentIndex - 1 + friends.length) % friends.length;
+      openLightbox(currentIndex);
+    }
+    if (e.key === "ArrowRight") {
+      currentIndex = (currentIndex + 1) % friends.length;
+      openLightbox(currentIndex);
+    }
+  });
+</script>
 
-  <div id="justice" class="lightbox">
-    <a href="#" class="close-btn">&times;</a>
-    <div class="lightbox-content">
-      <img src="friends/justice.jpeg" alt="Justice" />
-      <div class="lightbox-caption">
-        Justice is known for wearing an ERD rat broach on his hat. He wears silver jewelry and likes to smoke with friends.
-      </div>
-    </div>
-  </div>
-
-  <div id="frankie" class="lightbox">
-    <a href="#" class="close-btn">&times;</a>
-    <div class="lightbox-content">
-      <img src="friends/frankie.jpeg" alt="Frankie" />
-      <div class="lightbox-caption">
-        Frankie lives in NYC and plays many instruments including the piano. She has a lighter with her name engraved on it. She likes florals and going on walks.
-      </div>
-    </div>
-  </div>
-
-  <div id="mateo" class="lightbox">
-    <a href="#" class="close-btn">&times;</a>
-    <div class="lightbox-content">
-      <img src="friends/mateo.jpeg" alt="Mateo" />
-      <div class="lightbox-caption">
-        Mateo used to live in Iowa and now lives in New York City. In both his personal and work life he is a photographer. He wears black broken rosary beads.
-      </div>
-    </div>
-  </div>
-
-  <div id="juliette" class="lightbox">
-    <a href="#" class="close-btn">&times;</a>
-    <div class="lightbox-content">
-      <img src="friends/juliette.jpeg" alt="Juliette" />
-      <div class="lightbox-caption">
-        Juliette spends her summers in the south of France going to the beach. She loves clothes, especially dresses, and has a growing collection of perfumes.
-      </div>
-    </div>
-  </div>
-
-  <div id="sophia" class="lightbox">
-    <a href="#" class="close-btn">&times;</a>
-    <div class="lightbox-content">
-      <img src="friends/sophia.jpeg" alt="Sophia" />
-      <div class="lightbox-caption">
-        Sophia lives in London, but is also part Danish. She has a great taste in fashion and enjoys going out for drinks with her friends. She also has horses.
-      </div>
-    </div>
-  </div>
-
-  <div id="ava" class="lightbox">
-    <a href="#" class="close-btn">&times;</a>
-    <div class="lightbox-content">
-      <img src="friends/ava.jpeg" alt="Ava" />
-      <div class="lightbox-caption">
-        Ava studies politics and likes the cold weather. She likes listening to music, and has a poster of John Coltrane in her room. She also enjoys hot sauce.
-      </div>
-    </div>
-  </div>
-
-  <div id="chris" class="lightbox">
-    <a href="#" class="close-btn">&times;</a>
-    <div class="lightbox-content">
-      <img src="friends/chris.jpeg" alt="Chris" />
-      <div class="lightbox-caption">
-        Chris is full of energy and loves being on AUX or queuing songs during group gatherings. He studies Photography and goes skiing every winter. 
-      </div>
-    </div>
-  </div>
-  
 </body>
 </html>
