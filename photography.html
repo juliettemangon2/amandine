@@ -14,7 +14,6 @@
       overflow-x: hidden;
       text-transform: uppercase;
     }
-
     .home-btn {
       position: fixed;
       top: 15px;
@@ -29,20 +28,15 @@
       letter-spacing: .05em;
       border: none;
     }
-
     .gallery {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 20px;
       padding: 60px 10px 20px;
     }
-
     @media (min-width: 640px) {
-      .gallery {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      .gallery { grid-template-columns: repeat(3, 1fr); }
     }
-
     .gallery img {
       width: 100%;
       height: auto;
@@ -50,11 +44,7 @@
       cursor: pointer;
       transition: transform 0.2s;
     }
-
-    .gallery img:hover {
-      transform: scale(1.03);
-    }
-
+    .gallery img:hover { transform: scale(1.03); }
     .lightbox {
       display: none;
       position: fixed;
@@ -64,7 +54,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .lightbox img {
       max-width: 90%;
       max-height: 90%;
@@ -76,54 +65,60 @@
 
   <a class="home-btn" href="index.html">HOME</a>
 
-  <div id="gallery" class="gallery"><!-- images injected by JS --></div>
+  <div id="gallery" class="gallery"></div>
 
   <div id="lightbox" class="lightbox">
     <img id="lightbox-img" src="" alt="enlarged" />
   </div>
 
   <script>
-    // ✨ GALLERY FUNCTIONALITY
     const gallery = document.getElementById('gallery');
     const box = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
     let paths = [], idx = -1;
 
+    // Your image folder name
+    const DIR = 'photography';
+
+    // Build "photography/<file>" and encode only the filename
+    function buildPath(fileName) {
+      const parts = [DIR, fileName];
+      const file = parts.pop();
+      const safeFile = encodeURIComponent(file);
+      return parts.concat(safeFile).join('/');
+    }
+
     fetch('photography.json')
-      .then(r => r.json())
-      .then(imgs => {
-        paths = imgs.map(name => `photos/${name}`);
+      .then(r => {
+        if (!r.ok) throw new Error(`photography.json not found (${r.status})`);
+        return r.json();
+      })
+      .then(list => {
+        if (!Array.isArray(list)) throw new Error('photography.json must be an array of file names');
+        paths = list.map(buildPath);
+
         paths.forEach((src, i) => {
           const img = document.createElement('img');
           img.src = src;
           img.alt = src;
-          img.onclick = () => { idx = i; open(); };
+          img.onclick = () => { idx = i; openLightbox(); };
+          img.onerror = () => console.error('Failed to load image:', src);
           gallery.appendChild(img);
         });
-      });
+      })
+      .catch(err => console.error('Error loading images:', err));
 
-    function open() {
+    function openLightbox() {
       lbImg.src = paths[idx];
       box.style.display = 'flex';
     }
+    function closeLightbox() { box.style.display = 'none'; idx = -1; }
+    function next(d) { idx = (idx + d + paths.length) % paths.length; openLightbox(); }
 
-    function close() {
-      box.style.display = 'none';
-      idx = -1;
-    }
-
-    function next(d) {
-      idx = (idx + d + paths.length) % paths.length;
-      open();
-    }
-
-    box.onclick = e => {
-      if (e.target === box) close();
-    };
-
+    box.onclick = e => { if (e.target === box) closeLightbox(); };
     document.addEventListener('keydown', e => {
       if (idx === -1) return;
-      if (e.key === 'Escape') close();
+      if (e.key === 'Escape') closeLightbox();
       if (e.key === 'ArrowRight') next(1);
       if (e.key === 'ArrowLeft') next(-1);
     });
