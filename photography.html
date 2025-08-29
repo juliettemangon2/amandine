@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Postcards – Amandine Mangon</title>
+  <title>Photography – Amandine Mangon</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
@@ -89,7 +89,7 @@
     const lbImg = document.getElementById('lightbox-img');
     let paths = [], idx = -1;
 
-    fetch('images.json')
+    fetch('photography.json')
       .then(r => r.json())
       .then(imgs => {
         paths = imgs.map(name => `photos/${name}`);
