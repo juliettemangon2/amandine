@@ -14,20 +14,22 @@
       overflow-x: hidden;
       text-transform: uppercase;
     }
+
     .home-btn {
       position: fixed;
       top: 15px;
       left: 15px;
-      z-index: 100;
-      padding: 6px 12px;
+      z-index: 1000;
       background: #fff;
       color: #000;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 0.75rem;
       text-decoration: none;
-      font-weight: 600;
-      font-size: .75rem;
-      letter-spacing: .05em;
+      letter-spacing: 0.05em;
       border: none;
     }
+
     .gallery {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -37,27 +39,69 @@
     @media (min-width: 640px) {
       .gallery { grid-template-columns: repeat(3, 1fr); }
     }
+
+    .gallery-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+
     .gallery img {
       width: 100%;
       height: auto;
       border: 1px solid #444;
-      cursor: pointer;
       transition: transform 0.2s;
     }
     .gallery img:hover { transform: scale(1.03); }
+
+    .caption {
+      margin-top: 8px;
+      font-size: 1rem;
+      letter-spacing: .05em;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+    }
+
     .lightbox {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 200;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.9);
       justify-content: center;
       align-items: center;
+      padding: 30px;
+      text-align: center;
+    }
+    .lightbox.active {
+      display: flex;
+      flex-direction: column;
     }
     .lightbox img {
       max-width: 90%;
-      max-height: 90%;
+      max-height: 70vh;
       border: 1px solid #fff;
+      margin: 0 auto;
+    }
+    .lightbox-caption {
+      max-width: 900px;
+      margin: 18px auto 0;
+      font-size: 1.1rem;
+      line-height: 1.4;
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 22px;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
     }
   </style>
 </head>
@@ -68,54 +112,90 @@
   <div id="gallery" class="gallery"></div>
 
   <div id="lightbox" class="lightbox">
+    <div class="close-btn" id="closeBtn">&times;</div>
     <img id="lightbox-img" src="" alt="enlarged" />
+    <div id="lightbox-caption" class="lightbox-caption"></div>
   </div>
 
   <script>
+    const DIR = 'photography';                        // your image folder
     const gallery = document.getElementById('gallery');
     const box = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
-    let paths = [], idx = -1;
+    const lbCap = document.getElementById('lightbox-caption');
+    const closeBtn = document.getElementById('closeBtn');
 
-    // Your image folder name
-    const DIR = 'photography';
+    let items = [];   // [{src, caption, alt}]
+    let idx = -1;
 
-    // Build "photography/<file>" and encode only the filename
-    function buildPath(fileName) {
-      const parts = [DIR, fileName];
-      const file = parts.pop();
-      const safeFile = encodeURIComponent(file);
-      return parts.concat(safeFile).join('/');
+    // Build "photography/<encoded filename>"
+    function pathFor(fileName) {
+      const safe = encodeURIComponent(fileName);
+      return `${DIR}/${safe}`;
     }
 
-    fetch('photography.json')
-      .then(r => {
-        if (!r.ok) throw new Error(`photography.json not found (${r.status})`);
-        return r.json();
-      })
-      .then(list => {
-        if (!Array.isArray(list)) throw new Error('photography.json must be an array of file names');
-        paths = list.map(buildPath);
+    // Turn "my-file_name.jpg" => "My file name"
+    function captionFromFilename(fileName) {
+      const base = fileName.replace(/\.[^.]+$/, '');
+      return base.replace(/[-_]+/g, ' ').trim().replace(/\s+/g, ' ')
+                 .replace(/^\w/, c => c.toUpperCase());
+    }
 
-        paths.forEach((src, i) => {
-          const img = document.createElement('img');
-          img.src = src;
-          img.alt = src;
-          img.onclick = () => { idx = i; openLightbox(); };
-          img.onerror = () => console.error('Failed to load image:', src);
-          gallery.appendChild(img);
-        });
-      })
-      .catch(err => console.error('Error loading images:', err));
+    // Accepts either ["a.jpg","b.png"] or [{src:"a.jpg", caption:"..."}, ...]
+    function normalize(list) {
+      return list.map((entry, i) => {
+        if (typeof entry === 'string') {
+          const src = pathFor(entry);
+          return {
+            src,
+            caption: captionFromFilename(entry),
+            alt: `photo ${i + 1}`
+          };
+        } else {
+          const raw = entry.src || '';
+          const src = pathFor(raw);
+          const cap = entry.caption && String(entry.caption).trim().length
+                        ? entry.caption
+                        : captionFromFilename(raw || `photo-${i+1}.jpg`);
+          return { src, caption: cap, alt: entry.alt || cap || `photo ${i + 1}` };
+        }
+      });
+    }
+
+    function renderGrid() {
+      items.forEach((it, i) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'gallery-item';
+        wrap.innerHTML = `
+          <img src="${it.src}" alt="${it.alt}">
+          <div class="caption">${it.caption}</div>
+        `;
+        wrap.onclick = () => { idx = i; openLightbox(); };
+        gallery.appendChild(wrap);
+      });
+    }
 
     function openLightbox() {
-      lbImg.src = paths[idx];
-      box.style.display = 'flex';
+      lbImg.src = items[idx].src;
+      lbImg.alt = items[idx].alt;
+      lbCap.textContent = items[idx].caption;
+      box.classList.add('active');
     }
-    function closeLightbox() { box.style.display = 'none'; idx = -1; }
-    function next(d) { idx = (idx + d + paths.length) % paths.length; openLightbox(); }
+    function closeLightbox() {
+      box.classList.remove('active');
+      idx = -1;
+      lbImg.src = '';
+    }
+    function next(d) {
+      idx = (idx + d + items.length) % items.length;
+      openLightbox();
+    }
 
-    box.onclick = e => { if (e.target === box) closeLightbox(); };
+    // Click outside image closes
+    box.addEventListener('click', e => { if (e.target === box) closeLightbox(); });
+    closeBtn.addEventListener('click', closeLightbox);
+
+    // Keyboard controls
     document.addEventListener('keydown', e => {
       if (idx === -1) return;
       if (e.key === 'Escape') closeLightbox();
@@ -123,6 +203,7 @@
       if (e.key === 'ArrowLeft') next(-1);
     });
 
+    // Touch swipe
     let startX = 0;
     box.addEventListener('touchstart', e => {
       if (e.touches.length === 1) startX = e.touches[0].clientX;
@@ -134,7 +215,19 @@
       if (dx < -40) next(1);
       startX = 0;
     });
-  </script>
 
+    // Load JSON and go
+    fetch('photography.json')
+      .then(r => {
+        if (!r.ok) throw new Error(`photography.json not found (${r.status})`);
+        return r.json();
+      })
+      .then(list => {
+        if (!Array.isArray(list)) throw new Error('photography.json must be an array');
+        items = normalize(list);
+        renderGrid();
+      })
+      .catch(err => console.error('Error loading images:', err));
+  </script>
 </body>
 </html>
