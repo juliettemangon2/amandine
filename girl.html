@@ -70,43 +70,11 @@
       max-height: 90%;
       border: 1px solid #fff;
     }
-
-    /* ✨ POPUP STYLING */
-    .popup-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .popup-box {
-      background: #000;
-      border: 1px solid white;
-      padding: 40px 30px;
-      max-width: 600px;
-      color: white;
-      text-align: center;
-      font-size: 1rem;
-      line-height: 1.5;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      text-transform: uppercase;
-    }
   </style>
 </head>
 <body>
 
   <a class="home-btn" href="index.html">HOME</a>
-
-  <!-- ✨ POPUP ELEMENT -->
-  <div id="popup" class="popup-overlay">
-    <div class="popup-box">
-      An exploration of my childhood.
-      <br><br>Press ESC or click anywhere to continue.
-    </div>
-  </div>
 
   <div id="gallery" class="gallery"><!-- images injected by JS --></div>
 
@@ -115,18 +83,6 @@
   </div>
 
   <script>
-    // ✨ POPUP HANDLING
-    const popup = document.getElementById('popup');
-    popup.addEventListener('click', () => {
-      popup.style.display = 'none';
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') {
-        popup.style.display = 'none';
-      }
-    });
-
-    // ✨ GALLERY FUNCTIONALITY
     const gallery = document.getElementById('gallery');
     const box = document.getElementById('lightbox');
     const lbImg = document.getElementById('lightbox-img');
@@ -183,6 +139,9 @@
       startX = 0;
     });
   </script>
+
+</body>
+</html>
 
 </body>
 </html>
