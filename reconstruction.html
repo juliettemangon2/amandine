@@ -97,7 +97,7 @@
     fetch('girl.json')
       .then(r => r.json())
       .then(imgs => {
-        paths = imgs.map(name => `photos/${name}`);
+        paths = imgs.map(name => `reconstruction/${name}`);
         paths.forEach((src, i) => {
           const img = document.createElement('img');
           img.src = src;
