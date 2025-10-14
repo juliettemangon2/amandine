@@ -94,7 +94,7 @@
     const lbImg = document.getElementById('lightbox-img');
     let paths = [], idx = -1;
 
-    fetch('girl.json')
+    fetch('reconstruction.json')
       .then(r => r.json())
       .then(imgs => {
         paths = imgs.map(name => `reconstruction/${name}`);
