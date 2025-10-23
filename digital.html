@@ -1,1 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Digital Work | Amandine Mangon</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      font: 400 15px/1.3 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      text-transform: uppercase;
+    }
+    footer {
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 50px;
+      padding: 60px 20px;
+    }
+
+    @media (min-width: 640px) {
+      .gallery {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .gallery-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .gallery img {
+      width: 80%;
+      height: auto;
+      border: 1px solid #444;
+      transition: transform 0.2s;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.03);
+    }
+
+    .caption {
+      margin-top: 5px;
+      font-size: 1.25rem;
+      letter-spacing: .05em;
+      color: #fff;
+      text-align: center;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .lightbox.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lightbox img {
+      max-width: 400px;
+      border: 1px solid #fff;
+    }
+
+    .lightbox-caption {
+      max-width: 400px;
+      font-size: 1.25rem;
+      margin-top: 20px;
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .home-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+      background: #fff;
+      color: #000;
+      padding: 6px 12px;
+      font-weight: bold;
+      font-size: 0.75rem;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      border: none;
+    }
+
+    .home-btn:hover {
+      background: #fff;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+
+<a class="home-btn" href="index.html">HOME</a>
+
+<div class="gallery" id="gallery"></div>
+
+<div class="lightbox" id="lightbox">
+  <div class="close-btn" id="closeBtn">&times;</div>
+  <img id="lightbox-img" src="" alt="Friend photo" />
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
+<script>
+  const friends = [
+    { name: "Santi", src: "friends/santi.jpeg", caption: "Santi likes to go rock climbing with his friends. He enjoys a black coffee for breakfast, and that's it. He indulges in a cigarette once in a while, and always has a shoulder to lean on." },
+    { name: "Laura", src: "friends/laura.jpeg", caption: "Laura’s favorite color is pink and she likes to spend time outdoors. She also enjoys nicotine products." },
+    { name: "Justice", src: "friends/justice.jpeg", caption: "Justice is known for wearing an ERD rat broach on his hat. He wears silver jewelry and likes to smoke with friends." },
+    { name: "Frankie", src: "friends/frankie.jpeg", caption: "Frankie lives in NYC and plays many instruments including the piano. She has a lighter with her name engraved on it. She likes florals and going on walks." },
+    { name: "Mateo", src: "friends/mateo.jpeg", caption: "Mateo used to live in Iowa and now lives in New York City. In both his personal and work life he is a photographer. He wears black broken rosary beads." },
+    { name: "Juliette", src: "friends/juliette.jpeg", caption: "Juliette spends her summers in the south of France going to the beach. She loves clothes, especially dresses, and has a growing collection of perfumes." },
+    { name: "Sophia", src: "friends/sophia.jpeg", caption: "Sophia lives in London, but is also part Danish. She has a great taste in fashion and enjoys going out for drinks with her friends. She also has horses." },
+    { name: "Ava", src: "friends/ava.jpeg", caption: "Ava studies politics and likes the cold weather. She likes listening to music, and has a poster of John Coltrane in her room. She also enjoys hot sauce." },
+    { name: "Chris", src: "friends/chris.jpeg", caption: "Chris is full of energy and loves being on AUX or queuing songs during group gatherings. He studies Photography and goes skiing every winter." }
+  ];
+
+  const gallery = document.getElementById("gallery");
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxCaption = document.getElementById("lightbox-caption");
+  const closeBtn = document.getElementById("closeBtn");
+
+  let currentIndex = -1;
+
+  function openLightbox(index) {
+    currentIndex = index;
+    lightboxImg.src = friends[index].src;
+    lightboxCaption.textContent = friends[index].caption;
+    lightbox.classList.add("active");
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove("active");
+    currentIndex = -1;
+  }
+
+  friends.forEach((friend, index) => {
+    const item = document.createElement("div");
+    item.className = "gallery-item";
+    item.innerHTML = `
+      <img src="${friend.src}" alt="${friend.name}" />
+      <div class="caption">${friend.name}</div>
+    `;
+    item.onclick = () => openLightbox(index);
+    gallery.appendChild(item);
+  });
+
+  closeBtn.onclick = closeLightbox;
+
+  lightbox.onclick = (e) => {
+    if (e.target === lightbox) closeLightbox();
+  };
+
+  document.addEventListener("keydown", (e) => {
+    if (currentIndex === -1) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") {
+      currentIndex = (currentIndex - 1 + friends.length) % friends.length;
+      openLightbox(currentIndex);
+    }
+    if (e.key === "ArrowRight") {
+      currentIndex = (currentIndex + 1) % friends.length;
+      openLightbox(currentIndex);
+    }
+  });
+</script>
+<footer>
+    <p style="
+            text-align: center;
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 0.7rem;
+            margin-top: 1rem;
+          ">
+      © 2025 Amandine Mangon
+    </p>
+  </footer>
+</body>
+</html>
 
