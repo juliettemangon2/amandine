@@ -161,7 +161,7 @@
     currentIndex = -1;
   }
 
-  friends.forEach((friend, index) => {
+  digital.forEach((friend, index) => {
     const item = document.createElement("div");
     item.className = "gallery-item";
     item.innerHTML = `
@@ -182,11 +182,11 @@
     if (currentIndex === -1) return;
     if (e.key === "Escape") closeLightbox();
     if (e.key === "ArrowLeft") {
-      currentIndex = (currentIndex - 1 + friends.length) % friends.length;
+      currentIndex = (currentIndex - 1 + digital.length) % digital.length;
       openLightbox(currentIndex);
     }
     if (e.key === "ArrowRight") {
-      currentIndex = (currentIndex + 1) % friends.length;
+      currentIndex = (currentIndex + 1) % digital.length;
       openLightbox(currentIndex);
     }
   });
