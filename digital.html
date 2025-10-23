@@ -136,16 +136,9 @@
 </div>
 
 <script>
-  const friends = [
-    { name: "Santi", src: "friends/santi.jpeg", caption: "Santi likes to go rock climbing with his friends. He enjoys a black coffee for breakfast, and that's it. He indulges in a cigarette once in a while, and always has a shoulder to lean on." },
-    { name: "Laura", src: "friends/laura.jpeg", caption: "Laura’s favorite color is pink and she likes to spend time outdoors. She also enjoys nicotine products." },
-    { name: "Justice", src: "friends/justice.jpeg", caption: "Justice is known for wearing an ERD rat broach on his hat. He wears silver jewelry and likes to smoke with friends." },
-    { name: "Frankie", src: "friends/frankie.jpeg", caption: "Frankie lives in NYC and plays many instruments including the piano. She has a lighter with her name engraved on it. She likes florals and going on walks." },
-    { name: "Mateo", src: "friends/mateo.jpeg", caption: "Mateo used to live in Iowa and now lives in New York City. In both his personal and work life he is a photographer. He wears black broken rosary beads." },
-    { name: "Juliette", src: "friends/juliette.jpeg", caption: "Juliette spends her summers in the south of France going to the beach. She loves clothes, especially dresses, and has a growing collection of perfumes." },
-    { name: "Sophia", src: "friends/sophia.jpeg", caption: "Sophia lives in London, but is also part Danish. She has a great taste in fashion and enjoys going out for drinks with her friends. She also has horses." },
-    { name: "Ava", src: "friends/ava.jpeg", caption: "Ava studies politics and likes the cold weather. She likes listening to music, and has a poster of John Coltrane in her room. She also enjoys hot sauce." },
-    { name: "Chris", src: "friends/chris.jpeg", caption: "Chris is full of energy and loves being on AUX or queuing songs during group gatherings. He studies Photography and goes skiing every winter." }
+  const digital = [
+    { name: "Good Mourning America", src: "digital/goodmourning.jpeg", caption: "Political Poster; Visual Foundation Studio,NYU." },
+    { name: "Zaha Hadid", src: "digital/zahahadid.jpeg", caption: "Architect Flyer; Visual Foundation Studio, NYU." }
   ];
 
   const gallery = document.getElementById("gallery");
@@ -158,8 +151,8 @@
 
   function openLightbox(index) {
     currentIndex = index;
-    lightboxImg.src = friends[index].src;
-    lightboxCaption.textContent = friends[index].caption;
+    lightboxImg.src = digital[index].src;
+    lightboxCaption.textContent = digital[index].caption;
     lightbox.classList.add("active");
   }
 
@@ -172,8 +165,8 @@
     const item = document.createElement("div");
     item.className = "gallery-item";
     item.innerHTML = `
-      <img src="${friend.src}" alt="${friend.name}" />
-      <div class="caption">${friend.name}</div>
+      <img src="${digital.src}" alt="${digital.name}" />
+      <div class="caption">${digital.name}</div>
     `;
     item.onclick = () => openLightbox(index);
     gallery.appendChild(item);
