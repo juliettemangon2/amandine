@@ -22,7 +22,6 @@
       display: flex; align-items: center; gap: 1rem;
       padding: 12px 14px;
       background: #000;
-      
     }
 
     /* Home in top-left */
@@ -115,25 +114,65 @@
       background: #000;
     }
 
-    /* Friends lightbox with caption */
+    /* Friends lightbox WITH side caption (top-right, left-aligned) */
     .lightbox.friends {
-      padding: 30px; text-align: center;
+      display: none;
+      position: fixed; inset: 0;
+      z-index: 2100;
+      background: rgba(0,0,0,.92);
+      padding: 30px;
+      overflow: auto;
     }
-    .lightbox.friends.active {
-      display: flex; flex-direction: column;
+    .lightbox.friends.active { display: block; }
+
+    .friends-content {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;         /* top-align text with image */
+      justify-content: center;
     }
-    .lightbox-caption {
-      max-width: 400px;
+
+    .friends-media {
+      flex: 0 1 auto;
+      max-width: 65vw;
+    }
+    .friends-media img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 65vw;                 /* contain horizontally */
+      max-height: 90vh;                /* contain vertically — FULL image visible */
+      object-fit: contain;             /* no cropping */
+      border: 1px solid #fff;
+      background: #000;
+    }
+
+    .friends-meta {
+      flex: 0 0 28vw;                  /* right column width */
+      max-width: 28vw;
+      text-align: left;                /* LEFT ALIGN */
+    }
+    .friends-name {
       font-size: 1.25rem;
-      margin-top: 20px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: 0.06em;
+    }
+    .friends-caption {
+      font-size: 1rem;
+      line-height: 1.65;
       color: #fff;
       text-transform: uppercase;
-      font-weight: bold;
-      margin-left: auto; margin-right: auto;
+      font-weight: 500;
     }
+
     .close-btn {
-      position: absolute; top: 20px; right: 30px;
+      position: fixed; top: 20px; right: 30px;
       font-size: 2rem; color: #fff; cursor: pointer;
+      z-index: 2200; line-height: 1;
+      user-select: none;
     }
 
     /* Postcards popup */
@@ -160,6 +199,14 @@
       margin: 0.7rem 0 1rem;
       opacity: .9;
     }
+
+    /* Responsive: stack image above text on small screens */
+    @media (max-width: 900px) {
+      .friends-content { flex-direction: column; align-items: center; }
+      .friends-media, .friends-media img { max-width: 92vw; }
+      .friends-media img { max-height: 70vh; }
+      .friends-meta { max-width: 92vw; }
+    }
   </style>
 </head>
 <body>
@@ -184,11 +231,19 @@
     <img id="lightbox-img" src="" alt="enlarged" />
   </div>
 
-  <!-- Friends lightbox with caption -->
-  <div id="friends-lightbox" class="lightbox friends" aria-modal="true" role="dialog">
-    <div class="close-btn" id="friends-close">&times;</div>
-    <img id="friends-img" src="" alt="Friend photo" />
-    <div class="lightbox-caption" id="friends-caption"></div>
+  <!-- Friends lightbox with image left + text top-right -->
+  <div id="friends-lightbox" class="lightbox friends" aria-modal="true" role="dialog" aria-labelledby="friends-name">
+    <div class="close-btn" id="friends-close" aria-label="Close">&times;</div>
+
+    <div class="friends-content">
+      <div class="friends-media">
+        <img id="friends-img" src="" alt="Friend photo" />
+      </div>
+      <div class="friends-meta">
+        <div class="friends-name" id="friends-name"></div>
+        <div class="friends-caption" id="friends-caption"></div>
+      </div>
+    </div>
   </div>
 
   <!-- Postcards popup -->
@@ -210,7 +265,7 @@
       reconstruction: { json: 'reconstruction.json', base: 'reconstruction/' }
     };
 
-    // Friends data copied from your friends.html
+    // Friends data
     const FRIENDS = [
       { name: "Santi",    src: "friends/santi.jpeg",    caption: "Santi likes to go rock climbing with his friends. He enjoys a black coffee for breakfast, and that's it. He indulges in a cigarette once in a while, and always has a shoulder to lean on." },
       { name: "Laura",    src: "friends/laura.jpeg",    caption: "Laura’s favorite color is pink and she likes to spend time outdoors. She also enjoys nicotine products." },
@@ -229,6 +284,7 @@
 
     const friendsBox = document.getElementById('friends-lightbox');
     const friendsImg = document.getElementById('friends-img');
+    const friendsName= document.getElementById('friends-name');
     const friendsCap = document.getElementById('friends-caption');
     const friendsClose = document.getElementById('friends-close');
 
@@ -294,7 +350,7 @@
         item.onclick = () => openFriends(i);
         galleryEl.appendChild(item);
       });
-      // Make sure standard lightbox is closed
+      // Close the standard lightbox if open
       closeStd();
     }
 
@@ -352,12 +408,15 @@
       startX = 0;
     });
 
-    // Lightbox friends
+    // Lightbox friends — image left, text top-right
     let friendsIndex = -1;
     function openFriends(i) {
       friendsIndex = i;
-      friendsImg.src = FRIENDS[i].src;
-      friendsCap.textContent = FRIENDS[i].caption;
+      const f = FRIENDS[i];
+      friendsImg.src = f.src;
+      friendsImg.alt = f.name;
+      friendsName.textContent = f.name;
+      friendsCap.textContent = f.caption;
       friendsBox.classList.add('active');
     }
     function closeFriends() {
@@ -398,3 +457,4 @@
   </script>
 </body>
 </html>
+
