@@ -9,7 +9,7 @@
     html, body {
       width: 100%;
       height: 100%;
-      font: 400 15px/1.3 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font: 400 15px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
       background: #000;
       color: #fff;
       overflow-x: hidden;
@@ -17,42 +17,32 @@
     }
 
     footer {
-      bottom: 0;
-      left: 0;
-      width: 100%;
+      bottom: 0; left: 0; width: 100%;
     }
 
+    /* GALLERY GRID */
     .gallery {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 50px;
       padding: 60px 20px;
     }
-
     @media (min-width: 640px) {
-      .gallery {
-        grid-template-columns: repeat(3, 1fr);
-      }
+      .gallery { grid-template-columns: repeat(3, 1fr); }
     }
-
     .gallery-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
     }
-
     .gallery img {
       width: 80%;
       height: auto;
       border: 1px solid #444;
       transition: transform 0.2s;
     }
-
-    .gallery img:hover {
-      transform: scale(1.03);
-    }
-
+    .gallery img:hover { transform: scale(1.03); }
     .caption {
       margin-top: 5px;
       font-size: 1.25rem;
@@ -61,52 +51,6 @@
       text-align: center;
       font-weight: bold;
       text-decoration: none;
-    }
-
-    .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-      padding: 40px;
-    }
-
-    .lightbox.active {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      gap: 40px;
-    }
-
-    .lightbox img {
-      max-width: 50vw;
-      max-height: 80vh;
-      border: 1px solid #fff;
-      object-fit: contain;
-    }
-
-    .lightbox-caption {
-      max-width: 30vw;
-      font-size: 1.1rem;
-      color: #fff;
-      text-transform: uppercase;
-      font-weight: normal;
-      text-align: left;
-      line-height: 1.6;
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 2rem;
-      color: #fff;
-      cursor: pointer;
-      z-index: 200;
     }
 
     .home-btn {
@@ -124,9 +68,84 @@
       border: none;
     }
 
-    .home-btn:hover {
-      background: #fff;
-      color: #000;
+    /* LIGHTBOX */
+    .lightbox {
+      display: none;                  /* hidden by default */
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 100;
+      padding: 32px;
+      overflow: auto;
+    }
+    .lightbox.active { display: block; }
+
+    /* Inner layout: IMAGE (left) + META (right, top-aligned) */
+    .lightbox-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;        /* <-- top align the text block */
+      justify-content: center;
+    }
+
+    .lightbox-media {
+      flex: 0 1 auto;
+      max-width: 65vw;                /* image column width */
+    }
+    .lightbox-media img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 65vw;                /* keep image within viewport width */
+      max-height: 90vh;               /* keep image fully visible vertically */
+      object-fit: contain;            /* ensure whole image stays in frame */
+      border: 1px solid #fff;
+    }
+
+    .lightbox-meta {
+      flex: 0 0 28vw;                 /* right column width */
+      max-width: 28vw;
+      text-align: left;               /* left-align text */
+    }
+    .lightbox-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: 0.06em;
+    }
+    .lightbox-caption {
+      font-size: 1rem;
+      line-height: 1.65;
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* Close button */
+    .close-btn {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      z-index: 200;
+    }
+
+    /* Responsive: stack on small screens */
+    @media (max-width: 800px) {
+      .lightbox-content {
+        flex-direction: column;
+        align-items: center;
+      }
+      .lightbox-media { max-width: 90vw; }
+      .lightbox-media img { max-width: 90vw; max-height: 70vh; }
+      .lightbox-meta {
+        flex: 1 1 auto;
+        max-width: 90vw;
+      }
     }
   </style>
 </head>
@@ -136,10 +155,19 @@
 
 <div class="gallery" id="gallery"></div>
 
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
-  <div class="close-btn" id="closeBtn">&times;</div>
-  <img id="lightbox-img" src="" alt="Friend photo" />
-  <div class="lightbox-caption" id="lightbox-caption"></div>
+  <div class="close-btn" id="closeBtn" aria-label="Close">&times;</div>
+
+  <div class="lightbox-content" role="dialog" aria-modal="true">
+    <div class="lightbox-media">
+      <img id="lightbox-img" src="" alt="Friend photo" />
+    </div>
+    <div class="lightbox-meta">
+      <div class="lightbox-name" id="lightbox-name"></div>
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -158,6 +186,7 @@
   const gallery = document.getElementById("gallery");
   const lightbox = document.getElementById("lightbox");
   const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxName = document.getElementById("lightbox-name");
   const lightboxCaption = document.getElementById("lightbox-caption");
   const closeBtn = document.getElementById("closeBtn");
 
@@ -165,16 +194,22 @@
 
   function openLightbox(index) {
     currentIndex = index;
-    lightboxImg.src = friends[index].src;
-    lightboxCaption.textContent = friends[index].caption;
+    const f = friends[index];
+    lightboxImg.src = f.src;
+    lightboxImg.alt = f.name;
+    lightboxName.textContent = f.name;
+    lightboxCaption.textContent = f.caption;
     lightbox.classList.add("active");
   }
 
   function closeLightbox() {
     lightbox.classList.remove("active");
     currentIndex = -1;
+    // Optional: clear img to avoid old ratio flash
+    // lightboxImg.src = "";
   }
 
+  // Build gallery
   friends.forEach((friend, index) => {
     const item = document.createElement("div");
     item.className = "gallery-item";
@@ -182,16 +217,18 @@
       <img src="${friend.src}" alt="${friend.name}" />
       <div class="caption">${friend.name}</div>
     `;
-    item.onclick = () => openLightbox(index);
+    item.addEventListener("click", () => openLightbox(index));
     gallery.appendChild(item);
   });
 
-  closeBtn.onclick = closeLightbox;
-
-  lightbox.onclick = (e) => {
+  // Close handlers
+  closeBtn.addEventListener("click", closeLightbox);
+  lightbox.addEventListener("click", (e) => {
+    // Click on overlay (not inside content) closes
     if (e.target === lightbox) closeLightbox();
-  };
+  });
 
+  // Keyboard navigation
   document.addEventListener("keydown", (e) => {
     if (currentIndex === -1) return;
     if (e.key === "Escape") closeLightbox();
@@ -207,16 +244,9 @@
 </script>
 
 <footer>
-  <p style="
-    text-align: center;
-    font-size: 0.9rem;
-    color: #fff;
-    margin-bottom: 0.7rem;
-    margin-top: 1rem;
-  ">
+  <p style="text-align:center;font-size:0.9rem;color:#fff;margin-bottom:0.7rem;margin-top:1rem;">
     © 2025 Amandine Mangon
   </p>
 </footer>
 </body>
 </html>
-
