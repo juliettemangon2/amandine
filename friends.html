@@ -15,6 +15,7 @@
       overflow-x: hidden;
       text-transform: uppercase;
     }
+
     footer {
       bottom: 0;
       left: 0;
@@ -70,27 +71,32 @@
       justify-content: center;
       align-items: center;
       z-index: 100;
-      padding: 30px;
-      text-align: center;
+      padding: 40px;
     }
 
     .lightbox.active {
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
     }
 
     .lightbox img {
-      max-width: 400px;
+      max-width: 50vw;
+      max-height: 80vh;
       border: 1px solid #fff;
+      object-fit: contain;
     }
 
     .lightbox-caption {
-      max-width: 400px;
-      font-size: 1.25rem;
-      margin-top: 20px;
+      max-width: 30vw;
+      font-size: 1.1rem;
       color: #fff;
       text-transform: uppercase;
-      font-weight: bold;
+      font-weight: normal;
+      text-align: left;
+      line-height: 1.6;
     }
 
     .close-btn {
@@ -100,6 +106,7 @@
       font-size: 2rem;
       color: #fff;
       cursor: pointer;
+      z-index: 200;
     }
 
     .home-btn {
@@ -198,16 +205,18 @@
     }
   });
 </script>
+
 <footer>
-    <p style="
-            text-align: center;
-            font-size: 0.9rem;
-            color: #fff;
-            margin-bottom: 0.7rem;
-            margin-top: 1rem;
-          ">
-      © 2025 Amandine Mangon
-    </p>
-  </footer>
+  <p style="
+    text-align: center;
+    font-size: 0.9rem;
+    color: #fff;
+    margin-bottom: 0.7rem;
+    margin-top: 1rem;
+  ">
+    © 2025 Amandine Mangon
+  </p>
+</footer>
 </body>
 </html>
+
