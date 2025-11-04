@@ -5,132 +5,53 @@
   <title>Digital Work | Amandine Mangon</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html, body {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       font: 400 15px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: #000;
-      color: #fff;
-      overflow-x: hidden;
-      text-transform: uppercase;
+      background: #000; color: #fff; overflow-x: hidden; text-transform: uppercase;
     }
-
     footer { bottom: 0; left: 0; width: 100%; }
 
-    .gallery {
-      display: flex;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 60px 20px;
-      flex-wrap: wrap;
-    }
-
-    .gallery-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .gallery img {
-      height: 500px;
-      width: auto;
-      border: 1px solid #444;
-      transition: transform 0.2s;
-    }
-
+    .gallery { display: flex; justify-content: center; gap: 0.75rem; padding: 60px 20px; flex-wrap: wrap; }
+    .gallery-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+    .gallery img { height: 500px; width: auto; border: 1px solid #444; transition: transform 0.2s; }
     .gallery img:hover { transform: scale(1.03); }
+    .caption { margin-top: 5px; font-size: 1.25rem; letter-spacing: .05em; color: #fff; text-align: center; font-weight: bold; text-decoration: none; }
 
-    .caption {
-      margin-top: 5px;
-      font-size: 1.25rem;
-      letter-spacing: .05em;
-      color: #fff;
-      text-align: center;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    /* Lightbox */
     .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.92);
-      z-index: 2000;
-      padding: 30px;
-      overflow: auto;
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 2000; padding: 30px; overflow: auto;
     }
     .lightbox.active { display: block; }
-
     .lightbox-content {
-      max-width: 1300px;
-      margin: 0 auto;
-      display: flex;
-      gap: 32px;
-      align-items: flex-start;
-      justify-content: center;
+      max-width: 1300px; margin: 0 auto; display: flex; gap: 32px; align-items: flex-start; justify-content: center;
     }
-
-    .lightbox-media {
-      flex: 0 1 auto;
-      max-width: 65vw;
-    }
+    .lightbox-media { flex: 0 1 auto; max-width: 65vw; position: relative; }
     .lightbox-media img {
-      display: block;
-      width: auto;
-      height: auto;
-      max-width: 65vw;
-      max-height: 90vh;
-      object-fit: contain;
-      border: 1px solid #fff;
-      background: #000;
+      display: block; width: auto; height: auto; max-width: 65vw; max-height: 90vh; object-fit: contain; border: 1px solid #fff; background: #000;
     }
+    .lightbox-meta { flex: 0 0 28vw; max-width: 28vw; text-align: left; }
+    .lightbox-name { font-size: 1.25rem; font-weight: 800; margin-bottom: 10px; letter-spacing: 0.06em; }
+    .lightbox-caption { font-size: 1rem; line-height: 1.6; color: #fff; text-transform: uppercase; font-weight: 500; }
 
-    .lightbox-meta {
-      flex: 0 0 28vw;
-      max-width: 28vw;
-      text-align: left;
-    }
-    .lightbox-name {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-      letter-spacing: 0.06em;
-    }
-    .lightbox-caption {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #fff;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-
-    .close-btn {
-      position: fixed;
-      top: 20px;
-      right: 30px;
-      font-size: 2rem;
-      color: #fff;
-      cursor: pointer;
-      z-index: 2100;
-      user-select: none;
-    }
+    .close-btn { position: fixed; top: 20px; right: 30px; font-size: 2rem; color: #fff; cursor: pointer; z-index: 2100; user-select: none; }
 
     .home-btn {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      z-index: 1000;
-      background: #fff;
-      color: #000;
-      padding: 6px 12px;
-      font-weight: bold;
-      font-size: 0.75rem;
-      text-decoration: none;
-      letter-spacing: 0.05em;
-      border: none;
+      position: absolute; top: 15px; left: 15px; z-index: 1000; background: #fff; color: #000; padding: 6px 12px;
+      font-weight: bold; font-size: 0.75rem; text-decoration: none; letter-spacing: 0.05em; border: none;
+    }
+
+    .nav-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 2rem; background: rgba(0,0,0,0.5); border: 1px solid #fff; color: #fff;
+      width: 48px; height: 60px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; user-select: none;
+    }
+    .nav-btn.left { left: -60px; }
+    .nav-btn.right { right: -60px; }
+
+    .page-indicator {
+      position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
+      font-size: 0.9rem; background: rgba(255,255,255,0.08); padding: 6px 10px; border: 1px solid #fff;
     }
 
     @media (max-width: 900px) {
@@ -138,6 +59,9 @@
       .lightbox-media, .lightbox-media img { max-width: 92vw; }
       .lightbox-media img { max-height: 70vh; }
       .lightbox-meta { max-width: 92vw; }
+      .nav-btn.left { left: 0; }
+      .nav-btn.right { right: 0; }
+      .nav-btn { background: rgba(0,0,0,0.35); }
     }
   </style>
 </head>
@@ -147,12 +71,14 @@
 
 <div class="gallery" id="gallery"></div>
 
-<!-- Lightbox -->
 <div class="lightbox" id="lightbox">
   <div class="close-btn" id="closeBtn">&times;</div>
   <div class="lightbox-content">
     <div class="lightbox-media">
+      <div class="nav-btn left" id="prevBtn">&#10094;</div>
       <img id="lightbox-img" src="" alt="Digital work" />
+      <div class="nav-btn right" id="nextBtn">&#10095;</div>
+      <div class="page-indicator" id="pageIndicator" hidden>1 / 1</div>
     </div>
     <div class="lightbox-meta">
       <div class="lightbox-name" id="lightbox-name"></div>
@@ -162,9 +88,23 @@
 </div>
 
 <script>
-  const digital = [
-    { name: "Good Mourning America", src: "digital/goodmourning.jpeg", caption: "Political Poster; Visual Foundation Studio, NYU." },
-    { name: "Zaha Hadid", src: "digital/zahahadid.jpeg", caption: "Architect Flyer; Visual Foundation Studio, NYU." }
+  const works = [
+    { type: "single", name: "Good Mourning America", src: "digital/goodmourning.jpeg", caption: "Political Poster; Visual Foundation Studio, NYU." },
+    { type: "single", name: "Zaha Hadid", src: "digital/zahahadid.jpeg", caption: "Architect Flyer; Visual Foundation Studio, NYU." },
+
+    // Your new magazine
+    {
+      type: "stack",
+      name: "Iconoclast",
+      cover: "digital/iconoclast.jp2",
+      pages: [
+        "digital/iconoclast.jp2",
+        "digital/melody.jp2",
+        "digital/muse.jp2",
+        "digital/genes.jp2"
+      ],
+      caption: "Magazine Design; Visual Foundation Studio, NYU."
+    }
   ];
 
   const gallery = document.getElementById("gallery");
@@ -173,47 +113,70 @@
   const lightboxName = document.getElementById("lightbox-name");
   const lightboxCaption = document.getElementById("lightbox-caption");
   const closeBtn = document.getElementById("closeBtn");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const pageIndicator = document.getElementById("pageIndicator");
 
-  let currentIndex = -1;
+  let currentWorkIndex = -1;
+  let currentPageIndex = 0;
 
-  function openLightbox(index) {
-    currentIndex = index;
-    const item = digital[index];
-    lightboxImg.src = item.src;
+  works.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.className = "gallery-item";
+    const thumb = item.type === "stack" ? (item.cover || item.pages[0]) : item.src;
+    div.innerHTML = `<img src="${thumb}" alt="${item.name}" /><div class="caption">${item.name}</div>`;
+    div.onclick = () => openLightbox(index, 0);
+    gallery.appendChild(div);
+  });
+
+  function openLightbox(workIndex, pageIndex = 0) {
+    currentWorkIndex = workIndex;
+    currentPageIndex = pageIndex;
+    const item = works[workIndex];
+    const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
+    lightboxImg.src = src;
     lightboxName.textContent = item.name;
-    lightboxCaption.textContent = item.caption;
+    lightboxCaption.textContent = item.caption || "";
+
+    const isStack = item.type === "stack" && item.pages.length > 1;
+    prevBtn.style.display = isStack ? "flex" : "none";
+    nextBtn.style.display = isStack ? "flex" : "none";
+    pageIndicator.hidden = !isStack;
+    if (isStack) pageIndicator.textContent = `${pageIndex + 1} / ${item.pages.length}`;
+
     lightbox.classList.add("active");
   }
 
   function closeLightbox() {
     lightbox.classList.remove("active");
-    currentIndex = -1;
+    currentWorkIndex = -1;
   }
 
-  digital.forEach((item, index) => {
-    const div = document.createElement("div");
-    div.className = "gallery-item";
-    div.innerHTML = `
-      <img src="${item.src}" alt="${item.name}" />
-      <div class="caption">${item.name}</div>
-    `;
-    div.onclick = () => openLightbox(index);
-    gallery.appendChild(div);
-  });
+  function gotoPrevPage() {
+    const item = works[currentWorkIndex];
+    if (item?.type !== "stack") return;
+    currentPageIndex = (currentPageIndex - 1 + item.pages.length) % item.pages.length;
+    lightboxImg.src = item.pages[currentPageIndex];
+    pageIndicator.textContent = `${currentPageIndex + 1} / ${item.pages.length}`;
+  }
+
+  function gotoNextPage() {
+    const item = works[currentWorkIndex];
+    if (item?.type !== "stack") return;
+    currentPageIndex = (currentPageIndex + 1) % item.pages.length;
+    lightboxImg.src = item.pages[currentPageIndex];
+    pageIndicator.textContent = `${currentPageIndex + 1} / ${item.pages.length}`;
+  }
 
   closeBtn.onclick = closeLightbox;
   lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
+  prevBtn.onclick = gotoPrevPage;
+  nextBtn.onclick = gotoNextPage;
   document.addEventListener("keydown", (e) => {
-    if (currentIndex === -1) return;
+    if (currentWorkIndex === -1) return;
     if (e.key === "Escape") closeLightbox();
-    if (e.key === "ArrowLeft") {
-      currentIndex = (currentIndex - 1 + digital.length) % digital.length;
-      openLightbox(currentIndex);
-    }
-    if (e.key === "ArrowRight") {
-      currentIndex = (currentIndex + 1) % digital.length;
-      openLightbox(currentIndex);
-    }
+    if (e.key === "ArrowLeft") gotoPrevPage();
+    if (e.key === "ArrowRight") gotoNextPage();
   });
 </script>
 
@@ -223,4 +186,3 @@
 
 </body>
 </html>
-
