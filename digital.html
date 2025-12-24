@@ -6,37 +6,53 @@
   <title>Digital Work | Amandine Mangon</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- COLLAGE STYLE HEADER + TABS (added only) -->
   <style>
-    .tabbar {
-      position: absolute;
-      top: 15px;
-      left: 115px;
-      z-index: 1001;
+    .bar{
+      position: sticky;
+      top: 0;
+      z-index: 3000;
       display: flex;
-      gap: 10px;
       align-items: center;
+      gap: 1rem;
+      padding: 12px 14px;
+      background: #000;
     }
 
-    .tabbar a {
-      background: transparent;
-      color: #fff;
+    .home-btn{
       text-decoration: none;
-      font-weight: bold;
-      font-size: 0.75rem;
-      letter-spacing: 0.05em;
-      padding: 6px 10px;
-      border: 1px solid #fff;
-      opacity: 0.85;
-    }
-
-    .tabbar a[aria-current="page"] {
+      font-weight: 700;
+      font-size: .8rem;
+      letter-spacing: .06em;
+      padding: 6px 12px;
       background: #fff;
       color: #000;
-      opacity: 1;
+      border: none;
     }
 
-    .section { display: none; }
-    .section.active { display: block; }
+    nav.tabs{ display: flex; gap: 16px; align-items: center; }
+    nav.tabs a{
+      text-decoration: none;
+      color: #fff;
+      opacity: .8;
+      padding: 4px 0;
+      position: relative;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    nav.tabs a[aria-current="page"]{ opacity: 1; }
+    nav.tabs a[aria-current="page"]::after{
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -6px;
+      height: 2px;
+      background: #fff;
+    }
+
+    .section{ display: none; }
+    .section.active{ display: block; }
   </style>
 
   <style>
@@ -188,21 +204,6 @@
       user-select: none;
     }
 
-    .home-btn {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      z-index: 1000;
-      background: #fff;
-      color: #000;
-      padding: 6px 12px;
-      font-weight: bold;
-      font-size: 0.75rem;
-      text-decoration: none;
-      letter-spacing: 0.05em;
-      border: none;
-    }
-
     .nav-btn {
       position: absolute;
       top: 50%;
@@ -220,13 +221,8 @@
       user-select: none;
     }
 
-    .nav-btn.left {
-      left: -60px;
-    }
-
-    .nav-btn.right {
-      right: -60px;
-    }
+    .nav-btn.left { left: -60px; }
+    .nav-btn.right { right: -60px; }
 
     .page-indicator {
       position: absolute;
@@ -258,28 +254,22 @@
         max-width: 92vw;
       }
 
-      .nav-btn.left {
-        left: 0;
-      }
-
-      .nav-btn.right {
-        right: 0;
-      }
-
-      .nav-btn {
-        background: rgba(0, 0, 0, 0.35);
-      }
+      .nav-btn.left { left: 0; }
+      .nav-btn.right { right: 0; }
+      .nav-btn { background: rgba(0, 0, 0, 0.35); }
     }
   </style>
 </head>
 
 <body>
-  <a class="home-btn" href="index.html">HOME</a>
 
-  <nav class="tabbar" aria-label="Digital tabs">
-    <a href="#digital" data-tab="digital">DIGITAL</a>
-    <a href="#code" data-tab="code">CODE</a>
-  </nav>
+  <header class="bar">
+    <a class="home-btn" href="index.html">HOME</a>
+    <nav class="tabs" role="tablist">
+      <a href="#digital" data-tab="digital">Digital</a>
+      <a href="#code" data-tab="code">Code</a>
+    </nav>
+  </header>
 
   <section id="digitalSection" class="section active">
     <div class="gallery" id="gallery"></div>
@@ -301,6 +291,7 @@
     </div>
   </section>
 
+  <!-- CODE TAB -->
   <section id="codeSection" class="section">
     <div class="gallery" id="codeGallery"></div>
   </section>
@@ -319,7 +310,7 @@
           "digital/lauraphoto.png",
           "digital/laurafashion.png"
         ],
-        caption: "Desktop Website Portfolio; Visual Foundation Studio, NYU.",
+        caption: "Desktop Website Portfolio; Visual Foundation Studio, NYU."
       },
       {
         type: "stack",
@@ -328,89 +319,10 @@
         pages: [
           "digital/lauraiphone.png",
           "digital/iphonecontent.png",
-          "digital/iphonearch.png",
+          "digital/iphonearch.png"
         ],
-        caption: "Iphone Website Portfolio; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "BlueFather Brand Guidelines",
-        cover: "digital/brandcover.png",
-        pages: [
-          "digital/brandcover.png",
-          "digital/brandlogo.png",
-          "digital/brandicon.png",
-          "digital/brandcolor.png",
-          "digital/brandrules.png",
-          "digital/brandtype.png",
-          "digital/brandapplication.png",
-        ],
-        caption: "BlueFather Brand Guidelines; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "BlueFather",
-        cover: "digital/deanfront.png",
-        pages: [
-          "digital/deanfront.png",
-          "digital/dean1.png",
-          "digital/dean2-3.png",
-          "digital/dean4-5.png",
-          "digital/dean6-7.png",
-          "digital/dean8-9.png",
-          "digital/dean10-11.png",
-          "digital/dean12-13.png",
-          "digital/dean14-15.png",
-          "digital/dean16-17.png",
-          "digital/dean18-19.png",
-          "digital/deanback.png",
-        ],
-        caption: "BlueFather Merch; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "Iconoclast",
-        cover: "digital/iconoclast.jpeg",
-        pages: [
-          "digital/iconoclast.jpeg",
-          "digital/melody.jpeg",
-          "digital/muse.jpeg",
-          "digital/genes.jpeg",
-        ],
-        caption: "Magazine Grid; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "Evidemment",
-        cover: "digital/albumfront.png",
-        pages: [
-          "digital/albumfront.png",
-          "digital/albumback.png",
-        ],
-        caption: "Album Cover; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "Good Mourning America/Shoot Here!",
-        cover: "digital/goodmourning.png",
-        pages: [
-          "digital/goodmourning.png",
-          "digital/shoothere.png",
-        ],
-        caption: "Political Posters; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "single",
-        name: "Zaha Hadid",
-        src: "digital/zahahadid.jpeg",
-        caption: "Architect Flyer; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "single",
-        name: "Transit Garden",
-        src: "digital/transit garden.png",
-        caption: "Transit Garden Sign; Visual Foundation Studio, NYU.",
-      },
+        caption: "Iphone Website Portfolio; Visual Foundation Studio, NYU."
+      }
     ];
 
     const gallery = document.getElementById("gallery");
@@ -430,7 +342,7 @@
       const div = document.createElement("div");
       div.className = "gallery-item";
       const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
-      div.innerHTML = `<img src="${thumb}" alt="${item.name}" /><div class="caption">${item.name}</div>`;
+      div.innerHTML = `<img src="${thumb}" alt="${item.name}"><div class="caption">${item.name}</div>`;
       div.onclick = () => openLightbox(index, 0);
       gallery.appendChild(div);
     });
@@ -443,13 +355,11 @@
       lightboxImg.src = src;
       lightboxName.textContent = item.name;
       lightboxCaption.textContent = item.caption || "";
-
       const isStack = item.type === "stack" && item.pages.length > 1;
       prevBtn.style.display = isStack ? "flex" : "none";
       nextBtn.style.display = isStack ? "flex" : "none";
       pageIndicator.hidden = !isStack;
       if (isStack) pageIndicator.textContent = `${pageIndex + 1} / ${item.pages.length}`;
-
       lightbox.classList.add("active");
     }
 
@@ -475,9 +385,10 @@
     }
 
     closeBtn.onclick = closeLightbox;
-    lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
     prevBtn.onclick = gotoPrevPage;
     nextBtn.onclick = gotoNextPage;
+    lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
+
     document.addEventListener("keydown", (e) => {
       if (currentWorkIndex === -1) return;
       if (e.key === "Escape") closeLightbox();
@@ -485,24 +396,25 @@
       if (e.key === "ArrowRight") gotoNextPage();
     });
 
+    // CODE PROJECTS
     const CODE_PROJECTS = [
       { name: "Collage Builder", thumb: "code/thumbs/collage.png", href: "collage.html" },
-      { name: "Generative Rain", thumb: "code/thumbs/rain.png", href: "rain/index.html" },
-      { name: "Final Sketch", thumb: "code/thumbs/final.png", href: "final/index.html" },
+      { name: "Generative Rain", thumb: "code/thumbs/rain.png", href: "rain/index.html" }
     ];
 
     const codeGallery = document.getElementById("codeGallery");
-    CODE_PROJECTS.forEach((p) => {
+    CODE_PROJECTS.forEach(p => {
       const div = document.createElement("div");
       div.className = "gallery-item";
-      div.innerHTML = `<img src="${p.thumb}" alt="${p.name}" /><div class="caption">${p.name}</div>`;
-      div.onclick = () => { window.location.href = p.href; };
+      div.innerHTML = `<img src="${p.thumb}" alt="${p.name}"><div class="caption">${p.name}</div>`;
+      div.onclick = () => window.location.href = p.href;
       codeGallery.appendChild(div);
     });
 
+    // TAB LOGIC (collage style underline)
+    const tabLinks = document.querySelectorAll("nav.tabs a");
     const digitalSection = document.getElementById("digitalSection");
     const codeSection = document.getElementById("codeSection");
-    const tabLinks = Array.from(document.querySelectorAll(".tabbar a"));
 
     function setActiveTab(tab) {
       tabLinks.forEach(a => {
@@ -522,11 +434,11 @@
 
     function currentTab() {
       const h = (location.hash || "#digital").slice(1).toLowerCase();
-      return (h === "code" || h === "digital") ? h : "digital";
+      return h === "code" ? "code" : "digital";
     }
 
     tabLinks.forEach(a => {
-      a.addEventListener("click", (e) => {
+      a.addEventListener("click", e => {
         e.preventDefault();
         const tab = a.dataset.tab;
         history.replaceState(null, "", "#" + tab);
@@ -539,15 +451,8 @@
   </script>
 
   <footer>
-    <p style="
-          text-align: center;
-          font-size: 0.9rem;
-          color: #fff;
-          margin: 1rem 0;
-        ">
-      © 2025 Amandine Mangon
-    </p>
+    <p style="text-align:center;font-size:.9rem;margin:1rem 0;">© 2025 Amandine Mangon</p>
   </footer>
-</body>
 
+</body>
 </html>
