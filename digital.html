@@ -4,6 +4,41 @@
 <head>
   <meta charset="UTF-8" />
   <title>Digital Work | Amandine Mangon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    .tabbar {
+      position: absolute;
+      top: 15px;
+      left: 115px;
+      z-index: 1001;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .tabbar a {
+      background: transparent;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 6px 10px;
+      border: 1px solid #fff;
+      opacity: 0.85;
+    }
+
+    .tabbar a[aria-current="page"] {
+      background: #fff;
+      color: #000;
+      opacity: 1;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+  </style>
+
   <style>
     * {
       margin: 0;
@@ -42,6 +77,7 @@
       align-items: center;
       cursor: pointer;
     }
+
     .gallery img {
       height: 500px;
       width: auto;
@@ -69,7 +105,6 @@
     .gallery img[alt="Transit Garden"] {
       height: 430px;
     }
-
 
     .caption {
       margin-top: 5px;
@@ -241,27 +276,38 @@
 <body>
   <a class="home-btn" href="index.html">HOME</a>
 
-  <div class="gallery" id="gallery"></div>
+  <nav class="tabbar" aria-label="Digital tabs">
+    <a href="#digital" data-tab="digital">DIGITAL</a>
+    <a href="#code" data-tab="code">CODE</a>
+  </nav>
 
-  <div class="lightbox" id="lightbox">
-    <div class="close-btn" id="closeBtn">&times;</div>
-    <div class="lightbox-content">
-      <div class="lightbox-media">
-        <div class="nav-btn left" id="prevBtn">&#10094;</div>
-        <img id="lightbox-img" src="" alt="Digital work" />
-        <div class="nav-btn right" id="nextBtn">&#10095;</div>
-        <div class="page-indicator" id="pageIndicator" hidden>1 / 1</div>
-      </div>
-      <div class="lightbox-meta">
-        <div class="lightbox-name" id="lightbox-name"></div>
-        <div class="lightbox-caption" id="lightbox-caption"></div>
+  <section id="digitalSection" class="section active">
+    <div class="gallery" id="gallery"></div>
+
+    <div class="lightbox" id="lightbox">
+      <div class="close-btn" id="closeBtn">&times;</div>
+      <div class="lightbox-content">
+        <div class="lightbox-media">
+          <div class="nav-btn left" id="prevBtn">&#10094;</div>
+          <img id="lightbox-img" src="" alt="Digital work" />
+          <div class="nav-btn right" id="nextBtn">&#10095;</div>
+          <div class="page-indicator" id="pageIndicator" hidden>1 / 1</div>
+        </div>
+        <div class="lightbox-meta">
+          <div class="lightbox-name" id="lightbox-name"></div>
+          <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <section id="codeSection" class="section">
+    <div class="gallery" id="codeGallery"></div>
+  </section>
 
   <script>
     const works = [
-     {
+      {
         type: "stack",
         name: "Laura Portfolio (Desktop)",
         cover: "digital/laurahome.png",
@@ -275,7 +321,7 @@
         ],
         caption: "Desktop Website Portfolio; Visual Foundation Studio, NYU.",
       },
-       {
+      {
         type: "stack",
         name: "Laura Portfolio (Mobile)",
         cover: "digital/lauraiphone.png",
@@ -350,7 +396,7 @@
         pages: [
           "digital/goodmourning.png",
           "digital/shoothere.png",
-      ],
+        ],
         caption: "Political Posters; Visual Foundation Studio, NYU.",
       },
       {
@@ -383,8 +429,7 @@
     works.forEach((item, index) => {
       const div = document.createElement("div");
       div.className = "gallery-item";
-      const thumb =
-        item.type === "stack" ? item.cover || item.pages[0] : item.src;
+      const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
       div.innerHTML = `<img src="${thumb}" alt="${item.name}" /><div class="caption">${item.name}</div>`;
       div.onclick = () => openLightbox(index, 0);
       gallery.appendChild(div);
@@ -403,8 +448,7 @@
       prevBtn.style.display = isStack ? "flex" : "none";
       nextBtn.style.display = isStack ? "flex" : "none";
       pageIndicator.hidden = !isStack;
-      if (isStack)
-        pageIndicator.textContent = `${pageIndex + 1} / ${item.pages.length}`;
+      if (isStack) pageIndicator.textContent = `${pageIndex + 1} / ${item.pages.length}`;
 
       lightbox.classList.add("active");
     }
@@ -417,11 +461,9 @@
     function gotoPrevPage() {
       const item = works[currentWorkIndex];
       if (item?.type !== "stack") return;
-      currentPageIndex =
-        (currentPageIndex - 1 + item.pages.length) % item.pages.length;
+      currentPageIndex = (currentPageIndex - 1 + item.pages.length) % item.pages.length;
       lightboxImg.src = item.pages[currentPageIndex];
-      pageIndicator.textContent = `${currentPageIndex + 1} / ${item.pages.length
-        }`;
+      pageIndicator.textContent = `${currentPageIndex + 1} / ${item.pages.length}`;
     }
 
     function gotoNextPage() {
@@ -429,14 +471,11 @@
       if (item?.type !== "stack") return;
       currentPageIndex = (currentPageIndex + 1) % item.pages.length;
       lightboxImg.src = item.pages[currentPageIndex];
-      pageIndicator.textContent = `${currentPageIndex + 1} / ${item.pages.length
-        }`;
+      pageIndicator.textContent = `${currentPageIndex + 1} / ${item.pages.length}`;
     }
 
     closeBtn.onclick = closeLightbox;
-    lightbox.onclick = (e) => {
-      if (e.target === lightbox) closeLightbox();
-    };
+    lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
     prevBtn.onclick = gotoPrevPage;
     nextBtn.onclick = gotoNextPage;
     document.addEventListener("keydown", (e) => {
@@ -445,6 +484,58 @@
       if (e.key === "ArrowLeft") gotoPrevPage();
       if (e.key === "ArrowRight") gotoNextPage();
     });
+
+    const CODE_PROJECTS = [
+      { name: "Collage Builder", thumb: "code/thumbs/collage.png", href: "collage.html" },
+      { name: "Generative Rain", thumb: "code/thumbs/rain.png", href: "rain/index.html" },
+      { name: "Final Sketch", thumb: "code/thumbs/final.png", href: "final/index.html" },
+    ];
+
+    const codeGallery = document.getElementById("codeGallery");
+    CODE_PROJECTS.forEach((p) => {
+      const div = document.createElement("div");
+      div.className = "gallery-item";
+      div.innerHTML = `<img src="${p.thumb}" alt="${p.name}" /><div class="caption">${p.name}</div>`;
+      div.onclick = () => { window.location.href = p.href; };
+      codeGallery.appendChild(div);
+    });
+
+    const digitalSection = document.getElementById("digitalSection");
+    const codeSection = document.getElementById("codeSection");
+    const tabLinks = Array.from(document.querySelectorAll(".tabbar a"));
+
+    function setActiveTab(tab) {
+      tabLinks.forEach(a => {
+        if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
+        else a.removeAttribute("aria-current");
+      });
+
+      if (tab === "code") {
+        digitalSection.classList.remove("active");
+        codeSection.classList.add("active");
+        closeLightbox();
+      } else {
+        codeSection.classList.remove("active");
+        digitalSection.classList.add("active");
+      }
+    }
+
+    function currentTab() {
+      const h = (location.hash || "#digital").slice(1).toLowerCase();
+      return (h === "code" || h === "digital") ? h : "digital";
+    }
+
+    tabLinks.forEach(a => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const tab = a.dataset.tab;
+        history.replaceState(null, "", "#" + tab);
+        setActiveTab(tab);
+      });
+    });
+
+    window.addEventListener("hashchange", () => setActiveTab(currentTab()));
+    setActiveTab(currentTab());
   </script>
 
   <footer>
