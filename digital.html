@@ -530,6 +530,40 @@
   <footer>
     <p style="text-align:center;font-size:.9rem;margin:1rem 0;">© 2025 Amandine Mangon</p>
   </footer>
+  <style>
+  body.lightbox-open .bar {
+    display: none;
+  }
+
+  .lightbox {
+    z-index: 5000;
+  }
+
+  .nav-btn {
+    z-index: 5200;
+  }
+
+  .lightbox-media img {
+    position: relative;
+    z-index: 5100;
+  }
+</style>
+
+<script>
+  const _openLightbox = openLightbox;
+  const _closeLightbox = closeLightbox;
+
+  openLightbox = function (...args) {
+    document.body.classList.add("lightbox-open");
+    _openLightbox.apply(this, args);
+  };
+
+  closeLightbox = function (...args) {
+    document.body.classList.remove("lightbox-open");
+    _closeLightbox.apply(this, args);
+  };
+</script>
+
 
 </body>
 </html>
