@@ -72,12 +72,6 @@
       text-transform: uppercase;
     }
 
-    footer {
-      bottom: 0;
-      left: 0;
-      width: 100%;
-    }
-
     .gallery {
       display: flex;
       justify-content: center;
@@ -257,6 +251,35 @@
       .nav-btn.right { right: 0; }
       .nav-btn { background: rgba(0, 0, 0, 0.35); }
     }
+
+    body.lightbox-open .bar {
+      display: none;
+    }
+
+    .lightbox { z-index: 5000; }
+    .nav-btn { z-index: 5200; }
+    .lightbox-media img { position: relative; z-index: 5100; }
+
+    /* CODE TAB: embed final project at 80% */
+    .code-wrap{
+      width: 100%;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+      background: #000;
+    }
+    .code-scale{
+      width: 125%;
+      height: 125%;
+      transform: scale(0.8);
+      transform-origin: top left;
+    }
+    .code-iframe{
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #000;
+    }
   </style>
 </head>
 
@@ -291,7 +314,16 @@
   </section>
 
   <section id="codeSection" class="section">
-    <div class="gallery" id="codeGallery"></div>
+    <div class="code-wrap">
+      <div class="code-scale">
+        <iframe
+          class="code-iframe"
+          src="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+        ></iframe>
+      </div>
+    </div>
   </section>
 
   <script>
@@ -473,34 +505,6 @@
       if (e.key === "ArrowRight") gotoNextPage();
     });
 
-    // CODE PROJECTS (UPDATED: added Creative Coding Final link)
-    const CODE_PROJECTS = [
-      {
-        name: "Creative Coding Final",
-        thumb: "code/thumbs/final.png",
-        href: "https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/",
-        scale: 0.8
-      },
-      { name: "Collage Builder", thumb: "code/thumbs/collage.png", href: "collage.html" },
-      { name: "Generative Rain", thumb: "code/thumbs/rain.png", href: "rain/index.html" }
-    ];
-
-    const codeGallery = document.getElementById("codeGallery");
-    CODE_PROJECTS.forEach(p => {
-      const div = document.createElement("div");
-      div.className = "gallery-item";
-      div.innerHTML = `<img src="${p.thumb}" alt="${p.name}"><div class="caption">${p.name}</div>`;
-      div.onclick = () => {
-        if (p.scale) {
-          window.open(p.href + "#scale=" + p.scale, "_blank");
-        } else {
-          window.location.href = p.href;
-        }
-      };
-      codeGallery.appendChild(div);
-    });
-
-    // TAB LOGIC (collage style underline)
     const tabLinks = document.querySelectorAll("nav.tabs a");
     const digitalSection = document.getElementById("digitalSection");
     const codeSection = document.getElementById("codeSection");
@@ -537,32 +541,7 @@
 
     window.addEventListener("hashchange", () => setActiveTab(currentTab()));
     setActiveTab(currentTab());
-  </script>
 
-  <footer>
-    <p style="text-align:center;font-size:.9rem;margin:1rem 0;">© 2025 Amandine Mangon</p>
-  </footer>
-
-  <style>
-    body.lightbox-open .bar {
-      display: none;
-    }
-
-    .lightbox {
-      z-index: 5000;
-    }
-
-    .nav-btn {
-      z-index: 5200;
-    }
-
-    .lightbox-media img {
-      position: relative;
-      z-index: 5100;
-    }
-  </style>
-
-  <script>
     const _openLightbox = openLightbox;
     const _closeLightbox = closeLightbox;
 
