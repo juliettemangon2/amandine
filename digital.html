@@ -66,22 +66,20 @@
       text-transform: uppercase;
     }
 
-    /* Slightly narrower overall column so everything feels less huge */
     .gallery{
-      max-width: 1200px; /* was 1400 */
+      max-width: 1200px;
       margin: 0 auto;
       padding: 60px 20px;
       margin-top: 3rem;
     }
 
-    /* More breathing room */
     .gallery-row{
       display: flex;
-      gap: 34px;          /* was ~12 */
+      gap: 34px;
       justify-content: center;
       align-items: flex-start;
       width: 100%;
-      margin-bottom: 44px; /* was ~22 */
+      margin-bottom: 44px;
     }
 
     .gallery-item{
@@ -494,12 +492,11 @@
 
       const galleryWidth = gallery.clientWidth;
 
-      /* bigger gap + slightly smaller rows */
       const gap = 34;
+      const maxRowHeight = 420;
+      const minRowHeight = 220;
 
-      /* make everything slightly smaller overall */
-      const maxRowHeight = 420;  /* was 520 */
-      const minRowHeight = 220;  /* was 260 */
+      let iconoclastRowHeight = null;
 
       for(let i = 0; i < itemEls.length; i += 2){
         const row = document.createElement("div");
@@ -509,7 +506,6 @@
         const b = itemEls[i + 1];
 
         row.appendChild(a);
-
         if(b) row.appendChild(b);
 
         gallery.appendChild(row);
@@ -525,23 +521,27 @@
         const r2 = parseFloat(b.dataset.ratio || "0");
         if(!r1 || !r2) continue;
 
-        const available = galleryWidth - gap;
+        const aIdx = parseInt(a.dataset.index, 10);
+        const bIdx = parseInt(b.dataset.index, 10);
+        const aName = works[aIdx]?.name || "";
+        const bName = works[bIdx]?.name || "";
 
+        const available = galleryWidth - gap;
         let h = available / (r1 + r2);
 
         if(h > maxRowHeight) h = maxRowHeight;
         if(h < minRowHeight) h = minRowHeight;
 
-        /* special case: political posters row should never be huge */
-        const aIdx = parseInt(a.dataset.index, 10);
-        const bIdx = parseInt(b.dataset.index, 10);
-        const aName = works[aIdx]?.name || "";
-        const bName = works[bIdx]?.name || "";
-        const hasPosters =
+        const isIconoclastRow = (aName === "Iconoclast" || bName === "Iconoclast");
+        if(isIconoclastRow) iconoclastRowHeight = h;
+
+        const isPosterRow =
           aName === "Good Mourning America/Shoot Here!" ||
           bName === "Good Mourning America/Shoot Here!";
 
-        if(hasPosters) h = Math.min(h, 280);
+        if(isPosterRow && iconoclastRowHeight !== null){
+          h = iconoclastRowHeight; /* match Iconoclast row height */
+        }
 
         const w1 = h * r1;
         const w2 = h * r2;
