@@ -71,43 +71,43 @@
       text-transform: uppercase;
     }
 
-    /* GRID so both items per row share the same width */
     .gallery {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 24px;
-      padding: 60px 20px;
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
+      padding: 60px 20px;
       margin-top: 3rem;
-      align-items: start;
-      justify-items: center;
+    }
+
+    .gallery-row{
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+      margin-bottom: 22px;
     }
 
     .gallery-item {
-      width: 100%;
-      max-width: 520px; /* controls the column width */
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
+      flex: 0 0 auto;
     }
 
-    /* Images fill the same width in each column */
-    .gallery img {
-      width: 100%;
-      height: auto;
-      transition: transform 0.2s;
-      margin: 0.5rem 0;
+    .gallery-item img {
       display: block;
+      transition: transform 0.2s;
+      border: 0;
+      background: #000;
     }
 
-    .gallery img:hover {
+    .gallery-item img:hover {
       transform: scale(1.03);
     }
 
     .caption {
-      margin-top: 5px;
+      margin-top: 10px;
       font-size: 1.25rem;
       letter-spacing: 0.05em;
       color: #fff;
@@ -220,9 +220,19 @@
     }
 
     @media (max-width: 900px) {
-      .gallery{
-        grid-template-columns: 1fr;
-        max-width: 680px;
+      .gallery-row{
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .gallery-item{
+        width: 100%;
+        max-width: 92vw;
+      }
+
+      .gallery-item img{
+        width: 100%;
+        height: auto;
       }
 
       .lightbox-content {
@@ -431,14 +441,110 @@
     let currentWorkIndex = -1;
     let currentPageIndex = 0;
 
-    works.forEach((item, index) => {
+    const itemEls = [];
+
+    function makeItem(item, index){
       const div = document.createElement("div");
       div.className = "gallery-item";
       const thumb = item.type === "stack" ? (item.cover || item.pages[0]) : item.src;
-      div.innerHTML = `<img src="${thumb}" alt="${item.name}"><div class="caption">${item.name}</div>`;
+
+      const img = document.createElement("img");
+      img.src = thumb;
+      img.alt = item.name;
+
+      const cap = document.createElement("div");
+      cap.className = "caption";
+      cap.textContent = item.name;
+
+      div.appendChild(img);
+      div.appendChild(cap);
       div.onclick = () => openLightbox(index, 0);
-      gallery.appendChild(div);
+
+      div.dataset.index = String(index);
+      div.dataset.ratio = "";
+
+      img.addEventListener("load", () => {
+        const r = img.naturalWidth && img.naturalHeight ? (img.naturalWidth / img.naturalHeight) : 1;
+        div.dataset.ratio = String(r);
+        layoutRows();
+      });
+
+      return div;
+    }
+
+    works.forEach((item, index) => {
+      itemEls.push(makeItem(item, index));
     });
+
+    function layoutRows(){
+      const isNarrow = window.matchMedia("(max-width: 900px)").matches;
+
+      gallery.innerHTML = "";
+
+      if(isNarrow){
+        itemEls.forEach(el => {
+          const row = document.createElement("div");
+          row.className = "gallery-row";
+          row.appendChild(el);
+          gallery.appendChild(row);
+
+          const img = el.querySelector("img");
+          img.style.height = "auto";
+          img.style.width = "100%";
+        });
+        return;
+      }
+
+      const galleryWidth = gallery.clientWidth;
+      const gap = 12;
+      const maxRowHeight = 520;
+      const minRowHeight = 260;
+
+      for(let i = 0; i < itemEls.length; i += 2){
+        const row = document.createElement("div");
+        row.className = "gallery-row";
+
+        const a = itemEls[i];
+        const b = itemEls[i + 1];
+
+        row.appendChild(a);
+
+        if(b) row.appendChild(b);
+
+        gallery.appendChild(row);
+
+        if(!b){
+          const imgA = a.querySelector("img");
+          imgA.style.height = "auto";
+          imgA.style.width = "80%";
+          continue;
+        }
+
+        const r1 = parseFloat(a.dataset.ratio || "0");
+        const r2 = parseFloat(b.dataset.ratio || "0");
+        if(!r1 || !r2) continue;
+
+        const available = galleryWidth - gap;
+        let h = available / (r1 + r2);
+
+        if(h > maxRowHeight) h = maxRowHeight;
+        if(h < minRowHeight) h = minRowHeight;
+
+        const w1 = h * r1;
+        const w2 = h * r2;
+
+        const img1 = a.querySelector("img");
+        const img2 = b.querySelector("img");
+
+        img1.style.height = h + "px";
+        img2.style.height = h + "px";
+
+        img1.style.width = w1 + "px";
+        img2.style.width = w2 + "px";
+      }
+    }
+
+    window.addEventListener("resize", () => layoutRows());
 
     function openLightbox(workIndex, pageIndex = 0) {
       currentWorkIndex = workIndex;
@@ -542,6 +648,8 @@
 
     window.addEventListener("hashchange", () => setActiveTab(currentTab()));
     setActiveTab(currentTab());
+
+    layoutRows();
   </script>
 </body>
 </html>
