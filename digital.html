@@ -9,7 +9,7 @@
     .bar{
       position: sticky;
       top: 0;
-      z-index: 6000; /* keep header always above lightbox */
+      z-index: 6000;
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -121,9 +121,10 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.92);
-      z-index: 5000; /* below header, above page */
+      z-index: 5000;
       padding: 30px;
       overflow: auto;
+      cursor: zoom-out; /* shows you can click out */
     }
 
     .lightbox.active {
@@ -137,12 +138,13 @@
       gap: 24px;
       align-items: flex-start;
       justify-content: center;
-      padding-top: 70px; /* avoid fighting sticky header */
+      padding-top: 70px;
+      cursor: default;
     }
 
     .lightbox-media {
       flex: 1 1 auto;
-      position: relative; /* anchor nav buttons */
+      position: relative;
       max-width: min(92vw, 1500px);
       width: 100%;
     }
@@ -159,12 +161,14 @@
       position: relative;
       z-index: 5050;
       margin: 0 auto;
+      cursor: default;
     }
 
     .lightbox-meta {
       flex: 0 0 320px;
       max-width: 320px;
       text-align: left;
+      cursor: default;
     }
 
     .lightbox-name {
@@ -180,17 +184,6 @@
       color: #fff;
       text-transform: uppercase;
       font-weight: 500;
-    }
-
-    .close-btn {
-      position: fixed;
-      top: 20px;
-      right: 30px;
-      font-size: 2rem;
-      color: #fff;
-      cursor: pointer;
-      z-index: 5900; /* still below header, but above lightbox media */
-      user-select: none;
     }
 
     .nav-btn {
@@ -211,7 +204,6 @@
       z-index: 5100;
     }
 
-    /* arrows inside the frame so they never go off-screen */
     .nav-btn.left { left: 12px; }
     .nav-btn.right { right: 12px; }
 
@@ -275,7 +267,6 @@
 </head>
 
 <body>
-
   <header class="bar">
     <a class="home-btn" href="index.html">HOME</a>
     <nav class="tabs" role="tablist">
@@ -288,7 +279,6 @@
     <div class="gallery" id="gallery"></div>
 
     <div class="lightbox" id="lightbox" aria-hidden="true">
-      <div class="close-btn" id="closeBtn">&times;</div>
       <div class="lightbox-content">
         <div class="lightbox-media">
           <div class="nav-btn left" id="prevBtn">&#10094;</div>
@@ -430,7 +420,6 @@
     const lightboxImg = document.getElementById("lightbox-img");
     const lightboxName = document.getElementById("lightbox-name");
     const lightboxCaption = document.getElementById("lightbox-caption");
-    const closeBtn = document.getElementById("closeBtn");
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const pageIndicator = document.getElementById("pageIndicator");
@@ -465,15 +454,15 @@
       pageIndicator.hidden = !isStack;
       if (isStack) pageIndicator.textContent = `${pageIndex + 1} / ${item.pages.length}`;
 
-      document.body.classList.add("lightbox-open");
       lightbox.classList.add("active");
       lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("lightbox-open");
     }
 
     function closeLightbox() {
       lightbox.classList.remove("active");
       lightbox.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("lightbox-open"); /* extra safety so header never "sticks" hidden */
+      document.body.classList.remove("lightbox-open");
       currentWorkIndex = -1;
     }
 
@@ -493,10 +482,21 @@
       pageIndicator.textContent = `${currentPageIndex + 1} / ${item.pages.length}`;
     }
 
-    closeBtn.onclick = closeLightbox;
     prevBtn.onclick = gotoPrevPage;
     nextBtn.onclick = gotoNextPage;
-    lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
+
+    /* Click anywhere outside image area closes */
+    lightbox.addEventListener("click", closeLightbox);
+
+    /* Prevent closing when clicking inside image or arrows */
+    document.querySelector(".lightbox-media").addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    /* Optional: keep meta from closing too (remove if you want text click to close) */
+    document.querySelector(".lightbox-meta").addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
 
     document.addEventListener("keydown", (e) => {
       if (!lightbox.classList.contains("active")) return;
@@ -542,6 +542,5 @@
     window.addEventListener("hashchange", () => setActiveTab(currentTab()));
     setActiveTab(currentTab());
   </script>
-
 </body>
 </html>
