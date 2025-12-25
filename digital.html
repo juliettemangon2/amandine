@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <title>Digital Work | Amandine Mangon</title>
@@ -10,7 +9,7 @@
     .bar{
       position: sticky;
       top: 0;
-      z-index: 3000;
+      z-index: 6000; /* keep header always above lightbox */
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -78,6 +77,10 @@
       gap: 0.75rem;
       padding: 60px 20px;
       flex-wrap: wrap;
+      max-width: 1400px;
+      align-items: center;
+      margin: 0 auto;
+      margin-top: 3rem;
     }
 
     .gallery-item {
@@ -96,18 +99,6 @@
 
     .gallery img:hover {
       transform: scale(1.03);
-    }
-
-    .gallery {
-      max-width: 1400px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      padding: 40px 10px;
-      margin: 0 auto;
-      margin-top: 3rem;
     }
 
     .gallery img[alt="Zaha Hadid"],
@@ -130,7 +121,7 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.92);
-      z-index: 2000;
+      z-index: 5000; /* below header, above page */
       padding: 30px;
       overflow: auto;
     }
@@ -140,34 +131,39 @@
     }
 
     .lightbox-content {
-      max-width: 1300px;
+      max-width: 1600px;
       margin: 0 auto;
       display: flex;
-      gap: 32px;
+      gap: 24px;
       align-items: flex-start;
       justify-content: center;
+      padding-top: 70px; /* avoid fighting sticky header */
     }
 
     .lightbox-media {
-      flex: 0 1 auto;
-      max-width: 65vw;
-      position: relative;
+      flex: 1 1 auto;
+      position: relative; /* anchor nav buttons */
+      max-width: min(92vw, 1500px);
+      width: 100%;
     }
 
     .lightbox-media img {
       display: block;
       width: auto;
       height: auto;
-      max-width: 65vw;
-      max-height: 90vh;
+      max-width: 100%;
+      max-height: calc(100vh - 120px);
       object-fit: contain;
       border: 1px solid #fff;
       background: #000;
+      position: relative;
+      z-index: 5050;
+      margin: 0 auto;
     }
 
     .lightbox-meta {
-      flex: 0 0 28vw;
-      max-width: 28vw;
+      flex: 0 0 320px;
+      max-width: 320px;
       text-align: left;
     }
 
@@ -193,7 +189,7 @@
       font-size: 2rem;
       color: #fff;
       cursor: pointer;
-      z-index: 2100;
+      z-index: 5900; /* still below header, but above lightbox media */
       user-select: none;
     }
 
@@ -201,21 +197,23 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 2rem;
-      background: rgba(0, 0, 0, 0.5);
+      font-size: 2.2rem;
+      background: rgba(0, 0, 0, 0.45);
       border: 1px solid #fff;
       color: #fff;
-      width: 48px;
-      height: 60px;
+      width: 52px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       user-select: none;
+      z-index: 5100;
     }
 
-    .nav-btn.left { left: -60px; }
-    .nav-btn.right { right: -60px; }
+    /* arrows inside the frame so they never go off-screen */
+    .nav-btn.left { left: 12px; }
+    .nav-btn.right { right: 12px; }
 
     .page-indicator {
       position: absolute;
@@ -226,6 +224,7 @@
       background: rgba(255, 255, 255, 0.08);
       padding: 6px 10px;
       border: 1px solid #fff;
+      z-index: 5100;
     }
 
     @media (max-width: 900px) {
@@ -247,18 +246,10 @@
         max-width: 92vw;
       }
 
-      .nav-btn.left { left: 0; }
-      .nav-btn.right { right: 0; }
+      .nav-btn.left { left: 8px; }
+      .nav-btn.right { right: 8px; }
       .nav-btn { background: rgba(0, 0, 0, 0.35); }
     }
-
-    body.lightbox-open .bar {
-      display: none;
-    }
-
-    .lightbox { z-index: 5000; }
-    .nav-btn { z-index: 5200; }
-    .lightbox-media img { position: relative; z-index: 5100; }
 
     /* CODE TAB: embed final project at 80% */
     .code-wrap{
@@ -296,7 +287,7 @@
   <section id="digitalSection" class="section active">
     <div class="gallery" id="gallery"></div>
 
-    <div class="lightbox" id="lightbox">
+    <div class="lightbox" id="lightbox" aria-hidden="true">
       <div class="close-btn" id="closeBtn">&times;</div>
       <div class="lightbox-content">
         <div class="lightbox-media">
@@ -450,7 +441,7 @@
     works.forEach((item, index) => {
       const div = document.createElement("div");
       div.className = "gallery-item";
-      const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
+      const thumb = item.type === "stack" ? (item.cover || item.pages[0]) : item.src;
       div.innerHTML = `<img src="${thumb}" alt="${item.name}"><div class="caption">${item.name}</div>`;
       div.onclick = () => openLightbox(index, 0);
       gallery.appendChild(div);
@@ -459,21 +450,30 @@
     function openLightbox(workIndex, pageIndex = 0) {
       currentWorkIndex = workIndex;
       currentPageIndex = pageIndex;
+
       const item = works[workIndex];
       const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
+
       lightboxImg.src = src;
       lightboxName.textContent = item.name;
       lightboxCaption.textContent = item.caption || "";
+
       const isStack = item.type === "stack" && item.pages.length > 1;
       prevBtn.style.display = isStack ? "flex" : "none";
       nextBtn.style.display = isStack ? "flex" : "none";
+
       pageIndicator.hidden = !isStack;
       if (isStack) pageIndicator.textContent = `${pageIndex + 1} / ${item.pages.length}`;
+
+      document.body.classList.add("lightbox-open");
       lightbox.classList.add("active");
+      lightbox.setAttribute("aria-hidden", "false");
     }
 
     function closeLightbox() {
       lightbox.classList.remove("active");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("lightbox-open"); /* extra safety so header never "sticks" hidden */
       currentWorkIndex = -1;
     }
 
@@ -499,7 +499,7 @@
     lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
 
     document.addEventListener("keydown", (e) => {
-      if (currentWorkIndex === -1) return;
+      if (!lightbox.classList.contains("active")) return;
       if (e.key === "Escape") closeLightbox();
       if (e.key === "ArrowLeft") gotoPrevPage();
       if (e.key === "ArrowRight") gotoNextPage();
@@ -541,19 +541,6 @@
 
     window.addEventListener("hashchange", () => setActiveTab(currentTab()));
     setActiveTab(currentTab());
-
-    const _openLightbox = openLightbox;
-    const _closeLightbox = closeLightbox;
-
-    openLightbox = function (...args) {
-      document.body.classList.add("lightbox-open");
-      _openLightbox.apply(this, args);
-    };
-
-    closeLightbox = function (...args) {
-      document.body.classList.remove("lightbox-open");
-      _closeLightbox.apply(this, args);
-    };
   </script>
 
 </body>
