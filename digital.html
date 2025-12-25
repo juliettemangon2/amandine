@@ -196,8 +196,8 @@
       z-index: 5100;
     }
 
-    .nav-btn.left { left: 12px; }
-    .nav-btn.right { right: 12px; }
+    .nav-btn.left{ left: 12px; }
+    .nav-btn.right{ right: 12px; }
 
     .page-indicator{
       position: absolute;
@@ -247,9 +247,9 @@
         max-width: 92vw;
       }
 
-      .nav-btn.left { left: 8px; }
-      .nav-btn.right { right: 8px; }
-      .nav-btn { background: rgba(0, 0, 0, 0.35); }
+      .nav-btn.left{ left: 8px; }
+      .nav-btn.right{ right: 8px; }
+      .nav-btn{ background: rgba(0, 0, 0, 0.35); }
     }
 
     .code-wrap{
@@ -453,6 +453,7 @@
 
       div.appendChild(img);
       div.appendChild(cap);
+
       div.onclick = () => openLightbox(index, 0);
 
       div.dataset.index = String(index);
@@ -473,7 +474,6 @@
 
     function layoutRows(){
       const isNarrow = window.matchMedia("(max-width: 900px)").matches;
-
       gallery.innerHTML = "";
 
       if(isNarrow){
@@ -491,12 +491,7 @@
       }
 
       const galleryWidth = gallery.clientWidth;
-
       const gap = 34;
-      const maxRowHeight = 420;
-      const minRowHeight = 220;
-
-      let iconoclastRowHeight = null;
 
       for(let i = 0; i < itemEls.length; i += 2){
         const row = document.createElement("div");
@@ -521,27 +516,20 @@
         const r2 = parseFloat(b.dataset.ratio || "0");
         if(!r1 || !r2) continue;
 
+        const available = galleryWidth - gap;
+        let h = available / (r1 + r2);
+
         const aIdx = parseInt(a.dataset.index, 10);
         const bIdx = parseInt(b.dataset.index, 10);
         const aName = works[aIdx]?.name || "";
         const bName = works[bIdx]?.name || "";
 
-        const available = galleryWidth - gap;
-        let h = available / (r1 + r2);
-
-        if(h > maxRowHeight) h = maxRowHeight;
-        if(h < minRowHeight) h = minRowHeight;
-
-        const isIconoclastRow = (aName === "Iconoclast" || bName === "Iconoclast");
-        if(isIconoclastRow) iconoclastRowHeight = h;
-
         const isPosterRow =
           aName === "Good Mourning America/Shoot Here!" ||
           bName === "Good Mourning America/Shoot Here!";
 
-        if(isPosterRow && iconoclastRowHeight !== null){
-          h = iconoclastRowHeight; /* match Iconoclast row height */
-        }
+        /* ONLY shrink the political poster row */
+        if (isPosterRow) h = Math.min(h, 180);
 
         const w1 = h * r1;
         const w2 = h * r2;
@@ -551,7 +539,6 @@
 
         img1.style.height = h + "px";
         img2.style.height = h + "px";
-
         img1.style.width = w1 + "px";
         img2.style.width = w2 + "px";
       }
