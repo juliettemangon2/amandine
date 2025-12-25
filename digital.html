@@ -54,14 +54,9 @@
   </style>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *{ margin: 0; padding: 0; box-sizing: border-box; }
 
-    html,
-    body {
+    html, body{
       width: 100%;
       height: 100%;
       font: 400 15px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -71,23 +66,25 @@
       text-transform: uppercase;
     }
 
-    .gallery {
-      max-width: 1400px;
+    /* Slightly narrower overall column so everything feels less huge */
+    .gallery{
+      max-width: 1200px; /* was 1400 */
       margin: 0 auto;
       padding: 60px 20px;
       margin-top: 3rem;
     }
 
+    /* More breathing room */
     .gallery-row{
       display: flex;
-      gap: 0.75rem;
+      gap: 34px;          /* was ~12 */
       justify-content: center;
       align-items: flex-start;
       width: 100%;
-      margin-bottom: 22px;
+      margin-bottom: 44px; /* was ~22 */
     }
 
-    .gallery-item {
+    .gallery-item{
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -95,20 +92,19 @@
       flex: 0 0 auto;
     }
 
-    .gallery-item img {
+    .gallery-item img{
       display: block;
       transition: transform 0.2s;
-      border: 0;
       background: #000;
     }
 
-    .gallery-item img:hover {
+    .gallery-item img:hover{
       transform: scale(1.03);
     }
 
-    .caption {
-      margin-top: 10px;
-      font-size: 1.25rem;
+    .caption{
+      margin-top: 12px;
+      font-size: 1.15rem;
       letter-spacing: 0.05em;
       color: #fff;
       text-align: center;
@@ -116,7 +112,7 @@
       text-decoration: none;
     }
 
-    .lightbox {
+    .lightbox{
       display: none;
       position: fixed;
       inset: 0;
@@ -127,11 +123,9 @@
       cursor: zoom-out;
     }
 
-    .lightbox.active {
-      display: block;
-    }
+    .lightbox.active{ display: block; }
 
-    .lightbox-content {
+    .lightbox-content{
       max-width: 1600px;
       margin: 0 auto;
       display: flex;
@@ -142,14 +136,14 @@
       cursor: default;
     }
 
-    .lightbox-media {
+    .lightbox-media{
       flex: 1 1 auto;
       position: relative;
       max-width: min(92vw, 1500px);
       width: 100%;
     }
 
-    .lightbox-media img {
+    .lightbox-media img{
       display: block;
       width: auto;
       height: auto;
@@ -164,21 +158,21 @@
       cursor: default;
     }
 
-    .lightbox-meta {
+    .lightbox-meta{
       flex: 0 0 320px;
       max-width: 320px;
       text-align: left;
       cursor: default;
     }
 
-    .lightbox-name {
+    .lightbox-name{
       font-size: 1.25rem;
       font-weight: 800;
       margin-bottom: 10px;
       letter-spacing: 0.06em;
     }
 
-    .lightbox-caption {
+    .lightbox-caption{
       font-size: 1rem;
       line-height: 1.6;
       color: #fff;
@@ -186,7 +180,7 @@
       font-weight: 500;
     }
 
-    .nav-btn {
+    .nav-btn{
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
@@ -207,7 +201,7 @@
     .nav-btn.left { left: 12px; }
     .nav-btn.right { right: 12px; }
 
-    .page-indicator {
+    .page-indicator{
       position: absolute;
       bottom: -32px;
       left: 50%;
@@ -219,10 +213,12 @@
       z-index: 5100;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 900px){
       .gallery-row{
         flex-direction: column;
         align-items: center;
+        gap: 22px;
+        margin-bottom: 36px;
       }
 
       .gallery-item{
@@ -235,21 +231,21 @@
         height: auto;
       }
 
-      .lightbox-content {
+      .lightbox-content{
         flex-direction: column;
         align-items: center;
       }
 
       .lightbox-media,
-      .lightbox-media img {
+      .lightbox-media img{
         max-width: 92vw;
       }
 
-      .lightbox-media img {
+      .lightbox-media img{
         max-height: 70vh;
       }
 
-      .lightbox-meta {
+      .lightbox-meta{
         max-width: 92vw;
       }
 
@@ -446,6 +442,7 @@
     function makeItem(item, index){
       const div = document.createElement("div");
       div.className = "gallery-item";
+
       const thumb = item.type === "stack" ? (item.cover || item.pages[0]) : item.src;
 
       const img = document.createElement("img");
@@ -488,17 +485,21 @@
           row.appendChild(el);
           gallery.appendChild(row);
 
-          const img = el.querySelector("img");
-          img.style.height = "auto";
-          img.style.width = "100%";
+          const im = el.querySelector("img");
+          im.style.height = "auto";
+          im.style.width = "100%";
         });
         return;
       }
 
       const galleryWidth = gallery.clientWidth;
-      const gap = 12;
-      const maxRowHeight = 520;
-      const minRowHeight = 260;
+
+      /* bigger gap + slightly smaller rows */
+      const gap = 34;
+
+      /* make everything slightly smaller overall */
+      const maxRowHeight = 420;  /* was 520 */
+      const minRowHeight = 220;  /* was 260 */
 
       for(let i = 0; i < itemEls.length; i += 2){
         const row = document.createElement("div");
@@ -516,7 +517,7 @@
         if(!b){
           const imgA = a.querySelector("img");
           imgA.style.height = "auto";
-          imgA.style.width = "80%";
+          imgA.style.width = "70%";
           continue;
         }
 
@@ -525,10 +526,22 @@
         if(!r1 || !r2) continue;
 
         const available = galleryWidth - gap;
+
         let h = available / (r1 + r2);
 
         if(h > maxRowHeight) h = maxRowHeight;
         if(h < minRowHeight) h = minRowHeight;
+
+        /* special case: political posters row should never be huge */
+        const aIdx = parseInt(a.dataset.index, 10);
+        const bIdx = parseInt(b.dataset.index, 10);
+        const aName = works[aIdx]?.name || "";
+        const bName = works[bIdx]?.name || "";
+        const hasPosters =
+          aName === "Good Mourning America/Shoot Here!" ||
+          bName === "Good Mourning America/Shoot Here!";
+
+        if(hasPosters) h = Math.min(h, 280);
 
         const w1 = h * r1;
         const w2 = h * r2;
