@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Digital Work | Amandine Mangon</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
-    .bar{
+    .bar {
       position: sticky;
       top: 0;
-      z-index: 6000;
+      z-index: 3000;
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -17,7 +18,7 @@
       background: #000;
     }
 
-    .home-btn{
+    .home-btn {
       text-decoration: none;
       font-weight: 700;
       font-size: .8rem;
@@ -28,8 +29,13 @@
       border: none;
     }
 
-    nav.tabs{ display: flex; gap: 16px; align-items: center; }
-    nav.tabs a{
+    nav.tabs {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    nav.tabs a {
       text-decoration: none;
       color: #fff;
       opacity: .8;
@@ -38,8 +44,12 @@
       font-weight: 700;
       letter-spacing: .04em;
     }
-    nav.tabs a[aria-current="page"]{ opacity: 1; }
-    nav.tabs a[aria-current="page"]::after{
+
+    nav.tabs a[aria-current="page"] {
+      opacity: 1;
+    }
+
+    nav.tabs a[aria-current="page"]::after {
       content: "";
       position: absolute;
       left: 0;
@@ -49,14 +59,24 @@
       background: #fff;
     }
 
-    .section{ display: none; }
-    .section.active{ display: block; }
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
   </style>
 
   <style>
-    *{ margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    html, body{
+    html,
+    body {
       width: 100%;
       height: 100%;
       font: 400 15px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -66,43 +86,52 @@
       text-transform: uppercase;
     }
 
-    .gallery{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 60px 20px;
-      margin-top: 3rem;
-    }
-
-    .gallery-row{
+    .gallery {
       display: flex;
-      gap: 34px;
       justify-content: center;
-      align-items: flex-start;
-      width: 100%;
-      margin-bottom: 44px;
+      gap: 0.75rem;
+      padding: 60px 20px;
+      flex-wrap: wrap;
     }
 
-    .gallery-item{
+    .gallery-item {
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
-      flex: 0 0 auto;
     }
 
-    .gallery-item img{
-      display: block;
+    .gallery img {
+      height: 500px;
+      width: auto;
       transition: transform 0.2s;
-      background: #000;
+      margin: 0.5rem;
     }
 
-    .gallery-item img:hover{
+    .gallery img:hover {
       transform: scale(1.03);
     }
 
-    .caption{
-      margin-top: 12px;
-      font-size: 1.15rem;
+    .gallery {
+      max-width: 1400px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 40px 10px;
+      margin: 0 auto;
+      margin-top: 3rem;
+    }
+
+    .gallery img[alt="Zaha Hadid"],
+    .gallery img[alt="Transit Garden"] {
+      height: 430px;
+    }
+
+    .caption {
+      margin-top: 5px;
+      font-size: 1.25rem;
       letter-spacing: 0.05em;
       color: #fff;
       text-align: center;
@@ -110,67 +139,60 @@
       text-decoration: none;
     }
 
-    .lightbox{
+    .lightbox {
       display: none;
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.92);
-      z-index: 5000;
+      z-index: 2000;
       padding: 30px;
       overflow: auto;
-      cursor: zoom-out;
+      padding: 80px 30px 30px 30px;
     }
 
-    .lightbox.active{ display: block; }
+    .lightbox.active {
+      display: block;
+    }
 
-    .lightbox-content{
-      max-width: 1600px;
-      margin: 0 auto;
+    .lightbox-content {
+      max-width: 1300px;
+      margin: 60px auto 0 auto;
       display: flex;
       gap: 24px;
       align-items: flex-start;
       justify-content: center;
-      padding-top: 70px;
-      cursor: default;
     }
 
-    .lightbox-media{
-      flex: 1 1 auto;
+    .lightbox-media {
+      flex: 0 1 auto;
+      max-width: 65vw;
       position: relative;
-      max-width: min(92vw, 1500px);
-      width: 100%;
     }
 
-    .lightbox-media img{
+    .lightbox-media img {
       display: block;
       width: auto;
       height: auto;
-      max-width: 100%;
-      max-height: calc(100vh - 120px);
+      max-width: 65vw;
+      max-height: 90vh;
       object-fit: contain;
-      border: 1px solid #fff;
       background: #000;
-      position: relative;
-      z-index: 5050;
-      margin: 0 auto;
-      cursor: default;
     }
 
-    .lightbox-meta{
-      flex: 0 0 320px;
-      max-width: 320px;
+    .lightbox-meta {
+      flex: 0 0 28vw;
+      max-width: 28vw;
       text-align: left;
-      cursor: default;
     }
 
-    .lightbox-name{
+    .lightbox-name {
       font-size: 1.25rem;
       font-weight: 800;
       margin-bottom: 10px;
       letter-spacing: 0.06em;
     }
 
-    .lightbox-caption{
+    .lightbox-caption {
       font-size: 1rem;
       line-height: 1.6;
       color: #fff;
@@ -178,28 +200,21 @@
       font-weight: 500;
     }
 
-    .nav-btn{
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 2.2rem;
-      background: rgba(0, 0, 0, 0.45);
-      border: 1px solid #fff;
+    .close-btn {
+      position: fixed;
+      top: 20px;
+      right: 30px;
+      font-size: 2rem;
       color: #fff;
-      width: 52px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       cursor: pointer;
+      z-index: 2100;
       user-select: none;
-      z-index: 5100;
     }
 
-    .nav-btn.left{ left: 12px; }
-    .nav-btn.right{ right: 12px; }
 
-    .page-indicator{
+
+
+    .page-indicator {
       position: absolute;
       bottom: -32px;
       left: 50%;
@@ -208,73 +223,156 @@
       background: rgba(255, 255, 255, 0.08);
       padding: 6px 10px;
       border: 1px solid #fff;
-      z-index: 5100;
     }
 
-    @media (max-width: 900px){
-      .gallery-row{
-        flex-direction: column;
-        align-items: center;
-        gap: 22px;
-        margin-bottom: 36px;
-      }
-
-      .gallery-item{
-        width: 100%;
-        max-width: 92vw;
-      }
-
-      .gallery-item img{
-        width: 100%;
-        height: auto;
-      }
-
-      .lightbox-content{
+    @media (max-width: 900px) {
+      .lightbox-content {
         flex-direction: column;
         align-items: center;
       }
 
       .lightbox-media,
-      .lightbox-media img{
+      .lightbox-media img {
         max-width: 92vw;
       }
 
-      .lightbox-media img{
+      .lightbox-media img {
         max-height: 70vh;
       }
 
-      .lightbox-meta{
+      .lightbox-meta {
         max-width: 92vw;
       }
 
-      .nav-btn.left{ left: 8px; }
-      .nav-btn.right{ right: 8px; }
-      .nav-btn{ background: rgba(0, 0, 0, 0.35); }
+
     }
 
-    .code-wrap{
+    body.lightbox-open .bar {
+      display: none;
+    }
+
+    .lightbox {
+      z-index: 5000;
+    }
+
+
+
+    .lightbox-media img {
+      position: relative;
+      z-index: 5100;
+    }
+
+    /* CODE TAB: embed final project at 80% */
+    .code-wrap {
       width: 100%;
       height: calc(100vh - 56px);
       overflow: hidden;
       background: #000;
     }
-    .code-scale{
+
+    .code-scale {
       width: 125%;
       height: 125%;
       transform: scale(0.75);
       transform-origin: top left;
     }
-    .code-iframe{
+
+    .code-iframe {
       width: 100%;
       height: 100%;
       border: 0;
       display: block;
       background: #000;
     }
+
+    /* Thumbnail column */
+    .thumb-col {
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      width: 100px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding-right: 8px;
+      flex-shrink: 0;
+    }
+
+    .thumb-cell {
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.2s, opacity 0.2s;
+      opacity: 0.6;
+    }
+
+    .thumb-cell:hover {
+      opacity: 1;
+    }
+
+    .thumb-cell.active {
+      border-color: #fff;
+      opacity: 1;
+    }
+
+    .thumb-cell img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Fix image cropping - use object-fit contain */
+    .lightbox-media img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 60vw;
+      max-height: 90vh;
+      object-fit: contain;
+      background: #000;
+    }
+
+    /* Adjust lightbox content layout */
+    .lightbox-content {
+      max-width: 95vw;
+      margin: 0 auto;
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 900px) {
+      .thumb-col {
+        flex-direction: row;
+        width: 100%;
+        max-width: 92vw;
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding-right: 0;
+        padding-bottom: 8px;
+      }
+
+      .thumb-cell {
+        flex-shrink: 0;
+        width: 60px;
+      }
+
+      .lightbox-content {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .lightbox-media img {
+        max-width: 92vw;
+        max-height: 60vh;
+      }
+    }
   </style>
 </head>
 
 <body>
+
   <header class="bar">
     <a class="home-btn" href="index.html">HOME</a>
     <nav class="tabs" role="tablist">
@@ -286,13 +384,12 @@
   <section id="digitalSection" class="section active">
     <div class="gallery" id="gallery"></div>
 
-    <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightbox" id="lightbox">
+      <div class="close-btn" id="closeBtn">&times;</div>
       <div class="lightbox-content">
+        <div class="thumb-col" id="thumbCol"></div>
         <div class="lightbox-media">
-          <div class="nav-btn left" id="prevBtn">&#10094;</div>
           <img id="lightbox-img" src="" alt="Digital work" />
-          <div class="nav-btn right" id="nextBtn">&#10095;</div>
-          <div class="page-indicator" id="pageIndicator" hidden>1 / 1</div>
         </div>
         <div class="lightbox-meta">
           <div class="lightbox-name" id="lightbox-name"></div>
@@ -305,12 +402,9 @@
   <section id="codeSection" class="section">
     <div class="code-wrap">
       <div class="code-scale">
-        <iframe
-          class="code-iframe"
-          src="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-        ></iframe>
+        <iframe class="code-iframe"
+          src="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
   </section>
@@ -373,7 +467,6 @@
           "digital/dean14-15.png",
           "digital/dean16-17.png",
           "digital/dean18-19.png",
-          "digital/deanback.png",
         ],
         caption: "BlueFather Merch; Visual Foundation Studio, NYU.",
       },
@@ -406,12 +499,6 @@
         caption: "Album Cover; Visual Foundation Studio, NYU.",
       },
       {
-        type: "single",
-        name: "Transit Garden",
-        src: "digital/transit garden.png",
-        caption: "Transit Garden Sign; Visual Foundation Studio, NYU.",
-      },
-      {
         type: "stack",
         name: "Good Mourning America/Shoot Here!",
         cover: "digital/goodmourning.png",
@@ -428,128 +515,56 @@
     const lightboxImg = document.getElementById("lightbox-img");
     const lightboxName = document.getElementById("lightbox-name");
     const lightboxCaption = document.getElementById("lightbox-caption");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const pageIndicator = document.getElementById("pageIndicator");
+    const closeBtn = document.getElementById("closeBtn");
+    const thumbCol = document.getElementById("thumbCol");
 
     let currentWorkIndex = -1;
     let currentPageIndex = 0;
 
-    const itemEls = [];
-
-    function makeItem(item, index){
+    // Build gallery thumbnails
+    works.forEach((item, index) => {
       const div = document.createElement("div");
       div.className = "gallery-item";
-
-      const thumb = item.type === "stack" ? (item.cover || item.pages[0]) : item.src;
-
-      const img = document.createElement("img");
-      img.src = thumb;
-      img.alt = item.name;
-
-      const cap = document.createElement("div");
-      cap.className = "caption";
-      cap.textContent = item.name;
-
-      div.appendChild(img);
-      div.appendChild(cap);
-
+      const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
+      div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
       div.onclick = () => openLightbox(index, 0);
-
-      div.dataset.index = String(index);
-      div.dataset.ratio = "";
-
-      img.addEventListener("load", () => {
-        const r = img.naturalWidth && img.naturalHeight ? (img.naturalWidth / img.naturalHeight) : 1;
-        div.dataset.ratio = String(r);
-        layoutRows();
-      });
-
-      return div;
-    }
-
-    works.forEach((item, index) => {
-      itemEls.push(makeItem(item, index));
+      gallery.appendChild(div);
     });
 
-    function layoutRows(){
-      const isNarrow = window.matchMedia("(max-width: 900px)").matches;
-      gallery.innerHTML = "";
-
-      if(isNarrow){
-        itemEls.forEach(el => {
-          const row = document.createElement("div");
-          row.className = "gallery-row";
-          row.appendChild(el);
-          gallery.appendChild(row);
-
-          const im = el.querySelector("img");
-          im.style.height = "auto";
-          im.style.width = "100%";
-        });
+    // Render thumbnail column for stacks
+    function renderThumbColumn(item) {
+      thumbCol.innerHTML = '';
+      if (item.type !== "stack" || item.pages.length <= 1) {
+        thumbCol.style.display = 'none';
         return;
       }
-
-      const galleryWidth = gallery.clientWidth;
-      const gap = 34;
-
-      for(let i = 0; i < itemEls.length; i += 2){
-        const row = document.createElement("div");
-        row.className = "gallery-row";
-
-        const a = itemEls[i];
-        const b = itemEls[i + 1];
-
-        row.appendChild(a);
-        if(b) row.appendChild(b);
-
-        gallery.appendChild(row);
-
-        if(!b){
-          const imgA = a.querySelector("img");
-          imgA.style.height = "auto";
-          imgA.style.width = "70%";
-          continue;
-        }
-
-        const r1 = parseFloat(a.dataset.ratio || "0");
-        const r2 = parseFloat(b.dataset.ratio || "0");
-        if(!r1 || !r2) continue;
-
-        const available = galleryWidth - gap;
-        let h = available / (r1 + r2);
-
-        const aIdx = parseInt(a.dataset.index, 10);
-        const bIdx = parseInt(b.dataset.index, 10);
-        const aName = works[aIdx]?.name || "";
-        const bName = works[bIdx]?.name || "";
-
-        const isPosterRow =
-          aName === "Good Mourning America/Shoot Here!" ||
-          bName === "Good Mourning America/Shoot Here!";
-
-        /* ONLY shrink the political poster row */
-        if (isPosterRow) h = Math.min(h, 180);
-
-        const w1 = h * r1;
-        const w2 = h * r2;
-
-        const img1 = a.querySelector("img");
-        const img2 = b.querySelector("img");
-
-        img1.style.height = h + "px";
-        img2.style.height = h + "px";
-        img1.style.width = w1 + "px";
-        img2.style.width = w2 + "px";
-      }
+      thumbCol.style.display = 'flex';
+      item.pages.forEach((src, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'thumb-cell' + (idx === currentPageIndex ? ' active' : '');
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = `${item.name} page ${idx + 1}`;
+        cell.appendChild(img);
+        cell.addEventListener('click', (e) => {
+          e.stopPropagation();
+          goToPage(idx);
+        });
+        thumbCol.appendChild(cell);
+      });
     }
 
-    window.addEventListener("resize", () => layoutRows());
+    function highlightThumb(idx) {
+      [...thumbCol.children].forEach((cell, i) => {
+        cell.classList.toggle('active', i === idx);
+      });
+      const sel = thumbCol.children[idx];
+      if (sel) sel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
 
     function openLightbox(workIndex, pageIndex = 0) {
       currentWorkIndex = workIndex;
       currentPageIndex = pageIndex;
-
       const item = works[workIndex];
       const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
 
@@ -558,60 +573,48 @@
       lightboxCaption.textContent = item.caption || "";
 
       const isStack = item.type === "stack" && item.pages.length > 1;
-      prevBtn.style.display = isStack ? "flex" : "none";
-      nextBtn.style.display = isStack ? "flex" : "none";
 
-      pageIndicator.hidden = !isStack;
-      if (isStack) pageIndicator.textContent = `${pageIndex + 1} / ${item.pages.length}`;
+      renderThumbColumn(item);
 
       lightbox.classList.add("active");
-      lightbox.setAttribute("aria-hidden", "false");
       document.body.classList.add("lightbox-open");
     }
 
     function closeLightbox() {
       lightbox.classList.remove("active");
-      lightbox.setAttribute("aria-hidden", "true");
       document.body.classList.remove("lightbox-open");
       currentWorkIndex = -1;
     }
 
-    function gotoPrevPage() {
+    function goToPage(idx) {
       const item = works[currentWorkIndex];
       if (item?.type !== "stack") return;
-      currentPageIndex = (currentPageIndex - 1 + item.pages.length) % item.pages.length;
+      if (idx < 0) idx = item.pages.length - 1;
+      if (idx >= item.pages.length) idx = 0;
+      currentPageIndex = idx;
       lightboxImg.src = item.pages[currentPageIndex];
-      pageIndicator.textContent = `${currentPageIndex + 1} / ${item.pages.length}`;
+      highlightThumb(currentPageIndex);
+    }
+
+    function gotoPrevPage() {
+      goToPage(currentPageIndex - 1);
     }
 
     function gotoNextPage() {
-      const item = works[currentWorkIndex];
-      if (item?.type !== "stack") return;
-      currentPageIndex = (currentPageIndex + 1) % item.pages.length;
-      lightboxImg.src = item.pages[currentPageIndex];
-      pageIndicator.textContent = `${currentPageIndex + 1} / ${item.pages.length}`;
+      goToPage(currentPageIndex + 1);
     }
 
-    prevBtn.onclick = gotoPrevPage;
-    nextBtn.onclick = gotoNextPage;
-
-    lightbox.addEventListener("click", closeLightbox);
-
-    document.querySelector(".lightbox-media").addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
-
-    document.querySelector(".lightbox-meta").addEventListener("click", (e) => {
-      e.stopPropagation();
-    });
+    closeBtn.onclick = closeLightbox;
+    lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
 
     document.addEventListener("keydown", (e) => {
-      if (!lightbox.classList.contains("active")) return;
+      if (currentWorkIndex === -1) return;
       if (e.key === "Escape") closeLightbox();
       if (e.key === "ArrowLeft") gotoPrevPage();
       if (e.key === "ArrowRight") gotoNextPage();
     });
 
+    // Tab switching
     const tabLinks = document.querySelectorAll("nav.tabs a");
     const digitalSection = document.getElementById("digitalSection");
     const codeSection = document.getElementById("codeSection");
@@ -648,8 +651,8 @@
 
     window.addEventListener("hashchange", () => setActiveTab(currentTab()));
     setActiveTab(currentTab());
-
-    layoutRows();
   </script>
+
 </body>
+
 </html>
