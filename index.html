@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <title>Amandine Mangon</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * {
       margin: 0;
@@ -72,31 +73,68 @@
     .link:hover {
       background: #fff;
       color: #000;
-   .inquiries-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #fff;
-  color: #000;
-  padding: 12px 28px;
-  font-weight: bold;
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
+    }
 
-  display: inline-block;
-  z-index: 999;
-}
+    .inquiries-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #fff;
+      color: #000;
+      padding: 12px 28px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
 
+      display: inline-block;
+      z-index: 999;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .statement {
+        font-size: 1.1rem;
+        padding: 0 1.5rem;
+      }
+
+      .link {
+        display: block;
+        margin: 1rem;
+        margin-left: 5rem;
+         margin-right: 5rem;
+      }
+      .inquiries-btn{
+        margin-bottom: 1rem;
+        
+      }
+
+     
+
+      .wrapper {
+        transform: none;
+      }
+
+      body {
+        align-items: flex-start;
+        padding-top: 15vh;
+      }
+    }
   </style>
 </head>
 
 <body>
   <div class="wrapper">
     <h1>Amandine Mangon</h1>
-    <p class="statement">Exploring memory, relationships, and visual story telling. From hand-cut postcards to experimental design works at NYU’s Integrated Design and Media program, each project plays with tension between image and language. Some pieces are intimate gifts, others reflect girlhood, reconstruction, and the small moments that build a life. All are poetic, a little strange, and always personal. </p>
+    <p class="statement">Exploring memory, relationships, and visual story telling. From hand-cut postcards to
+      experimental design works at NYU’s Integrated Design and Media program, each project plays with tension between
+      image and language. Some pieces are intimate gifts, others reflect girlhood, reconstruction, and the small moments
+      that build a life. All are poetic, a little strange, and always personal. </p>
     <a class="link" href="collage.html">Collage</a>
     <a class="link" href="photography.html">Photography</a>
     <a class="link" href="digital.html">Digital</a>

@@ -368,6 +368,30 @@
         max-height: 60vh;
       }
     }
+
+    @media (max-width: 600px) {
+      nav.tabs a[data-tab="code"] {
+        display: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .gallery img {
+        height: auto;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .gallery img[alt="Zaha Hadid"],
+      .gallery img[alt="Transit Garden"] {
+        height: auto;
+      }
+
+      .gallery {
+        margin-top: 1rem;
+        padding: 20px 10px;
+      }
+    }
   </style>
 </head>
 
