@@ -16,7 +16,7 @@
     html,
     body {
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       background: #000;
       color: #fff;
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -107,14 +107,15 @@
         display: block;
         margin: 1rem;
         margin-left: 5rem;
-         margin-right: 5rem;
-      }
-      .inquiries-btn{
-        margin-bottom: 1rem;
-        
+        margin-right: 5rem;
       }
 
-     
+      .inquiries-btn {
+        margin-bottom: 1rem;
+
+      }
+
+
 
       .wrapper {
         transform: none;
@@ -124,6 +125,47 @@
         align-items: flex-start;
         padding-top: 15vh;
       }
+    }
+
+    @media (max-width: 600px) {
+
+      /* Let content determine height and allow scrolling */
+      body {
+        display: block;
+        padding: 12vh 0 2.5rem;
+        /* top breathing room, bottom breathing room */
+      }
+
+      .wrapper {
+        transform: none;
+        padding: 0 1.5rem;
+        text-align: center;
+      }
+
+      .link {
+        display: block;
+        margin: 0.9rem auto;
+        width: min(320px, 100%);
+      }
+
+      /* Make inquiries part of the flow (no overlap) */
+      .inquiries-btn {
+        position: static;
+        display: block;
+        width: min(320px, 100%);
+        margin: 1.2rem auto 0;
+        text-align: center;
+      }
+
+      /* Either hide the footer on mobile OR make it normal-flow */
+      footer {
+        position: static;
+        margin-top: 2rem;
+      }
+
+      /* If you truly want it hidden on mobile, uncomment:
+  footer { display: none; }
+  */
     }
   </style>
 </head>
