@@ -211,9 +211,6 @@
       user-select: none;
     }
 
-
-
-
     .page-indicator {
       position: absolute;
       bottom: -32px;
@@ -243,8 +240,6 @@
       .lightbox-meta {
         max-width: 92vw;
       }
-
-
     }
 
     body.lightbox-open .bar {
@@ -255,14 +250,11 @@
       z-index: 5000;
     }
 
-
-
     .lightbox-media img {
       position: relative;
       z-index: 5100;
     }
 
-    /* CODE TAB: embed final project at 80% */
     .code-wrap {
       width: 100%;
       height: calc(100vh - 56px);
@@ -285,7 +277,6 @@
       background: #000;
     }
 
-    /* Thumbnail column */
     .thumb-col {
       display: none;
       flex-direction: column;
@@ -319,7 +310,6 @@
       display: block;
     }
 
-    /* Fix image cropping - use object-fit contain */
     .lightbox-media img {
       display: block;
       width: auto;
@@ -330,7 +320,6 @@
       background: #000;
     }
 
-    /* Adjust lightbox content layout */
     .lightbox-content {
       max-width: 95vw;
       margin: 0 auto;
@@ -340,7 +329,14 @@
       justify-content: center;
     }
 
-    /* Mobile adjustments */
+    .blank-tab {
+      min-height: calc(100vh - 56px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
     @media (max-width: 900px) {
       .thumb-col {
         flex-direction: row;
@@ -401,6 +397,7 @@
     <a class="home-btn" href="index.html">HOME</a>
     <nav class="tabs" role="tablist">
       <a href="#digital" data-tab="digital">Digital</a>
+      <a href="#3d" data-tab="3d">3D</a>
       <a href="#code" data-tab="code">Code</a>
     </nav>
   </header>
@@ -421,6 +418,10 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <section id="threeDSection" class="section">
+    <div class="blank-tab"></div>
   </section>
 
   <section id="codeSection" class="section">
@@ -545,7 +546,6 @@
     let currentWorkIndex = -1;
     let currentPageIndex = 0;
 
-    // Build gallery thumbnails
     works.forEach((item, index) => {
       const div = document.createElement("div");
       div.className = "gallery-item";
@@ -555,7 +555,6 @@
       gallery.appendChild(div);
     });
 
-    // Render thumbnail column for stacks
     function renderThumbColumn(item) {
       thumbCol.innerHTML = '';
       if (item.type !== "stack" || item.pages.length <= 1) {
@@ -595,8 +594,6 @@
       lightboxImg.src = src;
       lightboxName.textContent = item.name;
       lightboxCaption.textContent = item.caption || "";
-
-      const isStack = item.type === "stack" && item.pages.length > 1;
 
       renderThumbColumn(item);
 
@@ -638,9 +635,9 @@
       if (e.key === "ArrowRight") gotoNextPage();
     });
 
-    // Tab switching
     const tabLinks = document.querySelectorAll("nav.tabs a");
     const digitalSection = document.getElementById("digitalSection");
+    const threeDSection = document.getElementById("threeDSection");
     const codeSection = document.getElementById("codeSection");
 
     function setActiveTab(tab) {
@@ -649,19 +646,23 @@
         else a.removeAttribute("aria-current");
       });
 
+      digitalSection.classList.remove("active");
+      threeDSection.classList.remove("active");
+      codeSection.classList.remove("active");
+      closeLightbox();
+
       if (tab === "code") {
-        digitalSection.classList.remove("active");
         codeSection.classList.add("active");
-        closeLightbox();
+      } else if (tab === "3d") {
+        threeDSection.classList.add("active");
       } else {
-        codeSection.classList.remove("active");
         digitalSection.classList.add("active");
       }
     }
 
     function currentTab() {
       const h = (location.hash || "#digital").slice(1).toLowerCase();
-      return h === "code" ? "code" : "digital";
+      return h === "code" || h === "3d" ? h : "digital";
     }
 
     tabLinks.forEach(a => {
@@ -678,5 +679,4 @@
   </script>
 
 </body>
-
 </html>
