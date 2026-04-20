@@ -393,14 +393,13 @@
 
 <body>
 
-//  <header class="bar">
-//    <a class="home-btn" href="index.html">HOME</a>
-  //  <nav class="tabs" role="tablist">
-  //    <a href="#digital" data-tab="digital">Digital</a>
-//      <a href="#3d" data-tab="3d">3D</a>
- //     <a href="#code" data-tab="code">Code</a>
- //   </nav>
-//  </header>
+ <header class="bar">
+ <a class="home-btn" href="index.html">HOME</a>
+    <nav class="tabs" role="tablist">
+      <a href="#digital" data-tab="digital">Digital</a>
+     <a href="#code" data-tab="code">Code</a>
+   </nav>
+</header>
 
   <section id="digitalSection" class="section active">
     <div class="gallery" id="gallery"></div>
@@ -420,9 +419,6 @@
     </div>
   </section>
 
-  <section id="threeDSection" class="section">
-    <div class="blank-tab"></div>
-  </section>
 
   <section id="codeSection" class="section">
     <div class="code-wrap">
@@ -637,33 +633,29 @@
 
     const tabLinks = document.querySelectorAll("nav.tabs a");
     const digitalSection = document.getElementById("digitalSection");
-    const threeDSection = document.getElementById("threeDSection");
     const codeSection = document.getElementById("codeSection");
 
     function setActiveTab(tab) {
-      tabLinks.forEach(a => {
-        if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
-        else a.removeAttribute("aria-current");
-      });
+  tabLinks.forEach(a => {
+    if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
+  });
 
-      digitalSection.classList.remove("active");
-      threeDSection.classList.remove("active");
-      codeSection.classList.remove("active");
-      closeLightbox();
+  digitalSection.classList.remove("active");
+  codeSection.classList.remove("active");
+  closeLightbox();
 
-      if (tab === "code") {
-        codeSection.classList.add("active");
-      } else if (tab === "3d") {
-        threeDSection.classList.add("active");
-      } else {
-        digitalSection.classList.add("active");
-      }
-    }
+  if (tab === "code") {
+    codeSection.classList.add("active");
+  } else {
+    digitalSection.classList.add("active");
+  }
+}
 
     function currentTab() {
-      const h = (location.hash || "#digital").slice(1).toLowerCase();
-      return h === "code" || h === "3d" ? h : "digital";
-    }
+  const h = (location.hash || "#digital").slice(1).toLowerCase();
+  return h === "code" ? h : "digital";
+}
 
     tabLinks.forEach(a => {
       a.addEventListener("click", e => {
