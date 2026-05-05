@@ -87,11 +87,15 @@
     }
 
     .gallery {
+      max-width: 1400px;
       display: flex;
       justify-content: center;
-      gap: 0.75rem;
-      padding: 60px 20px;
+      align-items: center;
       flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 40px 10px;
+      margin: 0 auto;
+      margin-top: 3rem;
     }
 
     .gallery-item {
@@ -110,18 +114,6 @@
 
     .gallery img:hover {
       transform: scale(1.03);
-    }
-
-    .gallery {
-      max-width: 1400px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      padding: 40px 10px;
-      margin: 0 auto;
-      margin-top: 3rem;
     }
 
     .gallery img[alt="Zaha Hadid"],
@@ -144,10 +136,9 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.92);
-      z-index: 2000;
-      padding: 30px;
-      overflow: auto;
+      z-index: 5000;
       padding: 80px 30px 30px 30px;
+      overflow: auto;
     }
 
     .lightbox.active {
@@ -155,8 +146,8 @@
     }
 
     .lightbox-content {
-      max-width: 1300px;
-      margin: 60px auto 0 auto;
+      max-width: 95vw;
+      margin: 0 auto;
       display: flex;
       gap: 24px;
       align-items: flex-start;
@@ -173,10 +164,12 @@
       display: block;
       width: auto;
       height: auto;
-      max-width: 65vw;
+      max-width: 60vw;
       max-height: 90vh;
       object-fit: contain;
       background: #000;
+      position: relative;
+      z-index: 5100;
     }
 
     .lightbox-meta {
@@ -211,48 +204,8 @@
       user-select: none;
     }
 
-    .page-indicator {
-      position: absolute;
-      bottom: -32px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.9rem;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 6px 10px;
-      border: 1px solid #fff;
-    }
-
-    @media (max-width: 900px) {
-      .lightbox-content {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .lightbox-media,
-      .lightbox-media img {
-        max-width: 92vw;
-      }
-
-      .lightbox-media img {
-        max-height: 70vh;
-      }
-
-      .lightbox-meta {
-        max-width: 92vw;
-      }
-    }
-
     body.lightbox-open .bar {
       display: none;
-    }
-
-    .lightbox {
-      z-index: 5000;
-    }
-
-    .lightbox-media img {
-      position: relative;
-      z-index: 5100;
     }
 
     .code-wrap {
@@ -310,31 +263,69 @@
       display: block;
     }
 
-    .lightbox-media img {
-      display: block;
-      width: auto;
-      height: auto;
-      max-width: 60vw;
-      max-height: 90vh;
-      object-fit: contain;
-      background: #000;
-    }
-
-    .lightbox-content {
-      max-width: 95vw;
-      margin: 0 auto;
-      display: flex;
-      gap: 24px;
-      align-items: flex-start;
-      justify-content: center;
-    }
-
     .blank-tab {
       min-height: calc(100vh - 56px);
       display: flex;
       align-items: center;
       justify-content: center;
       background: #000;
+    }
+
+    /* SOUND PAGE */
+
+    .sound-page {
+      max-width: 900px;
+      margin: 0;
+      padding: 70px 24px 100px 24px;
+      text-align: left;
+    }
+
+    .sound-intro {
+      max-width: 620px;
+      margin-bottom: 55px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      letter-spacing: 0.04em;
+      opacity: 0.85;
+      text-align: left;
+    }
+
+    .sound-list {
+      display: flex;
+      flex-direction: column;
+      gap: 58px;
+      width: 100%;
+    }
+
+    .sound-project {
+      max-width: 700px;
+      text-align: left;
+      border-top: 1px solid rgba(255, 255, 255, 0.35);
+      padding-top: 22px;
+    }
+
+    .sound-project h2 {
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+      font-weight: 800;
+      text-align: left;
+    }
+
+    .sound-project audio {
+      width: 100%;
+      max-width: 620px;
+      margin: 6px 0 12px 0;
+      display: block;
+    }
+
+    .sound-caption {
+      max-width: 620px;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      letter-spacing: 0.04em;
+      opacity: 0.75;
+      text-align: left;
     }
 
     @media (max-width: 900px) {
@@ -359,9 +350,17 @@
         align-items: center;
       }
 
+      .lightbox-media,
       .lightbox-media img {
         max-width: 92vw;
+      }
+
+      .lightbox-media img {
         max-height: 60vh;
+      }
+
+      .lightbox-meta {
+        max-width: 92vw;
       }
     }
 
@@ -369,9 +368,7 @@
       nav.tabs a[data-tab="code"] {
         display: none;
       }
-    }
 
-    @media (max-width: 600px) {
       .gallery img {
         height: auto;
         width: 100%;
@@ -387,19 +384,24 @@
         margin-top: 1rem;
         padding: 20px 10px;
       }
+
+      .sound-page {
+        padding: 45px 18px 90px 18px;
+      }
     }
   </style>
 </head>
 
 <body>
 
- <header class="bar">
- <a class="home-btn" href="index.html">HOME</a>
+  <header class="bar">
+    <a class="home-btn" href="index.html">HOME</a>
     <nav class="tabs" role="tablist">
       <a href="#digital" data-tab="digital">Digital</a>
-     <a href="#code" data-tab="code">Code</a>
-   </nav>
-</header>
+      <a href="#code" data-tab="code">Code</a>
+      <a href="#sound" data-tab="sound">Sound</a>
+    </nav>
+  </header>
 
   <section id="digitalSection" class="section active">
     <div class="gallery" id="gallery"></div>
@@ -419,15 +421,72 @@
     </div>
   </section>
 
-
   <section id="codeSection" class="section">
     <div class="code-wrap">
       <div class="code-scale">
         <iframe class="code-iframe"
-          src="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/" loading="lazy"
+          src="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/"
+          loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
+  </section>
+
+  <section id="soundSection" class="section">
+    <main class="sound-page">
+
+      <p class="sound-intro">
+        A SMALL COLLECTION OF SOUND BASED PROJECTS, AUDIO EXPERIMENTS, AND EDITED PIECES.
+      </p>
+
+      <div class="sound-list">
+
+        <article class="sound-project">
+          <h2>COLLAGE TUTORIAL</h2>
+          <audio controls>
+            <source src="sound/project-01.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          <p class="sound-caption">
+            HOW TO MAKE A COLLAGE.
+          </p>
+        </article>
+
+        <article class="sound-project">
+          <h2>MAMMIE</h2>
+          <audio controls>
+            <source src="sound/project-02.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          <p class="sound-caption">
+            SNIPETS FROM MY GRANDMOTHER'S VOICEMAILS. INSPIRATION: "WAVES" FRANK OCEAN.
+          </p>
+        </article>
+
+        <article class="sound-project">
+          <h2>SOUND ART</h2>
+          <audio controls>
+            <source src="sound/project-03.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          <p class="sound-caption">
+            DAILY LIFE. 
+          </p>
+        </article>
+
+        <article class="sound-project">
+          <h2>OBSESSION</h2>
+          <audio controls>
+            <source src="sound/project-04.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          <p class="sound-caption">
+            SOUND DESIGN FOR SERGE GAINSBOURG'S "HISTOIRE DE MELODY NELSON".
+          </p>
+        </article>
+
+      </div>
+    </main>
   </section>
 
   <script>
@@ -557,7 +616,9 @@
         thumbCol.style.display = 'none';
         return;
       }
+
       thumbCol.style.display = 'flex';
+
       item.pages.forEach((src, idx) => {
         const cell = document.createElement('div');
         cell.className = 'thumb-cell' + (idx === currentPageIndex ? ' active' : '');
@@ -577,6 +638,7 @@
       [...thumbCol.children].forEach((cell, i) => {
         cell.classList.toggle('active', i === idx);
       });
+
       const sel = thumbCol.children[idx];
       if (sel) sel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
@@ -584,6 +646,7 @@
     function openLightbox(workIndex, pageIndex = 0) {
       currentWorkIndex = workIndex;
       currentPageIndex = pageIndex;
+
       const item = works[workIndex];
       const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
 
@@ -606,8 +669,10 @@
     function goToPage(idx) {
       const item = works[currentWorkIndex];
       if (item?.type !== "stack") return;
+
       if (idx < 0) idx = item.pages.length - 1;
       if (idx >= item.pages.length) idx = 0;
+
       currentPageIndex = idx;
       lightboxImg.src = item.pages[currentPageIndex];
       highlightThumb(currentPageIndex);
@@ -622,7 +687,10 @@
     }
 
     closeBtn.onclick = closeLightbox;
-    lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
+
+    lightbox.onclick = (e) => {
+      if (e.target === lightbox) closeLightbox();
+    };
 
     document.addEventListener("keydown", (e) => {
       if (currentWorkIndex === -1) return;
@@ -634,28 +702,32 @@
     const tabLinks = document.querySelectorAll("nav.tabs a");
     const digitalSection = document.getElementById("digitalSection");
     const codeSection = document.getElementById("codeSection");
+    const soundSection = document.getElementById("soundSection");
 
     function setActiveTab(tab) {
-  tabLinks.forEach(a => {
-    if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
-    else a.removeAttribute("aria-current");
-  });
+      tabLinks.forEach(a => {
+        if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
+        else a.removeAttribute("aria-current");
+      });
 
-  digitalSection.classList.remove("active");
-  codeSection.classList.remove("active");
-  closeLightbox();
+      digitalSection.classList.remove("active");
+      codeSection.classList.remove("active");
+      soundSection.classList.remove("active");
+      closeLightbox();
 
-  if (tab === "code") {
-    codeSection.classList.add("active");
-  } else {
-    digitalSection.classList.add("active");
-  }
-}
+      if (tab === "code") {
+        codeSection.classList.add("active");
+      } else if (tab === "sound") {
+        soundSection.classList.add("active");
+      } else {
+        digitalSection.classList.add("active");
+      }
+    }
 
     function currentTab() {
-  const h = (location.hash || "#digital").slice(1).toLowerCase();
-  return h === "code" ? h : "digital";
-}
+      const h = (location.hash || "#digital").slice(1).toLowerCase();
+      return h === "code" || h === "sound" ? h : "digital";
+    }
 
     tabLinks.forEach(a => {
       a.addEventListener("click", e => {
