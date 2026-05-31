@@ -45,10 +45,6 @@
       letter-spacing: .04em;
     }
 
-    nav.tabs a[aria-current="page"] {
-      opacity: 1;
-    }
-
     nav.tabs a[aria-current="page"]::after {
       content: "";
       position: absolute;
@@ -120,16 +116,6 @@
     .gallery img[alt="Zaha Hadid"],
     .gallery img[alt="Transit Garden"] {
       height: 430px;
-    }
-
-    .caption {
-      margin-top: 5px;
-      font-size: 1.25rem;
-      letter-spacing: 0.05em;
-      color: #fff;
-      text-align: center;
-      font-weight: bold;
-      text-decoration: none;
     }
 
     .lightbox {
@@ -210,39 +196,6 @@
       display: none;
     }
 
-    .code-page {
-      min-height: calc(100vh - 56px);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding-top: 100px;
-      background: #000;
-    }
-
-    .code-options {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .code-button {
-      text-decoration: none;
-      font-weight: 700;
-      font-size: .8rem;
-      letter-spacing: .06em;
-      padding: 12px 20px;
-      background: #fff;
-      color: #000;
-      border: none;
-      transition: opacity .2s;
-    }
-
-    .code-button:hover {
-      opacity: .8;
-    }
-
     .thumb-col {
       display: none;
       flex-direction: column;
@@ -276,31 +229,58 @@
       display: block;
     }
 
-    .blank-tab {
+    .code-page {
       min-height: calc(100vh - 56px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
       background: #000;
     }
 
-    /* SOUND PAGE */
+    .code-options {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 20px 20px 20px;
+    }
+
+    .code-button {
+      text-decoration: none;
+      font-weight: 700;
+      font-size: .8rem;
+      letter-spacing: .06em;
+      padding: 12px 20px;
+      background: #fff;
+      color: #000;
+      border: none;
+      cursor: pointer;
+    }
+
+    .code-wrap {
+      width: 100%;
+      height: calc(100vh - 130px);
+      overflow: hidden;
+      background: #000;
+    }
+
+    .code-scale {
+      width: 125%;
+      height: 125%;
+      transform: scale(0.75);
+      transform-origin: top left;
+    }
+
+    .code-iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #000;
+    }
 
     .sound-page {
       max-width: 1000px;
       margin: 0 auto;
       padding: 80px 24px 120px 24px;
-      text-align: center;
-      color: #fff;
-    }
-
-    .sound-intro {
-      max-width: 720px;
-      margin: 0 auto 65px auto;
-      font-size: 1.1rem;
-      line-height: 1.7;
-      letter-spacing: 0.05em;
-      opacity: 1;
       text-align: center;
       color: #fff;
     }
@@ -335,7 +315,21 @@
       max-width: 760px;
       margin: 10px auto 18px auto;
       display: block;
-      color: #fff;
+      filter: invert(1);
+      opacity: 0.85;
+    }
+
+    .sound-project audio::-webkit-media-controls-panel {
+      background: #000;
+      border-radius: 0;
+    }
+
+    .sound-project audio::-webkit-media-controls-play-button,
+    .sound-project audio::-webkit-media-controls-current-time-display,
+    .sound-project audio::-webkit-media-controls-time-remaining-display,
+    .sound-project audio::-webkit-media-controls-timeline,
+    .sound-project audio::-webkit-media-controls-volume-slider {
+      filter: invert(1);
     }
 
     .sound-video {
@@ -395,10 +389,6 @@
     }
 
     @media (max-width: 600px) {
-      nav.tabs a[data-tab="code"] {
-        display: none;
-      }
-
       .gallery img {
         height: auto;
         width: 100%;
@@ -427,7 +417,8 @@
   <header class="bar">
     <a class="home-btn" href="index.html">HOME</a>
     <nav class="tabs" role="tablist">
-      <a href="#digital" data-tab="digital">Digital</a>
+      <a href="#digital" data-tab="digital">Graphic Design</a>
+      <a href="#model" data-tab="model">3D</a>
       <a href="#code" data-tab="code">Code</a>
       <a href="#sound" data-tab="sound">Sound</a>
     </nav>
@@ -441,7 +432,7 @@
       <div class="lightbox-content">
         <div class="thumb-col" id="thumbCol"></div>
         <div class="lightbox-media">
-          <img id="lightbox-img" src="" alt="Digital work" />
+          <img id="lightbox-img" src="" alt="Graphic design work" />
         </div>
         <div class="lightbox-meta">
           <div class="lightbox-name" id="lightbox-name"></div>
@@ -451,23 +442,48 @@
     </div>
   </section>
 
+  <section id="modelSection" class="section">
+    <div class="gallery" id="modelGallery"></div>
+
+    <div class="lightbox" id="modelLightbox">
+      <div class="close-btn" id="modelCloseBtn">&times;</div>
+      <div class="lightbox-content">
+        <div class="lightbox-media">
+          <img id="model-lightbox-img" src="" alt="3D model work" />
+        </div>
+        <div class="lightbox-meta">
+          <div class="lightbox-name" id="model-lightbox-name"></div>
+          <div class="lightbox-caption" id="model-lightbox-caption"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section id="codeSection" class="section">
     <main class="code-page">
+
       <div class="code-options">
-
-        <a class="code-button"
-          href="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/"
-          target="_blank">
+        <button class="code-button" onclick="showCodeProject('custom')">
           CUSTOM COLLAGE
-        </a>
+        </button>
 
-        <a class="code-button"
-          href="https://amandinemangon.github.io/Exquisite-Corpse/"
-          target="_blank">
+        <button class="code-button" onclick="showCodeProject('corpse')">
           EXQUISITE CORPSE
-        </a>
-
+        </button>
       </div>
+
+      <div class="code-wrap">
+        <div class="code-scale">
+          <iframe
+            id="codeFrame"
+            class="code-iframe"
+            src="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+
     </main>
   </section>
 
@@ -616,6 +632,20 @@
       },
     ];
 
+    const modelWorks = [
+    {
+        type: "stack",
+        name: "Room",
+        cover: "3d/amandine_final_image_1.jpg",
+        pages: [
+          "3d/amandine_final_image_1.jpg",
+          "3d/amandine_final_image_2.jpg",
+          "3d/amandine_final_image_3.jpg"
+        ],
+        caption: "Maya Render; 3D Modeling, NYU.",
+      },
+    ];
+
     const gallery = document.getElementById("gallery");
     const lightbox = document.getElementById("lightbox");
     const lightboxImg = document.getElementById("lightbox-img");
@@ -623,6 +653,13 @@
     const lightboxCaption = document.getElementById("lightbox-caption");
     const closeBtn = document.getElementById("closeBtn");
     const thumbCol = document.getElementById("thumbCol");
+
+    const modelGallery = document.getElementById("modelGallery");
+    const modelLightbox = document.getElementById("modelLightbox");
+    const modelLightboxImg = document.getElementById("model-lightbox-img");
+    const modelLightboxName = document.getElementById("model-lightbox-name");
+    const modelLightboxCaption = document.getElementById("model-lightbox-caption");
+    const modelCloseBtn = document.getElementById("modelCloseBtn");
 
     let currentWorkIndex = -1;
     let currentPageIndex = 0;
@@ -634,6 +671,14 @@
       div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
       div.onclick = () => openLightbox(index, 0);
       gallery.appendChild(div);
+    });
+
+    modelWorks.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "gallery-item";
+      div.innerHTML = `<img src="${item.src}" alt="${item.name}">`;
+      div.onclick = () => openModelLightbox(item);
+      modelGallery.appendChild(div);
     });
 
     function renderThumbColumn(item) {
@@ -686,10 +731,24 @@
       document.body.classList.add("lightbox-open");
     }
 
+    function openModelLightbox(item) {
+      modelLightboxImg.src = item.src;
+      modelLightboxName.textContent = item.name;
+      modelLightboxCaption.textContent = item.caption || "";
+      modelLightbox.classList.add("active");
+      document.body.classList.add("lightbox-open");
+    }
+
     function closeLightbox() {
       lightbox.classList.remove("active");
+      modelLightbox.classList.remove("active");
       document.body.classList.remove("lightbox-open");
       currentWorkIndex = -1;
+    }
+
+    function closeModelLightbox() {
+      modelLightbox.classList.remove("active");
+      document.body.classList.remove("lightbox-open");
     }
 
     function goToPage(idx) {
@@ -712,21 +771,39 @@
       goToPage(currentPageIndex + 1);
     }
 
+    function showCodeProject(project) {
+      const frame = document.getElementById("codeFrame");
+
+      if (project === "custom") {
+        frame.src = "https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/";
+      }
+
+      if (project === "corpse") {
+        frame.src = "https://amandinemangon.github.io/Exquisite-Corpse/";
+      }
+    }
+
     closeBtn.onclick = closeLightbox;
+    modelCloseBtn.onclick = closeModelLightbox;
 
     lightbox.onclick = (e) => {
       if (e.target === lightbox) closeLightbox();
     };
 
+    modelLightbox.onclick = (e) => {
+      if (e.target === modelLightbox) closeModelLightbox();
+    };
+
     document.addEventListener("keydown", (e) => {
-      if (currentWorkIndex === -1) return;
       if (e.key === "Escape") closeLightbox();
+      if (currentWorkIndex === -1) return;
       if (e.key === "ArrowLeft") gotoPrevPage();
       if (e.key === "ArrowRight") gotoNextPage();
     });
 
     const tabLinks = document.querySelectorAll("nav.tabs a");
     const digitalSection = document.getElementById("digitalSection");
+    const modelSection = document.getElementById("modelSection");
     const codeSection = document.getElementById("codeSection");
     const soundSection = document.getElementById("soundSection");
 
@@ -737,11 +814,14 @@
       });
 
       digitalSection.classList.remove("active");
+      modelSection.classList.remove("active");
       codeSection.classList.remove("active");
       soundSection.classList.remove("active");
       closeLightbox();
 
-      if (tab === "code") {
+      if (tab === "model") {
+        modelSection.classList.add("active");
+      } else if (tab === "code") {
         codeSection.classList.add("active");
       } else if (tab === "sound") {
         soundSection.classList.add("active");
@@ -752,7 +832,7 @@
 
     function currentTab() {
       const h = (location.hash || "#digital").slice(1).toLowerCase();
-      return h === "code" || h === "sound" ? h : "digital";
+      return h === "model" || h === "code" || h === "sound" ? h : "digital";
     }
 
     tabLinks.forEach(a => {
