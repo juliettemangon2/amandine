@@ -210,26 +210,37 @@
       display: none;
     }
 
-    .code-wrap {
-      width: 100%;
-      height: calc(100vh - 56px);
-      overflow: hidden;
+    .code-page {
+      min-height: calc(100vh - 56px);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 100px;
       background: #000;
     }
 
-    .code-scale {
-      width: 125%;
-      height: 125%;
-      transform: scale(0.75);
-      transform-origin: top left;
+    .code-options {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
     }
 
-    .code-iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-      background: #000;
+    .code-button {
+      text-decoration: none;
+      font-weight: 700;
+      font-size: .8rem;
+      letter-spacing: .06em;
+      padding: 12px 20px;
+      background: #fff;
+      color: #000;
+      border: none;
+      transition: opacity .2s;
+    }
+
+    .code-button:hover {
+      opacity: .8;
     }
 
     .thumb-col {
@@ -441,14 +452,23 @@
   </section>
 
   <section id="codeSection" class="section">
-    <div class="code-wrap">
-      <div class="code-scale">
-        <iframe class="code-iframe"
-          src="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <main class="code-page">
+      <div class="code-options">
+
+        <a class="code-button"
+          href="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/"
+          target="_blank">
+          CUSTOM COLLAGE
+        </a>
+
+        <a class="code-button"
+          href="https://amandinemangon.github.io/Exquisite-Corpse/"
+          target="_blank">
+          EXQUISITE CORPSE
+        </a>
+
       </div>
-    </div>
+    </main>
   </section>
 
   <section id="soundSection" class="section">
