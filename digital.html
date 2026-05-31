@@ -532,356 +532,332 @@
   </section>
 
   <script>
-    const works = [
-      {
-        type: "stack",
-        name: "Laura Portfolio (Desktop)",
-        cover: "digital/laurahome.png",
-        pages: [
-          "digital/lauraguide.png",
-          "digital/laurahome.png",
-          "digital/lauracontent.png",
-          "digital/lauraarch.png",
-          "digital/lauraphoto.png",
-          "digital/laurafashion.png"
-        ],
-        caption: "Desktop Website Portfolio; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "Laura Portfolio (Mobile)",
-        cover: "digital/lauraiphone.png",
-        pages: [
-          "digital/lauraiphone.png",
-          "digital/iphonecontent.png",
-          "digital/iphonearch.png",
-        ],
-        caption: "Iphone Website Portfolio; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "BlueFather Brand Guidelines",
-        cover: "digital/brandcover.png",
-        pages: [
-          "digital/brandcover.png",
-          "digital/brandlogo.png",
-          "digital/brandicon.png",
-          "digital/brandcolor.png",
-          "digital/brandrules.png",
-          "digital/brandtype.png",
-          "digital/brandapplication.png",
-        ],
-        caption: "BlueFather Brand Guidelines; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "BlueFather",
-        cover: "digital/deanfront.png",
-        pages: [
-          "digital/deanfront.png",
-          "digital/dean1.png",
-          "digital/dean2-3.png",
-          "digital/dean4-5.png",
-          "digital/dean6-7.png",
-          "digital/dean8-9.png",
-          "digital/dean10-11.png",
-          "digital/dean12-13.png",
-          "digital/dean14-15.png",
-          "digital/dean16-17.png",
-          "digital/dean18-19.png",
-        ],
-        caption: "BlueFather Merch; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "Iconoclast",
-        cover: "digital/iconoclast.jpeg",
-        pages: [
-          "digital/iconoclast.jpeg",
-          "digital/melody.jpeg",
-          "digital/muse.jpeg",
-          "digital/genes.jpeg",
-        ],
-        caption: "Magazine Grid; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "single",
-        name: "Zaha Hadid",
-        src: "digital/zahahadid.jpeg",
-        caption: "Architect Flyer; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "Evidemment",
-        cover: "digital/albumfront.png",
-        pages: [
-          "digital/albumfront.png",
-          "digital/albumback.png",
-        ],
-        caption: "Album Cover; Visual Foundation Studio, NYU.",
-      },
-      {
-        type: "stack",
-        name: "Good Mourning America/Shoot Here!",
-        cover: "digital/goodmourning.png",
-        pages: [
-          "digital/goodmourning.png",
-          "digital/shoothere.png",
-        ],
-        caption: "Political Posters; Visual Foundation Studio, NYU.",
-      },
-    ];
+  const works = [
+    {
+      type: "stack",
+      name: "Laura Portfolio (Desktop)",
+      cover: "digital/laurahome.png",
+      pages: [
+        "digital/lauraguide.png",
+        "digital/laurahome.png",
+        "digital/lauracontent.png",
+        "digital/lauraarch.png",
+        "digital/lauraphoto.png",
+        "digital/laurafashion.png"
+      ],
+      caption: "Desktop Website Portfolio; Visual Foundation Studio, NYU.",
+    },
+    {
+      type: "stack",
+      name: "Laura Portfolio (Mobile)",
+      cover: "digital/lauraiphone.png",
+      pages: [
+        "digital/lauraiphone.png",
+        "digital/iphonecontent.png",
+        "digital/iphonearch.png",
+      ],
+      caption: "Iphone Website Portfolio; Visual Foundation Studio, NYU.",
+    },
+    {
+      type: "stack",
+      name: "BlueFather Brand Guidelines",
+      cover: "digital/brandcover.png",
+      pages: [
+        "digital/brandcover.png",
+        "digital/brandlogo.png",
+        "digital/brandicon.png",
+        "digital/brandcolor.png",
+        "digital/brandrules.png",
+        "digital/brandtype.png",
+        "digital/brandapplication.png",
+      ],
+      caption: "BlueFather Brand Guidelines; Visual Foundation Studio, NYU.",
+    },
+    {
+      type: "stack",
+      name: "BlueFather",
+      cover: "digital/deanfront.png",
+      pages: [
+        "digital/deanfront.png",
+        "digital/dean1.png",
+        "digital/dean2-3.png",
+        "digital/dean4-5.png",
+        "digital/dean6-7.png",
+        "digital/dean8-9.png",
+        "digital/dean10-11.png",
+        "digital/dean12-13.png",
+        "digital/dean14-15.png",
+        "digital/dean16-17.png",
+        "digital/dean18-19.png",
+      ],
+      caption: "BlueFather Merch; Visual Foundation Studio, NYU.",
+    },
+    {
+      type: "stack",
+      name: "Iconoclast",
+      cover: "digital/iconoclast.jpeg",
+      pages: [
+        "digital/iconoclast.jpeg",
+        "digital/melody.jpeg",
+        "digital/muse.jpeg",
+        "digital/genes.jpeg",
+      ],
+      caption: "Magazine Grid; Visual Foundation Studio, NYU.",
+    },
+    {
+      type: "single",
+      name: "Zaha Hadid",
+      src: "digital/zahahadid.jpeg",
+      caption: "Architect Flyer; Visual Foundation Studio, NYU.",
+    },
+    {
+      type: "stack",
+      name: "Evidemment",
+      cover: "digital/albumfront.png",
+      pages: [
+        "digital/albumfront.png",
+        "digital/albumback.png",
+      ],
+      caption: "Album Cover; Visual Foundation Studio, NYU.",
+    },
+    {
+      type: "stack",
+      name: "Good Mourning America/Shoot Here!",
+      cover: "digital/goodmourning.png",
+      pages: [
+        "digital/goodmourning.png",
+        "digital/shoothere.png",
+      ],
+      caption: "Political Posters; Visual Foundation Studio, NYU.",
+    },
+  ];
 
-const modelWorks = [
-  {
-    type: "stack",
-    name: "Room",
-    cover: "3d/amandine_final_image_1.jpg",
-    pages: [
-      "3d/amandine_final_image_1.jpg",
-      "3d/amandine_final_image_2.jpg",
-      "3d/amandine_final_image_3.jpg"
-    ],
-    caption: "Maya Render; 3D Modeling, NYU.",
-  },
-  {
-    type: "single",
-    name: "Object",
-    src: "3d/object.jpg",
-    caption: "3D Model Project.",
+  const modelWorks = [
+    {
+      type: "stack",
+      name: "Room",
+      cover: "3d/amandine_final_image_1.jpg",
+      pages: [
+        "3d/amandine_final_image_1.jpg",
+        "3d/amandine_final_image_2.jpg",
+        "3d/amandine_final_image_3.jpg"
+      ],
+      caption: "Maya Render; 3D Modeling, NYU.",
+    },
+    {
+      type: "single",
+      name: "Object",
+      src: "3d/object.jpg",
+      caption: "3D Model Project.",
+    }
+  ];
+
+  const gallery = document.getElementById("gallery");
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxName = document.getElementById("lightbox-name");
+  const lightboxCaption = document.getElementById("lightbox-caption");
+  const closeBtn = document.getElementById("closeBtn");
+  const thumbCol = document.getElementById("thumbCol");
+
+  const modelGallery = document.getElementById("modelGallery");
+  const modelLightbox = document.getElementById("modelLightbox");
+  const modelLightboxImg = document.getElementById("model-lightbox-img");
+  const modelLightboxName = document.getElementById("model-lightbox-name");
+  const modelLightboxCaption = document.getElementById("model-lightbox-caption");
+  const modelCloseBtn = document.getElementById("modelCloseBtn");
+
+  let currentWorkIndex = -1;
+  let currentPageIndex = 0;
+
+  let currentModelIndex = -1;
+  let currentModelPageIndex = 0;
+
+  works.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.className = "gallery-item";
+    const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
+    div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
+    div.onclick = () => openLightbox(index, 0);
+    gallery.appendChild(div);
+  });
+
+  modelWorks.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.className = "gallery-item";
+    const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
+    div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
+    div.onclick = () => openModelLightbox(index, 0);
+    modelGallery.appendChild(div);
+  });
+
+  function renderThumbColumn(item) {
+    thumbCol.innerHTML = "";
+
+    if (item.type !== "stack" || item.pages.length <= 1) {
+      thumbCol.style.display = "none";
+      return;
+    }
+
+    thumbCol.style.display = "flex";
+
+    item.pages.forEach((src, idx) => {
+      const cell = document.createElement("div");
+      cell.className = "thumb-cell" + (idx === currentPageIndex ? " active" : "");
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `${item.name} page ${idx + 1}`;
+      cell.appendChild(img);
+      cell.addEventListener("click", (e) => {
+        e.stopPropagation();
+        goToPage(idx);
+      });
+      thumbCol.appendChild(cell);
+    });
   }
-];
 
-modelWorks.forEach((item, index) => {
-  const div = document.createElement("div");
-  div.className = "gallery-item";
-
-  const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
-
-  div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
-  div.onclick = () => openModelLightbox(index, 0);
-  modelGallery.appendChild(div);
-});
-
-let currentModelIndex = -1;
-let currentModelPageIndex = 0;
-
-function openModelLightbox(modelIndex, pageIndex = 0) {
-  currentModelIndex = modelIndex;
-  currentModelPageIndex = pageIndex;
-
-  const item = modelWorks[modelIndex];
-  const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
-
-  modelLightboxImg.src = src;
-  modelLightboxName.textContent = item.name;
-  modelLightboxCaption.textContent = item.caption || "";
-
-  modelLightbox.classList.add("active");
-  document.body.classList.add("lightbox-open");
-}
-
-    const gallery = document.getElementById("gallery");
-    const lightbox = document.getElementById("lightbox");
-    const lightboxImg = document.getElementById("lightbox-img");
-    const lightboxName = document.getElementById("lightbox-name");
-    const lightboxCaption = document.getElementById("lightbox-caption");
-    const closeBtn = document.getElementById("closeBtn");
-    const thumbCol = document.getElementById("thumbCol");
-
-    const modelGallery = document.getElementById("modelGallery");
-    const modelLightbox = document.getElementById("modelLightbox");
-    const modelLightboxImg = document.getElementById("model-lightbox-img");
-    const modelLightboxName = document.getElementById("model-lightbox-name");
-    const modelLightboxCaption = document.getElementById("model-lightbox-caption");
-    const modelCloseBtn = document.getElementById("modelCloseBtn");
-
-    let currentWorkIndex = -1;
-    let currentPageIndex = 0;
-
-    works.forEach((item, index) => {
-      const div = document.createElement("div");
-      div.className = "gallery-item";
-      const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
-      div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
-      div.onclick = () => openLightbox(index, 0);
-      gallery.appendChild(div);
+  function highlightThumb(idx) {
+    [...thumbCol.children].forEach((cell, i) => {
+      cell.classList.toggle("active", i === idx);
     });
+  }
 
-    modelWorks.forEach((item) => {
-      const div = document.createElement("div");
-      div.className = "gallery-item";
-      div.innerHTML = `<img src="${item.src}" alt="${item.name}">`;
-      div.onclick = () => openModelLightbox(item);
-      modelGallery.appendChild(div);
-    });
+  function openLightbox(workIndex, pageIndex = 0) {
+    currentWorkIndex = workIndex;
+    currentPageIndex = pageIndex;
 
-    function renderThumbColumn(item) {
-      thumbCol.innerHTML = '';
-      if (item.type !== "stack" || item.pages.length <= 1) {
-        thumbCol.style.display = 'none';
-        return;
-      }
+    const item = works[workIndex];
+    const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
 
-      thumbCol.style.display = 'flex';
+    lightboxImg.src = src;
+    lightboxName.textContent = item.name;
+    lightboxCaption.textContent = item.caption || "";
 
-      item.pages.forEach((src, idx) => {
-        const cell = document.createElement('div');
-        cell.className = 'thumb-cell' + (idx === currentPageIndex ? ' active' : '');
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = `${item.name} page ${idx + 1}`;
-        cell.appendChild(img);
-        cell.addEventListener('click', (e) => {
-          e.stopPropagation();
-          goToPage(idx);
-        });
-        thumbCol.appendChild(cell);
-      });
+    renderThumbColumn(item);
+
+    lightbox.classList.add("active");
+    document.body.classList.add("lightbox-open");
+  }
+
+  function openModelLightbox(modelIndex, pageIndex = 0) {
+    currentModelIndex = modelIndex;
+    currentModelPageIndex = pageIndex;
+
+    const item = modelWorks[modelIndex];
+    const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
+
+    modelLightboxImg.src = src;
+    modelLightboxName.textContent = item.name;
+    modelLightboxCaption.textContent = item.caption || "";
+
+    modelLightbox.classList.add("active");
+    document.body.classList.add("lightbox-open");
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove("active");
+    modelLightbox.classList.remove("active");
+    document.body.classList.remove("lightbox-open");
+    currentWorkIndex = -1;
+    currentModelIndex = -1;
+  }
+
+  function goToPage(idx) {
+    const item = works[currentWorkIndex];
+    if (item?.type !== "stack") return;
+
+    if (idx < 0) idx = item.pages.length - 1;
+    if (idx >= item.pages.length) idx = 0;
+
+    currentPageIndex = idx;
+    lightboxImg.src = item.pages[currentPageIndex];
+    highlightThumb(currentPageIndex);
+  }
+
+  function gotoPrevPage() {
+    goToPage(currentPageIndex - 1);
+  }
+
+  function gotoNextPage() {
+    goToPage(currentPageIndex + 1);
+  }
+
+  function showCodeProject(project) {
+    const frame = document.getElementById("codeFrame");
+
+    if (project === "custom") {
+      frame.src = "https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/";
     }
 
-    function highlightThumb(idx) {
-      [...thumbCol.children].forEach((cell, i) => {
-        cell.classList.toggle('active', i === idx);
-      });
-
-      const sel = thumbCol.children[idx];
-      if (sel) sel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    if (project === "corpse") {
+      frame.src = "https://amandinemangon.github.io/Exquisite-Corpse/";
     }
+  }
 
-    function openLightbox(workIndex, pageIndex = 0) {
-      currentWorkIndex = workIndex;
-      currentPageIndex = pageIndex;
+  closeBtn.onclick = closeLightbox;
+  modelCloseBtn.onclick = closeLightbox;
 
-      const item = works[workIndex];
-      const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
+  lightbox.onclick = (e) => {
+    if (e.target === lightbox) closeLightbox();
+  };
 
-      lightboxImg.src = src;
-      lightboxName.textContent = item.name;
-      lightboxCaption.textContent = item.caption || "";
+  modelLightbox.onclick = (e) => {
+    if (e.target === modelLightbox) closeLightbox();
+  };
 
-      renderThumbColumn(item);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeLightbox();
+    if (currentWorkIndex === -1) return;
+    if (e.key === "ArrowLeft") gotoPrevPage();
+    if (e.key === "ArrowRight") gotoNextPage();
+  });
 
-      lightbox.classList.add("active");
-      document.body.classList.add("lightbox-open");
-    }
+  const tabLinks = document.querySelectorAll("nav.tabs a");
+  const digitalSection = document.getElementById("digitalSection");
+  const modelSection = document.getElementById("modelSection");
+  const codeSection = document.getElementById("codeSection");
+  const soundSection = document.getElementById("soundSection");
 
-    function openModelLightbox(item) {
-      modelLightboxImg.src = item.src;
-      modelLightboxName.textContent = item.name;
-      modelLightboxCaption.textContent = item.caption || "";
-      modelLightbox.classList.add("active");
-      document.body.classList.add("lightbox-open");
-    }
-
-    function closeLightbox() {
-      lightbox.classList.remove("active");
-      modelLightbox.classList.remove("active");
-      document.body.classList.remove("lightbox-open");
-      currentWorkIndex = -1;
-    }
-
-    function closeModelLightbox() {
-      modelLightbox.classList.remove("active");
-      document.body.classList.remove("lightbox-open");
-    }
-
-    function goToPage(idx) {
-      const item = works[currentWorkIndex];
-      if (item?.type !== "stack") return;
-
-      if (idx < 0) idx = item.pages.length - 1;
-      if (idx >= item.pages.length) idx = 0;
-
-      currentPageIndex = idx;
-      lightboxImg.src = item.pages[currentPageIndex];
-      highlightThumb(currentPageIndex);
-    }
-
-    function gotoPrevPage() {
-      goToPage(currentPageIndex - 1);
-    }
-
-    function gotoNextPage() {
-      goToPage(currentPageIndex + 1);
-    }
-
-    function showCodeProject(project) {
-      const frame = document.getElementById("codeFrame");
-
-      if (project === "custom") {
-        frame.src = "https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/";
-      }
-
-      if (project === "corpse") {
-        frame.src = "https://amandinemangon.github.io/Exquisite-Corpse/";
-      }
-    }
-
-    closeBtn.onclick = closeLightbox;
-    modelCloseBtn.onclick = closeModelLightbox;
-
-    lightbox.onclick = (e) => {
-      if (e.target === lightbox) closeLightbox();
-    };
-
-    modelLightbox.onclick = (e) => {
-      if (e.target === modelLightbox) closeModelLightbox();
-    };
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeLightbox();
-      if (currentWorkIndex === -1) return;
-      if (e.key === "ArrowLeft") gotoPrevPage();
-      if (e.key === "ArrowRight") gotoNextPage();
-    });
-
-    const tabLinks = document.querySelectorAll("nav.tabs a");
-    const digitalSection = document.getElementById("digitalSection");
-    const modelSection = document.getElementById("modelSection");
-    const codeSection = document.getElementById("codeSection");
-    const soundSection = document.getElementById("soundSection");
-
-    function setActiveTab(tab) {
-      tabLinks.forEach(a => {
-        if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
-        else a.removeAttribute("aria-current");
-      });
-
-      digitalSection.classList.remove("active");
-      modelSection.classList.remove("active");
-      codeSection.classList.remove("active");
-      soundSection.classList.remove("active");
-      closeLightbox();
-
-      if (tab === "model") {
-        modelSection.classList.add("active");
-      } else if (tab === "code") {
-        codeSection.classList.add("active");
-      } else if (tab === "sound") {
-        soundSection.classList.add("active");
-      } else {
-        digitalSection.classList.add("active");
-      }
-    }
-
-    function currentTab() {
-      const h = (location.hash || "#digital").slice(1).toLowerCase();
-      return h === "model" || h === "code" || h === "sound" ? h : "digital";
-    }
-
+  function setActiveTab(tab) {
     tabLinks.forEach(a => {
-      a.addEventListener("click", e => {
-        e.preventDefault();
-        const tab = a.dataset.tab;
-        history.replaceState(null, "", "#" + tab);
-        setActiveTab(tab);
-      });
+      if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
     });
 
-    window.addEventListener("hashchange", () => setActiveTab(currentTab()));
-    setActiveTab(currentTab());
-  </script>
+    digitalSection.classList.remove("active");
+    modelSection.classList.remove("active");
+    codeSection.classList.remove("active");
+    soundSection.classList.remove("active");
+    closeLightbox();
+
+    if (tab === "model") {
+      modelSection.classList.add("active");
+    } else if (tab === "code") {
+      codeSection.classList.add("active");
+    } else if (tab === "sound") {
+      soundSection.classList.add("active");
+    } else {
+      digitalSection.classList.add("active");
+    }
+  }
+
+  function currentTab() {
+    const h = (location.hash || "#digital").slice(1).toLowerCase();
+    return h === "model" || h === "code" || h === "sound" ? h : "digital";
+  }
+
+  tabLinks.forEach(a => {
+    a.addEventListener("click", e => {
+      e.preventDefault();
+      const tab = a.dataset.tab;
+      history.replaceState(null, "", "#" + tab);
+      setActiveTab(tab);
+    });
+  });
+
+  window.addEventListener("hashchange", () => setActiveTab(currentTab()));
+  setActiveTab(currentTab());
+</script>
 
 </body>
 </html>
