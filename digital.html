@@ -632,19 +632,54 @@
       },
     ];
 
-    const modelWorks = [
-    {
-        type: "stack",
-        name: "Room",
-        cover: "3d/amandine_final_image_1.jpg",
-        pages: [
-          "3d/amandine_final_image_1.jpg",
-          "3d/amandine_final_image_2.jpg",
-          "3d/amandine_final_image_3.jpg"
-        ],
-        caption: "Maya Render; 3D Modeling, NYU.",
-      },
-    ];
+const modelWorks = [
+  {
+    type: "stack",
+    name: "Room",
+    cover: "3d/amandine_final_image_1.jpg",
+    pages: [
+      "3d/amandine_final_image_1.jpg",
+      "3d/amandine_final_image_2.jpg",
+      "3d/amandine_final_image_3.jpg"
+    ],
+    caption: "Maya Render; 3D Modeling, NYU.",
+  },
+  {
+    type: "single",
+    name: "Object",
+    src: "3d/object.jpg",
+    caption: "3D Model Project.",
+  }
+];
+
+modelWorks.forEach((item, index) => {
+  const div = document.createElement("div");
+  div.className = "gallery-item";
+
+  const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
+
+  div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
+  div.onclick = () => openModelLightbox(index, 0);
+  modelGallery.appendChild(div);
+});
+
+let currentModelIndex = -1;
+let currentModelPageIndex = 0;
+
+function openModelLightbox(modelIndex, pageIndex = 0) {
+  currentModelIndex = modelIndex;
+  currentModelPageIndex = pageIndex;
+
+  const item = modelWorks[modelIndex];
+  const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
+
+  modelLightboxImg.src = src;
+  modelLightboxName.textContent = item.name;
+  modelLightboxCaption.textContent = item.caption || "";
+
+  modelLightbox.classList.add("active");
+  document.body.classList.add("lightbox-open");
+}
 
     const gallery = document.getElementById("gallery");
     const lightbox = document.getElementById("lightbox");
