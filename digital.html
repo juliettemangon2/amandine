@@ -1,863 +1,868 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Digital Work | Amandine Mangon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Digital Work | Amandine Mangon</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <style>
-    .bar {
-      position: sticky;
-      top: 0;
-      z-index: 3000;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 12px 14px;
-      background: #000;
-    }
-
-    .home-btn {
-      text-decoration: none;
-      font-weight: 700;
-      font-size: .8rem;
-      letter-spacing: .06em;
-      padding: 6px 12px;
-      background: #fff;
-      color: #000;
-      border: none;
-    }
-
-    nav.tabs {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    nav.tabs a {
-      text-decoration: none;
-      color: #fff;
-      opacity: 1;
-      padding: 4px 0;
-      position: relative;
-      font-weight: 700;
-      letter-spacing: .04em;
-    }
-
-    nav.tabs a[aria-current="page"]::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -6px;
-      height: 2px;
-      background: #fff;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-  </style>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      color: #fff;
-    }
-
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      font: 400 15px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: #000;
-      color: #fff;
-      overflow-x: hidden;
-      text-transform: uppercase;
-    }
-
-    .gallery {
-      max-width: 1400px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      padding: 40px 10px;
-      margin: 0 auto;
-      margin-top: 3rem;
-    }
-
-    .gallery-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-    }
-
-    .gallery img {
-      height: 500px;
-      width: auto;
-      transition: transform 0.2s;
-      margin: 0.5rem;
-    }
-
-    .gallery img:hover {
-      transform: scale(1.03);
-    }
-
-    .gallery img[alt="Zaha Hadid"],
-    .gallery img[alt="Transit Garden"] {
-      height: 430px;
-    }
-
-    .lightbox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.92);
-      z-index: 5000;
-      padding: 80px 30px 30px 30px;
-      overflow: auto;
-    }
-
-    .lightbox.active {
-      display: block;
-    }
-
-    .lightbox-content {
-      max-width: 95vw;
-      margin: 0 auto;
-      display: flex;
-      gap: 24px;
-      align-items: flex-start;
-      justify-content: center;
-    }
-
-    .lightbox-media {
-      flex: 0 1 auto;
-      max-width: 65vw;
-      position: relative;
-    }
-
-    .lightbox-media img {
-      display: block;
-      width: auto;
-      height: auto;
-      max-width: 60vw;
-      max-height: 90vh;
-      object-fit: contain;
-      background: #000;
-      position: relative;
-      z-index: 5100;
-    }
-
-    .lightbox-meta {
-      flex: 0 0 28vw;
-      max-width: 28vw;
-      text-align: left;
-    }
-
-    .lightbox-name {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-      letter-spacing: 0.06em;
-      color: #fff;
-    }
-
-    .lightbox-caption {
-      font-size: 1rem;
-      line-height: 1.6;
-      color: #fff;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-
-    .close-btn {
-      position: fixed;
-      top: 20px;
-      right: 30px;
-      font-size: 2rem;
-      color: #fff;
-      cursor: pointer;
-      z-index: 2100;
-      user-select: none;
-    }
-
-    body.lightbox-open .bar {
-      display: none;
-    }
-
-    .thumb-col {
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-      width: 100px;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding-right: 8px;
-      flex-shrink: 0;
-    }
-
-    .thumb-cell {
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: border-color 0.2s, opacity 0.2s;
-      opacity: 0.6;
-    }
-
-    .thumb-cell:hover {
-      opacity: 1;
-    }
-
-    .thumb-cell.active {
-      border-color: #fff;
-      opacity: 1;
-    }
-
-    .thumb-cell img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .code-page {
-      min-height: calc(100vh - 56px);
-      background: #000;
-    }
-
-    .code-options {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      padding: 30px 20px 20px 20px;
-    }
-
-    .code-button {
-      text-decoration: none;
-      font-weight: 700;
-      font-size: .8rem;
-      letter-spacing: .06em;
-      padding: 12px 20px;
-      background: #fff;
-      color: #000;
-      border: none;
-      cursor: pointer;
-    }
-
-    .code-wrap {
-      width: 100%;
-      height: calc(100vh - 130px);
-      overflow: hidden;
-      background: #000;
-    }
-
-    .code-scale {
-      width: 125%;
-      height: 125%;
-      transform: scale(0.75);
-      transform-origin: top left;
-    }
-
-    .code-iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-      background: #000;
-    }
-
-    .sound-page {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 80px 24px 120px 24px;
-      text-align: center;
-      color: #fff;
-    }
-
-    .sound-list {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 75px;
-      width: 100%;
-    }
-
-    .sound-project {
-      max-width: 820px;
-      width: 100%;
-      text-align: center;
-      padding-top: 22px;
-      color: #fff;
-    }
-
-    .sound-project h2 {
-      font-size: 1.5rem;
-      letter-spacing: 0.08em;
-      margin-bottom: 20px;
-      font-weight: 800;
-      text-align: center;
-      color: #fff;
-    }
-
-    .sound-project audio {
-      width: 100%;
-      max-width: 760px;
-      margin: 10px auto 18px auto;
-      display: block;
-      filter: invert(1);
-      opacity: 0.85;
-    }
-
-    .sound-project audio::-webkit-media-controls-panel {
-      background: #000;
-      border-radius: 0;
-    }
-
-    .sound-project audio::-webkit-media-controls-play-button,
-    .sound-project audio::-webkit-media-controls-current-time-display,
-    .sound-project audio::-webkit-media-controls-time-remaining-display,
-    .sound-project audio::-webkit-media-controls-timeline,
-    .sound-project audio::-webkit-media-controls-volume-slider {
-      filter: invert(1);
-    }
-
-    .sound-video {
-      width: 100%;
-      max-width: 760px;
-      margin: 10px auto 18px auto;
-      display: block;
-      background: #000;
-    }
-
-    .sound-caption {
-      max-width: 720px;
-      margin: 0 auto;
-      font-size: 0.95rem;
-      line-height: 1.7;
-      letter-spacing: 0.04em;
-      opacity: 1;
-      text-align: left;
-      color: #fff;
-      font-weight: 700;
-    }
-
-    @media (max-width: 900px) {
-      .thumb-col {
-        flex-direction: row;
-        width: 100%;
-        max-width: 92vw;
-        max-height: none;
-        overflow-x: auto;
-        overflow-y: hidden;
-        padding-right: 0;
-        padding-bottom: 8px;
+    <style>
+      .bar {
+        position: sticky;
+        top: 0;
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 12px 14px;
+        background: #000;
       }
 
-      .thumb-cell {
-        flex-shrink: 0;
-        width: 60px;
+      .home-btn {
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        padding: 6px 12px;
+        background: #fff;
+        color: #000;
+        border: none;
       }
 
-      .lightbox-content {
-        flex-direction: column;
+      nav.tabs {
+        display: flex;
+        gap: 16px;
         align-items: center;
       }
 
-      .lightbox-media,
-      .lightbox-media img {
-        max-width: 92vw;
+      nav.tabs a {
+        text-decoration: none;
+        color: #fff;
+        opacity: 1;
+        padding: 4px 0;
+        position: relative;
+        font-weight: 700;
+        letter-spacing: 0.04em;
       }
 
-      .lightbox-media img {
-        max-height: 60vh;
+      nav.tabs a[aria-current="page"]::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -6px;
+        height: 2px;
+        background: #fff;
       }
 
-      .lightbox-meta {
-        max-width: 92vw;
+      .section {
+        display: none;
       }
-    }
 
-    @media (max-width: 600px) {
-      .gallery img {
-        height: auto;
+      .section.active {
+        display: block;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        color: #fff;
+      }
+
+      html,
+      body {
         width: 100%;
-        max-width: 300px;
+        height: 100%;
+        font:
+          400 15px/1.4 "Helvetica Neue",
+          Helvetica,
+          Arial,
+          sans-serif;
+        background: #000;
+        color: #fff;
+        overflow-x: hidden;
+        text-transform: uppercase;
+      }
+
+      .gallery {
+        max-width: 1400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 40px 10px;
+        margin: 0 auto;
+        margin-top: 3rem;
+      }
+
+      .gallery-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .gallery img {
+        height: 500px;
+        width: auto;
+        transition: transform 0.2s;
+        margin: 0.5rem;
+      }
+
+      .gallery img:hover {
+        transform: scale(1.03);
       }
 
       .gallery img[alt="Zaha Hadid"],
       .gallery img[alt="Transit Garden"] {
-        height: auto;
+        height: 430px;
       }
 
-      .gallery {
-        margin-top: 1rem;
-        padding: 20px 10px;
+      .lightbox {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.92);
+        z-index: 5000;
+        padding: 80px 30px 30px 30px;
+        overflow: auto;
+      }
+
+      .lightbox.active {
+        display: block;
+      }
+
+      .lightbox-content {
+        max-width: 95vw;
+        margin: 0 auto;
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .lightbox-media {
+        flex: 0 1 auto;
+        max-width: 65vw;
+        position: relative;
+      }
+
+      .lightbox-media img {
+        display: block;
+        width: auto;
+        height: auto;
+        max-width: 60vw;
+        max-height: 90vh;
+        object-fit: contain;
+        background: #000;
+        position: relative;
+        z-index: 5100;
+      }
+
+      .lightbox-meta {
+        flex: 0 0 28vw;
+        max-width: 28vw;
+        text-align: left;
+      }
+
+      .lightbox-name {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 10px;
+        letter-spacing: 0.06em;
+        color: #fff;
+      }
+
+      .lightbox-caption {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+
+      .close-btn {
+        position: fixed;
+        top: 20px;
+        right: 30px;
+        font-size: 2rem;
+        color: #fff;
+        cursor: pointer;
+        z-index: 2100;
+        user-select: none;
+      }
+
+      body.lightbox-open .bar {
+        display: none;
+      }
+
+      .thumb-col {
+        display: none;
+        flex-direction: column;
+        gap: 8px;
+        width: 100px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding-right: 8px;
+        flex-shrink: 0;
+      }
+
+      .thumb-cell {
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition:
+          border-color 0.2s,
+          opacity 0.2s;
+        opacity: 0.6;
+      }
+
+      .thumb-cell:hover {
+        opacity: 1;
+      }
+
+      .thumb-cell.active {
+        border-color: #fff;
+        opacity: 1;
+      }
+
+      .thumb-cell img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .code-page {
+        min-height: calc(100vh - 56px);
+        background: #000;
+        max-height: 100%;
+      }
+
+      .code-options {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 30px 20px 20px 20px;
+      }
+
+      .code-button {
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        padding: 12px 20px;
+        background: #fff;
+        color: #000;
+        border: none;
+        cursor: pointer;
+       
+      }
+
+      .code-wrap {
+        width: 100%;
+        height: calc(100vh - 130px);
+        overflow: hidden;
+        background: #000;
+      }
+
+      .code-scale {
+        width: 100%;
+        height: 100%;
+        transform-origin: top left;
+        transform: scale(0.7);
+      }
+
+      .code-iframe {
+        width: 100%;
+        height: 137%;
+        border: 0;
+        display: block;
+        background: #000;
       }
 
       .sound-page {
-        padding: 45px 18px 90px 18px;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 80px 24px 120px 24px;
+        text-align: center;
+        color: #fff;
       }
-    }
-  </style>
-</head>
 
-<body>
+      .sound-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 75px;
+        width: 100%;
+      }
 
-  <header class="bar">
-    <a class="home-btn" href="index.html">HOME</a>
-    <nav class="tabs" role="tablist">
-      <a href="#digital" data-tab="digital">Graphic Design</a>
-      <a href="#model" data-tab="model">3D</a>
-      <a href="#code" data-tab="code">Code</a>
-      <a href="#sound" data-tab="sound">Sound</a>
-    </nav>
-  </header>
+      .sound-project {
+        max-width: 820px;
+        width: 100%;
+        text-align: center;
+        padding-top: 22px;
+        color: #fff;
+      }
 
-  <section id="digitalSection" class="section active">
-    <div class="gallery" id="gallery"></div>
+      .sound-project h2 {
+        font-size: 1.5rem;
+        letter-spacing: 0.08em;
+        margin-bottom: 2rem;
+        font-weight: 800;
+        text-align: center;
+        color: #fff;
+      }
 
-    <div class="lightbox" id="lightbox">
-      <div class="close-btn" id="closeBtn">&times;</div>
-      <div class="lightbox-content">
-        <div class="thumb-col" id="thumbCol"></div>
-        <div class="lightbox-media">
-          <img id="lightbox-img" src="" alt="Graphic design work" />
-        </div>
-        <div class="lightbox-meta">
-          <div class="lightbox-name" id="lightbox-name"></div>
-          <div class="lightbox-caption" id="lightbox-caption"></div>
+      .sound-project audio {
+        width: 90%;
+        max-width: 760px;
+        margin: 10px auto 18px auto;
+        display: block;
+        filter: invert(1);
+        opacity: 1;
+      }
+
+      .sound-project audio::-webkit-media-controls-panel {
+        background: #000;
+        border-radius: 0;
+      }
+
+      .sound-project audio::-webkit-media-controls-play-button,
+      .sound-project audio::-webkit-media-controls-current-time-display,
+      .sound-project audio::-webkit-media-controls-time-remaining-display,
+      .sound-project audio::-webkit-media-controls-timeline,
+      .sound-project audio::-webkit-media-controls-volume-slider {
+        filter: invert(1);
+        border-radius: 0;
+      }
+
+       .sound-project audio::-webkit-media-controls-timeline{
+        filter: invert(0);
+       }
+
+      audio,
+      audio::-webkit-media-controls-enclosure {
+        border-radius: 0 !important;
+      }
+
+      .sound-video {
+        width: 100%;
+        max-width: 760px;
+        margin: 10px auto 18px auto;
+        display: block;
+        background: #000;
+      }
+
+      .sound-caption {
+        max-width: 720px;
+        margin: 0 auto;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        letter-spacing: 0.04em;
+        opacity: 1;
+        text-align: left;
+        color: #fff;
+        font-weight: 700;
+      }
+
+      @media (max-width: 900px) {
+        .thumb-col {
+          flex-direction: row;
+          width: 100%;
+          max-width: 92vw;
+          max-height: none;
+          overflow-x: auto;
+          overflow-y: hidden;
+          padding-right: 0;
+          padding-bottom: 8px;
+        }
+
+        .thumb-cell {
+          flex-shrink: 0;
+          width: 60px;
+        }
+
+        .lightbox-content {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .lightbox-media,
+        .lightbox-media img {
+          max-width: 92vw;
+        }
+
+        .lightbox-media img {
+          max-height: 60vh;
+        }
+
+        .lightbox-meta {
+          max-width: 92vw;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .gallery img {
+          height: auto;
+          width: 100%;
+          max-width: 300px;
+        }
+
+        .gallery img[alt="Zaha Hadid"],
+        .gallery img[alt="Transit Garden"] {
+          height: auto;
+        }
+
+        .gallery {
+          margin-top: 1rem;
+          padding: 20px 10px;
+        }
+
+        .sound-page {
+          padding: 45px 18px 90px 18px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="bar">
+      <a class="home-btn" href="index.html">HOME</a>
+      <nav class="tabs" role="tablist">
+        <a href="#digital" data-tab="digital">Graphic Design</a>
+        <a href="#model" data-tab="model">3D</a>
+        <a href="#code" data-tab="code">Code</a>
+        <a href="#sound" data-tab="sound">Sound</a>
+      </nav>
+    </header>
+
+    <section id="digitalSection" class="section active">
+      <div class="gallery" id="gallery"></div>
+
+      <div class="lightbox" id="lightbox">
+        <div class="close-btn" id="closeBtn">&times;</div>
+        <div class="lightbox-content">
+          <div class="thumb-col" id="thumbCol"></div>
+          <div class="lightbox-media">
+            <img id="lightbox-img" src="" alt="Graphic design work" />
+          </div>
+          <div class="lightbox-meta">
+            <div class="lightbox-name" id="lightbox-name"></div>
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="modelSection" class="section">
-    <div class="gallery" id="modelGallery"></div>
+    <section id="modelSection" class="section">
+      <div class="gallery" id="modelGallery"></div>
 
-    <div class="lightbox" id="modelLightbox">
-      <div class="close-btn" id="modelCloseBtn">&times;</div>
-      <div class="lightbox-content">
-        <div class="lightbox-media">
-          <img id="model-lightbox-img" src="" alt="3D model work" />
-        </div>
-        <div class="lightbox-meta">
-          <div class="lightbox-name" id="model-lightbox-name"></div>
-          <div class="lightbox-caption" id="model-lightbox-caption"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="codeSection" class="section">
-    <main class="code-page">
-
-      <div class="code-options">
-        <button class="code-button" onclick="showCodeProject('custom')">
-          CUSTOM COLLAGE
-        </button>
-
-        <button class="code-button" onclick="showCodeProject('corpse')">
-          EXQUISITE CORPSE
-        </button>
-      </div>
-
-      <div class="code-wrap">
-        <div class="code-scale">
-          <iframe
-            id="codeFrame"
-            class="code-iframe"
-            src="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
+      <div class="lightbox" id="modelLightbox">
+        <div class="close-btn" id="modelCloseBtn">&times;</div>
+        <div class="lightbox-content">
+          <div class="lightbox-media">
+            <img id="model-lightbox-img" src="" alt="3D model work" />
+          </div>
+          <div class="lightbox-meta">
+            <div class="lightbox-name" id="model-lightbox-name"></div>
+            <div class="lightbox-caption" id="model-lightbox-caption"></div>
+          </div>
         </div>
       </div>
+    </section>
 
-    </main>
-  </section>
+    <section id="codeSection" class="section">
+      <main class="code-page">
+        <div class="code-options">
+          <button class="code-button" onclick="showCodeProject('custom')">
+            CUSTOM COLLAGE
+          </button>
 
-  <section id="soundSection" class="section">
-    <main class="sound-page">
+          <button class="code-button" onclick="showCodeProject('corpse')">
+            EXQUISITE CORPSE
+          </button>
+        </div>
 
-      <div class="sound-list">
+        <div class="code-wrap">
+          <div class="code-scale">
+            <iframe
+              id="codeFrame"
+              class="code-iframe"
+              src="https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            >
+            </iframe>
+          </div>
+        </div>
+      </main>
+    </section>
 
-        <article class="sound-project">
-          <h2>MAMMIE</h2>
-          <audio controls>
-            <source src="sound/music.wav" type="audio/wav">
-            Your browser does not support the audio element.
-          </audio>
-          <p class="sound-caption">
-            SNIPETS FROM MY GRANDMOTHER'S VOICEMAILS. INSPIRATION: "WAVES" FRANK OCEAN.
-          </p>
-        </article>
+    <section id="soundSection" class="section">
+      <main class="sound-page">
+        <div class="sound-list">
+          <article class="sound-project">
+            <h2>MAMMIE</h2>
+            <audio controls>
+              <source src="sound/music.wav" type="audio/wav" />
+              Your browser does not support the audio element.
+            </audio>
+            <p class="sound-caption">
+              SNIPETS FROM MY GRANDMOTHER'S VOICEMAILS. INSPIRATION: "WAVES"
+              FRANK OCEAN.
+            </p>
+          </article>
 
-        <article class="sound-project">
-          <h2>SOUND ART</h2>
-          <audio controls>
-            <source src="sound/soundart.wav" type="audio/wav">
-            Your browser does not support the audio element.
-          </audio>
-          <p class="sound-caption">
-            DAILY LIFE.
-          </p>
-        </article>
+          <article class="sound-project">
+            <h2>SOUND ART</h2>
+            <audio controls>
+              <source src="sound/soundart.wav" type="audio/wav" />
+              Your browser does not support the audio element.
+            </audio>
+            <p class="sound-caption">DAILY LIFE.</p>
+          </article>
 
-        <article class="sound-project">
-          <h2>OBSESSION</h2>
+          <article class="sound-project">
+            <h2>OBSESSION</h2>
 
-          <video controls class="sound-video">
-            <source src="sound/sounddesign.mp4" type="video/mp4">
-            Your browser does not support the video element.
-          </video>
+            <video controls class="sound-video">
+              <source src="sound/sounddesign.mp4" type="video/mp4" />
+              Your browser does not support the video element.
+            </video>
 
-          <p class="sound-caption">
-            SOUND DESIGN FOR SERGE GAINSBOURG'S "HISTOIRE DE MELODY NELSON".
-          </p>
-        </article>
+            <p class="sound-caption">
+              SOUND DESIGN FOR SERGE GAINSBOURG'S "HISTOIRE DE MELODY NELSON".
+            </p>
+          </article>
+        </div>
+      </main>
+    </section>
 
-      </div>
-    </main>
-  </section>
+    <script>
+      const works = [
+        {
+          type: "stack",
+          name: "Laura Portfolio (Desktop)",
+          cover: "digital/laurahome.png",
+          pages: [
+            "digital/lauraguide.png",
+            "digital/laurahome.png",
+            "digital/lauracontent.png",
+            "digital/lauraarch.png",
+            "digital/lauraphoto.png",
+            "digital/laurafashion.png",
+          ],
+          caption: "Desktop Website Portfolio; Visual Foundation Studio, NYU.",
+        },
+        {
+          type: "stack",
+          name: "Laura Portfolio (Mobile)",
+          cover: "digital/lauraiphone.png",
+          pages: [
+            "digital/lauraiphone.png",
+            "digital/iphonecontent.png",
+            "digital/iphonearch.png",
+          ],
+          caption: "Iphone Website Portfolio; Visual Foundation Studio, NYU.",
+        },
+        {
+          type: "stack",
+          name: "BlueFather Brand Guidelines",
+          cover: "digital/brandcover.png",
+          pages: [
+            "digital/brandcover.png",
+            "digital/brandlogo.png",
+            "digital/brandicon.png",
+            "digital/brandcolor.png",
+            "digital/brandrules.png",
+            "digital/brandtype.png",
+            "digital/brandapplication.png",
+          ],
+          caption:
+            "BlueFather Brand Guidelines; Visual Foundation Studio, NYU.",
+        },
+        {
+          type: "stack",
+          name: "BlueFather",
+          cover: "digital/deanfront.png",
+          pages: [
+            "digital/deanfront.png",
+            "digital/dean1.png",
+            "digital/dean2-3.png",
+            "digital/dean4-5.png",
+            "digital/dean6-7.png",
+            "digital/dean8-9.png",
+            "digital/dean10-11.png",
+            "digital/dean12-13.png",
+            "digital/dean14-15.png",
+            "digital/dean16-17.png",
+            "digital/dean18-19.png",
+          ],
+          caption: "BlueFather Merch; Visual Foundation Studio, NYU.",
+        },
+        {
+          type: "stack",
+          name: "Iconoclast",
+          cover: "digital/iconoclast.jpeg",
+          pages: [
+            "digital/iconoclast.jpeg",
+            "digital/melody.jpeg",
+            "digital/muse.jpeg",
+            "digital/genes.jpeg",
+          ],
+          caption: "Magazine Grid; Visual Foundation Studio, NYU.",
+        },
+        {
+          type: "single",
+          name: "Zaha Hadid",
+          src: "digital/zahahadid.jpeg",
+          caption: "Architect Flyer; Visual Foundation Studio, NYU.",
+        },
+        {
+          type: "stack",
+          name: "Evidemment",
+          cover: "digital/albumfront.png",
+          pages: ["digital/albumfront.png", "digital/albumback.png"],
+          caption: "Album Cover; Visual Foundation Studio, NYU.",
+        },
+        {
+          type: "stack",
+          name: "Good Mourning America/Shoot Here!",
+          cover: "digital/goodmourning.png",
+          pages: ["digital/goodmourning.png", "digital/shoothere.png"],
+          caption: "Political Posters; Visual Foundation Studio, NYU.",
+        },
+      ];
 
-  <script>
-  const works = [
-    {
-      type: "stack",
-      name: "Laura Portfolio (Desktop)",
-      cover: "digital/laurahome.png",
-      pages: [
-        "digital/lauraguide.png",
-        "digital/laurahome.png",
-        "digital/lauracontent.png",
-        "digital/lauraarch.png",
-        "digital/lauraphoto.png",
-        "digital/laurafashion.png"
-      ],
-      caption: "Desktop Website Portfolio; Visual Foundation Studio, NYU.",
-    },
-    {
-      type: "stack",
-      name: "Laura Portfolio (Mobile)",
-      cover: "digital/lauraiphone.png",
-      pages: [
-        "digital/lauraiphone.png",
-        "digital/iphonecontent.png",
-        "digital/iphonearch.png",
-      ],
-      caption: "Iphone Website Portfolio; Visual Foundation Studio, NYU.",
-    },
-    {
-      type: "stack",
-      name: "BlueFather Brand Guidelines",
-      cover: "digital/brandcover.png",
-      pages: [
-        "digital/brandcover.png",
-        "digital/brandlogo.png",
-        "digital/brandicon.png",
-        "digital/brandcolor.png",
-        "digital/brandrules.png",
-        "digital/brandtype.png",
-        "digital/brandapplication.png",
-      ],
-      caption: "BlueFather Brand Guidelines; Visual Foundation Studio, NYU.",
-    },
-    {
-      type: "stack",
-      name: "BlueFather",
-      cover: "digital/deanfront.png",
-      pages: [
-        "digital/deanfront.png",
-        "digital/dean1.png",
-        "digital/dean2-3.png",
-        "digital/dean4-5.png",
-        "digital/dean6-7.png",
-        "digital/dean8-9.png",
-        "digital/dean10-11.png",
-        "digital/dean12-13.png",
-        "digital/dean14-15.png",
-        "digital/dean16-17.png",
-        "digital/dean18-19.png",
-      ],
-      caption: "BlueFather Merch; Visual Foundation Studio, NYU.",
-    },
-    {
-      type: "stack",
-      name: "Iconoclast",
-      cover: "digital/iconoclast.jpeg",
-      pages: [
-        "digital/iconoclast.jpeg",
-        "digital/melody.jpeg",
-        "digital/muse.jpeg",
-        "digital/genes.jpeg",
-      ],
-      caption: "Magazine Grid; Visual Foundation Studio, NYU.",
-    },
-    {
-      type: "single",
-      name: "Zaha Hadid",
-      src: "digital/zahahadid.jpeg",
-      caption: "Architect Flyer; Visual Foundation Studio, NYU.",
-    },
-    {
-      type: "stack",
-      name: "Evidemment",
-      cover: "digital/albumfront.png",
-      pages: [
-        "digital/albumfront.png",
-        "digital/albumback.png",
-      ],
-      caption: "Album Cover; Visual Foundation Studio, NYU.",
-    },
-    {
-      type: "stack",
-      name: "Good Mourning America/Shoot Here!",
-      cover: "digital/goodmourning.png",
-      pages: [
-        "digital/goodmourning.png",
-        "digital/shoothere.png",
-      ],
-      caption: "Political Posters; Visual Foundation Studio, NYU.",
-    },
-  ];
+      const modelWorks = [
+        {
+          type: "stack",
+          name: "Room",
+          cover: "3d/amandine_final_image_1.jpg",
+          pages: [
+            "3d/amandine_final_image_1.jpg",
+            "3d/amandine_final_image_2.jpg",
+            "3d/amandine_final_image_3.jpg",
+          ],
+          caption: "Maya Render; 3D Modeling, NYU.",
+        },
+       
+      ];
 
-  const modelWorks = [
-    {
-      type: "stack",
-      name: "Room",
-      cover: "3d/amandine_final_image_1.jpg",
-      pages: [
-        "3d/amandine_final_image_1.jpg",
-        "3d/amandine_final_image_2.jpg",
-        "3d/amandine_final_image_3.jpg"
-      ],
-      caption: "Maya Render; 3D Modeling, NYU.",
-    },
-    {
-      type: "single",
-      name: "Object",
-      src: "3d/object.jpg",
-      caption: "3D Model Project.",
-    }
-  ];
+      const gallery = document.getElementById("gallery");
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+      const lightboxName = document.getElementById("lightbox-name");
+      const lightboxCaption = document.getElementById("lightbox-caption");
+      const closeBtn = document.getElementById("closeBtn");
+      const thumbCol = document.getElementById("thumbCol");
 
-  const gallery = document.getElementById("gallery");
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightbox-img");
-  const lightboxName = document.getElementById("lightbox-name");
-  const lightboxCaption = document.getElementById("lightbox-caption");
-  const closeBtn = document.getElementById("closeBtn");
-  const thumbCol = document.getElementById("thumbCol");
+      const modelGallery = document.getElementById("modelGallery");
+      const modelLightbox = document.getElementById("modelLightbox");
+      const modelLightboxImg = document.getElementById("model-lightbox-img");
+      const modelLightboxName = document.getElementById("model-lightbox-name");
+      const modelLightboxCaption = document.getElementById(
+        "model-lightbox-caption",
+      );
+      const modelCloseBtn = document.getElementById("modelCloseBtn");
 
-  const modelGallery = document.getElementById("modelGallery");
-  const modelLightbox = document.getElementById("modelLightbox");
-  const modelLightboxImg = document.getElementById("model-lightbox-img");
-  const modelLightboxName = document.getElementById("model-lightbox-name");
-  const modelLightboxCaption = document.getElementById("model-lightbox-caption");
-  const modelCloseBtn = document.getElementById("modelCloseBtn");
+      let currentWorkIndex = -1;
+      let currentPageIndex = 0;
 
-  let currentWorkIndex = -1;
-  let currentPageIndex = 0;
+      let currentModelIndex = -1;
+      let currentModelPageIndex = 0;
 
-  let currentModelIndex = -1;
-  let currentModelPageIndex = 0;
-
-  works.forEach((item, index) => {
-    const div = document.createElement("div");
-    div.className = "gallery-item";
-    const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
-    div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
-    div.onclick = () => openLightbox(index, 0);
-    gallery.appendChild(div);
-  });
-
-  modelWorks.forEach((item, index) => {
-    const div = document.createElement("div");
-    div.className = "gallery-item";
-    const thumb = item.type === "stack" ? item.cover || item.pages[0] : item.src;
-    div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
-    div.onclick = () => openModelLightbox(index, 0);
-    modelGallery.appendChild(div);
-  });
-
-  function renderThumbColumn(item) {
-    thumbCol.innerHTML = "";
-
-    if (item.type !== "stack" || item.pages.length <= 1) {
-      thumbCol.style.display = "none";
-      return;
-    }
-
-    thumbCol.style.display = "flex";
-
-    item.pages.forEach((src, idx) => {
-      const cell = document.createElement("div");
-      cell.className = "thumb-cell" + (idx === currentPageIndex ? " active" : "");
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = `${item.name} page ${idx + 1}`;
-      cell.appendChild(img);
-      cell.addEventListener("click", (e) => {
-        e.stopPropagation();
-        goToPage(idx);
+      works.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "gallery-item";
+        const thumb =
+          item.type === "stack" ? item.cover || item.pages[0] : item.src;
+        div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
+        div.onclick = () => openLightbox(index, 0);
+        gallery.appendChild(div);
       });
-      thumbCol.appendChild(cell);
-    });
-  }
 
-  function highlightThumb(idx) {
-    [...thumbCol.children].forEach((cell, i) => {
-      cell.classList.toggle("active", i === idx);
-    });
-  }
+      modelWorks.forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = "gallery-item";
+        const thumb =
+          item.type === "stack" ? item.cover || item.pages[0] : item.src;
+        div.innerHTML = `<img src="${thumb}" alt="${item.name}">`;
+        div.onclick = () => openModelLightbox(index, 0);
+        modelGallery.appendChild(div);
+      });
 
-  function openLightbox(workIndex, pageIndex = 0) {
-    currentWorkIndex = workIndex;
-    currentPageIndex = pageIndex;
+      function renderThumbColumn(item) {
+        thumbCol.innerHTML = "";
 
-    const item = works[workIndex];
-    const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
+        if (item.type !== "stack" || item.pages.length <= 1) {
+          thumbCol.style.display = "none";
+          return;
+        }
 
-    lightboxImg.src = src;
-    lightboxName.textContent = item.name;
-    lightboxCaption.textContent = item.caption || "";
+        thumbCol.style.display = "flex";
 
-    renderThumbColumn(item);
+        item.pages.forEach((src, idx) => {
+          const cell = document.createElement("div");
+          cell.className =
+            "thumb-cell" + (idx === currentPageIndex ? " active" : "");
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = `${item.name} page ${idx + 1}`;
+          cell.appendChild(img);
+          cell.addEventListener("click", (e) => {
+            e.stopPropagation();
+            goToPage(idx);
+          });
+          thumbCol.appendChild(cell);
+        });
+      }
 
-    lightbox.classList.add("active");
-    document.body.classList.add("lightbox-open");
-  }
+      function highlightThumb(idx) {
+        [...thumbCol.children].forEach((cell, i) => {
+          cell.classList.toggle("active", i === idx);
+        });
+      }
 
-  function openModelLightbox(modelIndex, pageIndex = 0) {
-    currentModelIndex = modelIndex;
-    currentModelPageIndex = pageIndex;
+      function openLightbox(workIndex, pageIndex = 0) {
+        currentWorkIndex = workIndex;
+        currentPageIndex = pageIndex;
 
-    const item = modelWorks[modelIndex];
-    const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
+        const item = works[workIndex];
+        const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
 
-    modelLightboxImg.src = src;
-    modelLightboxName.textContent = item.name;
-    modelLightboxCaption.textContent = item.caption || "";
+        lightboxImg.src = src;
+        lightboxName.textContent = item.name;
+        lightboxCaption.textContent = item.caption || "";
 
-    modelLightbox.classList.add("active");
-    document.body.classList.add("lightbox-open");
-  }
+        renderThumbColumn(item);
 
-  function closeLightbox() {
-    lightbox.classList.remove("active");
-    modelLightbox.classList.remove("active");
-    document.body.classList.remove("lightbox-open");
-    currentWorkIndex = -1;
-    currentModelIndex = -1;
-  }
+        lightbox.classList.add("active");
+        document.body.classList.add("lightbox-open");
+      }
 
-  function goToPage(idx) {
-    const item = works[currentWorkIndex];
-    if (item?.type !== "stack") return;
+      function openModelLightbox(modelIndex, pageIndex = 0) {
+        currentModelIndex = modelIndex;
+        currentModelPageIndex = pageIndex;
 
-    if (idx < 0) idx = item.pages.length - 1;
-    if (idx >= item.pages.length) idx = 0;
+        const item = modelWorks[modelIndex];
+        const src = item.type === "stack" ? item.pages[pageIndex] : item.src;
 
-    currentPageIndex = idx;
-    lightboxImg.src = item.pages[currentPageIndex];
-    highlightThumb(currentPageIndex);
-  }
+        modelLightboxImg.src = src;
+        modelLightboxName.textContent = item.name;
+        modelLightboxCaption.textContent = item.caption || "";
 
-  function gotoPrevPage() {
-    goToPage(currentPageIndex - 1);
-  }
+        modelLightbox.classList.add("active");
+        document.body.classList.add("lightbox-open");
+      }
 
-  function gotoNextPage() {
-    goToPage(currentPageIndex + 1);
-  }
+      function closeLightbox() {
+        lightbox.classList.remove("active");
+        modelLightbox.classList.remove("active");
+        document.body.classList.remove("lightbox-open");
+        currentWorkIndex = -1;
+        currentModelIndex = -1;
+      }
 
-  function showCodeProject(project) {
-    const frame = document.getElementById("codeFrame");
+      function goToPage(idx) {
+        const item = works[currentWorkIndex];
+        if (item?.type !== "stack") return;
 
-    if (project === "custom") {
-      frame.src = "https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/";
-    }
+        if (idx < 0) idx = item.pages.length - 1;
+        if (idx >= item.pages.length) idx = 0;
 
-    if (project === "corpse") {
-      frame.src = "https://amandinemangon.github.io/Exquisite-Corpse/";
-    }
-  }
+        currentPageIndex = idx;
+        lightboxImg.src = item.pages[currentPageIndex];
+        highlightThumb(currentPageIndex);
+      }
 
-  closeBtn.onclick = closeLightbox;
-  modelCloseBtn.onclick = closeLightbox;
+      function gotoPrevPage() {
+        goToPage(currentPageIndex - 1);
+      }
 
-  lightbox.onclick = (e) => {
-    if (e.target === lightbox) closeLightbox();
-  };
+      function gotoNextPage() {
+        goToPage(currentPageIndex + 1);
+      }
 
-  modelLightbox.onclick = (e) => {
-    if (e.target === modelLightbox) closeLightbox();
-  };
+      function showCodeProject(project) {
+        const frame = document.getElementById("codeFrame");
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeLightbox();
-    if (currentWorkIndex === -1) return;
-    if (e.key === "ArrowLeft") gotoPrevPage();
-    if (e.key === "ArrowRight") gotoNextPage();
-  });
+        if (project === "custom") {
+          frame.src =
+            "https://amandinemangon.github.io/Creative-Coding-Final-Project-Amandine-Mangon/p5copy/";
+        }
 
-  const tabLinks = document.querySelectorAll("nav.tabs a");
-  const digitalSection = document.getElementById("digitalSection");
-  const modelSection = document.getElementById("modelSection");
-  const codeSection = document.getElementById("codeSection");
-  const soundSection = document.getElementById("soundSection");
+        if (project === "corpse") {
+          frame.src = "https://amandinemangon.github.io/Exquisite-Corpse/";
+          
+        }
+      }
 
-  function setActiveTab(tab) {
-    tabLinks.forEach(a => {
-      if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
-      else a.removeAttribute("aria-current");
-    });
+      closeBtn.onclick = closeLightbox;
+      modelCloseBtn.onclick = closeLightbox;
 
-    digitalSection.classList.remove("active");
-    modelSection.classList.remove("active");
-    codeSection.classList.remove("active");
-    soundSection.classList.remove("active");
-    closeLightbox();
+      lightbox.onclick = (e) => {
+        if (e.target === lightbox) closeLightbox();
+      };
 
-    if (tab === "model") {
-      modelSection.classList.add("active");
-    } else if (tab === "code") {
-      codeSection.classList.add("active");
-    } else if (tab === "sound") {
-      soundSection.classList.add("active");
-    } else {
-      digitalSection.classList.add("active");
-    }
-  }
+      modelLightbox.onclick = (e) => {
+        if (e.target === modelLightbox) closeLightbox();
+      };
 
-  function currentTab() {
-    const h = (location.hash || "#digital").slice(1).toLowerCase();
-    return h === "model" || h === "code" || h === "sound" ? h : "digital";
-  }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeLightbox();
+        if (currentWorkIndex === -1) return;
+        if (e.key === "ArrowLeft") gotoPrevPage();
+        if (e.key === "ArrowRight") gotoNextPage();
+      });
 
-  tabLinks.forEach(a => {
-    a.addEventListener("click", e => {
-      e.preventDefault();
-      const tab = a.dataset.tab;
-      history.replaceState(null, "", "#" + tab);
-      setActiveTab(tab);
-    });
-  });
+      const tabLinks = document.querySelectorAll("nav.tabs a");
+      const digitalSection = document.getElementById("digitalSection");
+      const modelSection = document.getElementById("modelSection");
+      const codeSection = document.getElementById("codeSection");
+      const soundSection = document.getElementById("soundSection");
 
-  window.addEventListener("hashchange", () => setActiveTab(currentTab()));
-  setActiveTab(currentTab());
-</script>
+      function setActiveTab(tab) {
+        tabLinks.forEach((a) => {
+          if (a.dataset.tab === tab) a.setAttribute("aria-current", "page");
+          else a.removeAttribute("aria-current");
+        });
 
-</body>
+        digitalSection.classList.remove("active");
+        modelSection.classList.remove("active");
+        codeSection.classList.remove("active");
+        soundSection.classList.remove("active");
+        closeLightbox();
+
+        if (tab === "model") {
+          modelSection.classList.add("active");
+        } else if (tab === "code") {
+          codeSection.classList.add("active");
+        } else if (tab === "sound") {
+          soundSection.classList.add("active");
+        } else {
+          digitalSection.classList.add("active");
+        }
+      }
+
+      function currentTab() {
+        const h = (location.hash || "#digital").slice(1).toLowerCase();
+        return h === "model" || h === "code" || h === "sound" ? h : "digital";
+      }
+
+      tabLinks.forEach((a) => {
+        a.addEventListener("click", (e) => {
+          e.preventDefault();
+          const tab = a.dataset.tab;
+          history.replaceState(null, "", "#" + tab);
+          setActiveTab(tab);
+        });
+      });
+
+      window.addEventListener("hashchange", () => setActiveTab(currentTab()));
+      setActiveTab(currentTab());
+    </script>
+  </body>
 </html>
