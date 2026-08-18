@@ -462,6 +462,7 @@
       <div class="lightbox" id="modelLightbox">
         <div class="close-btn" id="modelCloseBtn">&times;</div>
         <div class="lightbox-content">
+          <div class="thumb-col" id="modelThumbCol"></div>
           <div class="lightbox-media">
             <img id="model-lightbox-img" src="" alt="3D model work" />
           </div>
@@ -639,12 +640,12 @@
       const modelWorks = [
         {
           type: "stack",
-          name: "Room",
-          cover: "3d/amandine_final_image_1.jpg",
+          name: "Nightroom",
+          cover: "3d/amandine_final_image_3.jpg",
           pages: [
+            "3d/amandine_final_image_3.jpg",
             "3d/amandine_final_image_1.jpg",
             "3d/amandine_final_image_2.jpg",
-            "3d/amandine_final_image_3.jpg",
           ],
           caption: "Maya Render; 3D Modeling, NYU.",
         },
@@ -667,6 +668,7 @@
         "model-lightbox-caption",
       );
       const modelCloseBtn = document.getElementById("modelCloseBtn");
+      const modelThumbCol = document.getElementById("modelThumbCol");
 
       let currentWorkIndex = -1;
       let currentPageIndex = 0;
@@ -726,6 +728,38 @@
         });
       }
 
+      function renderModelThumbColumn(item) {
+        modelThumbCol.innerHTML = "";
+
+        if (item.type !== "stack" || item.pages.length <= 1) {
+          modelThumbCol.style.display = "none";
+          return;
+        }
+
+        modelThumbCol.style.display = "flex";
+
+        item.pages.forEach((src, idx) => {
+          const cell = document.createElement("div");
+          cell.className =
+            "thumb-cell" + (idx === currentModelPageIndex ? " active" : "");
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = `${item.name} page ${idx + 1}`;
+          cell.appendChild(img);
+          cell.addEventListener("click", (e) => {
+            e.stopPropagation();
+            goToModelPage(idx);
+          });
+          modelThumbCol.appendChild(cell);
+        });
+      }
+
+      function highlightModelThumb(idx) {
+        [...modelThumbCol.children].forEach((cell, i) => {
+          cell.classList.toggle("active", i === idx);
+        });
+      }
+
       function openLightbox(workIndex, pageIndex = 0) {
         currentWorkIndex = workIndex;
         currentPageIndex = pageIndex;
@@ -754,6 +788,8 @@
         modelLightboxName.textContent = item.name;
         modelLightboxCaption.textContent = item.caption || "";
 
+        renderModelThumbColumn(item);
+
         modelLightbox.classList.add("active");
         document.body.classList.add("lightbox-open");
       }
@@ -763,7 +799,9 @@
         modelLightbox.classList.remove("active");
         document.body.classList.remove("lightbox-open");
         currentWorkIndex = -1;
+        currentPageIndex = 0;
         currentModelIndex = -1;
+        currentModelPageIndex = 0;
       }
 
       function goToPage(idx) {
@@ -784,6 +822,26 @@
 
       function gotoNextPage() {
         goToPage(currentPageIndex + 1);
+      }
+
+      function goToModelPage(idx) {
+        const item = modelWorks[currentModelIndex];
+        if (item?.type !== "stack") return;
+
+        if (idx < 0) idx = item.pages.length - 1;
+        if (idx >= item.pages.length) idx = 0;
+
+        currentModelPageIndex = idx;
+        modelLightboxImg.src = item.pages[currentModelPageIndex];
+        highlightModelThumb(currentModelPageIndex);
+      }
+
+      function gotoPrevModelPage() {
+        goToModelPage(currentModelPageIndex - 1);
+      }
+
+      function gotoNextModelPage() {
+        goToModelPage(currentModelPageIndex + 1);
       }
 
       function showCodeProject(project) {
@@ -813,9 +871,16 @@
 
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeLightbox();
-        if (currentWorkIndex === -1) return;
-        if (e.key === "ArrowLeft") gotoPrevPage();
-        if (e.key === "ArrowRight") gotoNextPage();
+
+        if (currentWorkIndex !== -1) {
+          if (e.key === "ArrowLeft") gotoPrevPage();
+          if (e.key === "ArrowRight") gotoNextPage();
+        }
+
+        if (currentModelIndex !== -1) {
+          if (e.key === "ArrowLeft") gotoPrevModelPage();
+          if (e.key === "ArrowRight") gotoNextModelPage();
+        }
       });
 
       const tabLinks = document.querySelectorAll("nav.tabs a");
