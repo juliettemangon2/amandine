@@ -1,252 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Friends | Amandine Mangon</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
   <style>
+    :root {
+      --pad-x: clamp(18px, 2.3vw, 44px);   /* left/right page margin (same as homepage) */
+      --pad-y: clamp(18px, 3.6vh, 40px);   /* top/bottom page margin (same as homepage) */
+      --fs: clamp(12px, calc(0.5vw + 6.5px), 17px);
+      --gap: clamp(4px, 0.45vw, 8px);      /* space between collages */
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html, body {
+    html, body { background: #fff; }
+    body {
+      color: #000;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: var(--fs);
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:hover,
+    .current {
+      text-decoration: underline;
+      text-decoration-thickness: 0.09em;
+      text-underline-offset: 0.18em;
+    }
+
+    /* ---------- top left: COLLAGE + its pages ---------- */
+    .section-nav {
+      position: fixed;
+      top: var(--pad-y);
+      left: var(--pad-x);
+      z-index: 10;
+    }
+    .nav-row { display: flex; flex-wrap: wrap; column-gap: 0.95em; }
+
+    /* ---------- top right: name, goes home ---------- */
+    .site-name {
+      position: fixed;
+      top: var(--pad-y);
+      right: var(--pad-x);
+      z-index: 10;
+    }
+
+    /* ---------- 3 x 3 grid ---------- */
+    .stage {
+      height: 100vh;
+      height: 100dvh;
+      padding: calc(var(--pad-y) + 4.5em) var(--pad-x) calc(var(--pad-y) + 1.5em);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, var(--cell-w));
+      grid-auto-rows: var(--cell-h);
+      gap: var(--gap);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .grid.ready { opacity: 1; }
+    .tile {
+      display: block;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+    .tile img {
+      display: block;
       width: 100%;
       height: 100%;
-      font: 400 15px/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: #000;
-      color: #fff;
-      overflow-x: hidden;
-      text-transform: uppercase;
+      object-fit: contain;      /* whole collage shows, never stretched */
+      transition: opacity 0.25s ease;
     }
+    .tile:hover img { opacity: 0.82; }
+    .tile:focus:not(:focus-visible) { outline: none; }
 
-    footer {
-      bottom: 0; left: 0; width: 100%;
-    }
-
-    /* GALLERY GRID */
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 50px;
-      padding: 60px 20px;
-    }
-    @media (min-width: 640px) {
-      .gallery { grid-template-columns: repeat(3, 1fr); }
-    }
-    .gallery-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-    }
-    .gallery img {
-      width: 80%;
-      height: auto;
-      border: 1px solid #444;
-      transition: transform 0.2s;
-    }
-    .gallery img:hover { transform: scale(1.03); }
-    .caption {
-      margin-top: 5px;
-      font-size: 1.25rem;
-      letter-spacing: .05em;
-      color: #fff;
-      text-align: center;
-      font-weight: bold;
-      text-decoration: none;
-    }
-
-    .home-btn {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      z-index: 1000;
-      background: #fff;
-      color: #000;
-      padding: 6px 12px;
-      font-weight: bold;
-      font-size: 0.75rem;
-      text-decoration: none;
-      letter-spacing: 0.05em;
-      border: none;
-    }
-
-    /* LIGHTBOX */
+    /* ---------- enlarged view: collage left, name + text right ---------- */
     .lightbox {
-      display: none;                  /* hidden by default */
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.9);
       z-index: 100;
-      padding: 32px;
-      overflow: auto;
-    }
-    .lightbox.active { display: block; }
-
-    /* Inner layout: IMAGE (left) + META (right, top-aligned) */
-    .lightbox-content {
-      max-width: 1200px;
-      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.93);
       display: flex;
-      gap: 32px;
-      align-items: flex-start;        /* <-- top align the text block */
+      align-items: center;
       justify-content: center;
-    }
-
-    .lightbox-media {
-      flex: 0 1 auto;
-      max-width: 65vw;                /* image column width */
-    }
-    .lightbox-media img {
-      display: block;
-      width: auto;
-      height: auto;
-      max-width: 65vw;                /* keep image within viewport width */
-      max-height: 90vh;               /* keep image fully visible vertically */
-      object-fit: contain;            /* ensure whole image stays in frame */
-      border: 1px solid #fff;
-    }
-
-    .lightbox-meta {
-      flex: 0 0 28vw;                 /* right column width */
-      max-width: 28vw;
-      text-align: left;               /* left-align text */
-    }
-    .lightbox-name {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-      letter-spacing: 0.06em;
-    }
-    .lightbox-caption {
-      font-size: 1rem;
-      line-height: 1.65;
-      color: #fff;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-
-    /* Close button */
-    .close-btn {
-      position: fixed;
-      top: 20px;
-      right: 30px;
-      font-size: 2rem;
-      color: #fff;
+      padding: 4vh 4vw;
       cursor: pointer;
-      z-index: 200;
     }
+    .lightbox[hidden] { display: none; }
+    .lb-content {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 2.4em;
+    }
+    .lb-content img {
+      display: block;
+      max-width: 58vw;
+      max-height: 88vh;
+    }
+    .lb-text { width: 26vw; max-width: 30em; }
+    .lb-name { margin-bottom: 0.7em; }
+    .lb-caption { line-height: 1.55; }
+    body.lb-open { overflow: hidden; }
 
-    /* Responsive: stack on small screens */
-    @media (max-width: 800px) {
-      .lightbox-content {
-        flex-direction: column;
-        align-items: center;
-      }
-      .lightbox-media { max-width: 90vw; }
-      .lightbox-media img { max-width: 90vw; max-height: 70vh; }
-      .lightbox-meta {
-        flex: 1 1 auto;
-        max-width: 90vw;
-      }
+    /* ---------- phones: scroll down, text under the collage ---------- */
+    @media (max-width: 760px) {
+      .stage { height: auto; overflow: visible; align-items: flex-start; }
+      .lb-content { flex-direction: column; align-items: center; gap: 1.2em; }
+      .lb-content img { max-width: 92vw; max-height: 62vh; }
+      .lb-text { width: 92vw; }
     }
   </style>
 </head>
 <body>
 
-<a class="home-btn" href="index.html">HOME</a>
-
-<div class="gallery" id="gallery"></div>
-
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <div class="close-btn" id="closeBtn" aria-label="Close">&times;</div>
-
-  <div class="lightbox-content" role="dialog" aria-modal="true">
-    <div class="lightbox-media">
-      <img id="lightbox-img" src="" alt="Friend photo" />
+  <nav class="section-nav">
+    <div class="nav-row"><a href="postcards.html">Collage</a></div>
+    <div class="nav-row">
+      <a href="postcards.html">Postcards</a>
+      <a href="friends.html" class="current">Friends</a>
+      <a href="collage.html#girl">Girl</a>
     </div>
-    <div class="lightbox-meta">
-      <div class="lightbox-name" id="lightbox-name"></div>
-      <div class="lightbox-caption" id="lightbox-caption"></div>
+  </nav>
+
+  <a class="site-name" href="index.html">Amandine Mangon</a>
+
+  <main class="stage" id="stage">
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <div class="lb-content">
+      <img id="lb-img" src="" alt="">
+      <div class="lb-text">
+        <div class="lb-name" id="lb-name"></div>
+        <div class="lb-caption" id="lb-caption"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-  const friends = [
-    { name: "Santi", src: "friends/santi.jpeg", caption: "Santi likes to go rock climbing with his friends. He enjoys a black coffee for breakfast, and that's it. He indulges in a cigarette once in a while, and always has a shoulder to lean on." },
-    { name: "Laura", src: "friends/laura.jpeg", caption: "Laura’s favorite color is pink and she likes to spend time outdoors. She also enjoys nicotine products." },
-    { name: "Justice", src: "friends/justice.jpeg", caption: "Justice is known for wearing an ERD rat broach on his hat. He wears silver jewelry and likes to smoke with friends." },
-    { name: "Frankie", src: "friends/frankie.jpeg", caption: "Frankie lives in NYC and plays many instruments including the piano. She has a lighter with her name engraved on it. She likes florals and going on walks." },
-    { name: "Mateo", src: "friends/mateo.jpeg", caption: "Mateo used to live in Iowa and now lives in New York City. In both his personal and work life he is a photographer. He wears black broken rosary beads." },
-    { name: "Juliette", src: "friends/juliette.jpeg", caption: "Juliette spends her summers in the south of France going to the beach. She loves clothes, especially dresses, and has a growing collection of perfumes." },
-    { name: "Sophia", src: "friends/sophia.jpeg", caption: "Sophia lives in London, but is also part Danish. She has a great taste in fashion and enjoys going out for drinks with her friends. She also has horses." },
-    { name: "Ava", src: "friends/ava.jpeg", caption: "Ava studies politics and likes the cold weather. She likes listening to music, and has a poster of John Coltrane in her room. She also enjoys hot sauce." },
-    { name: "Chris", src: "friends/chris.jpeg", caption: "Chris is full of energy and loves being on AUX or queuing songs during group gatherings. He studies Photography and goes skiing every winter." }
-  ];
+  <script>
+    /* ==============================================================
+       FRIENDS — in order. Images are in the "friends" folder.
+       ============================================================== */
+    var FRIENDS = [
+      { name: "Santi",    src: "friends/santi.jpeg",    caption: "Santi likes to go rock climbing with his friends. He enjoys a black coffee for breakfast, and that's it. He indulges in a cigarette once in a while, and always has a shoulder to lean on." },
+      { name: "Laura",    src: "friends/laura.jpeg",    caption: "Laura’s favorite color is pink and she likes to spend time outdoors. She also enjoys nicotine products." },
+      { name: "Justice",  src: "friends/justice.jpeg",  caption: "Justice is known for wearing an ERD rat broach on his hat. He wears silver jewelry and likes to smoke with friends." },
+      { name: "Frankie",  src: "friends/frankie.jpeg",  caption: "Frankie lives in NYC and plays many instruments including the piano. She has a lighter with her name engraved on it. She likes florals and going on walks." },
+      { name: "Mateo",    src: "friends/mateo.jpeg",    caption: "Mateo used to live in Iowa and now lives in New York City. In both his personal and work life he is a photographer. He wears black broken rosary beads." },
+      { name: "Juliette", src: "friends/juliette.jpeg", caption: "Juliette spends her summers in the south of France going to the beach. She loves clothes, especially dresses, and has a growing collection of perfumes." },
+      { name: "Sophia",   src: "friends/sophia.jpeg",   caption: "Sophia lives in London, but is also part Danish. She has a great taste in fashion and enjoys going out for drinks with her friends. She also has horses." },
+      { name: "Ava",      src: "friends/ava.jpeg",      caption: "Ava studies politics and likes the cold weather. She likes listening to music, and has a poster of John Coltrane in her room. She also enjoys hot sauce." },
+      { name: "Chris",    src: "friends/chris.jpeg",    caption: "Chris is full of energy and loves being on AUX or queuing songs during group gatherings. He studies Photography and goes skiing every winter." }
+    ];
 
-  const gallery = document.getElementById("gallery");
-  const lightbox = document.getElementById("lightbox");
-  const lightboxImg = document.getElementById("lightbox-img");
-  const lightboxName = document.getElementById("lightbox-name");
-  const lightboxCaption = document.getElementById("lightbox-caption");
-  const closeBtn = document.getElementById("closeBtn");
+    /* ============================================================== */
 
-  let currentIndex = -1;
+    (function () {
+      var stage = document.getElementById("stage");
+      var grid = document.getElementById("grid");
 
-  function openLightbox(index) {
-    currentIndex = index;
-    const f = friends[index];
-    lightboxImg.src = f.src;
-    lightboxImg.alt = f.name;
-    lightboxName.textContent = f.name;
-    lightboxCaption.textContent = f.caption;
-    lightbox.classList.add("active");
-  }
+      // ----- build the grid (no names shown) -----
+      var imgs = FRIENDS.map(function (f, i) {
+        var b = document.createElement("button");
+        b.className = "tile";
+        b.type = "button";
+        b.setAttribute("aria-label", f.name);
+        var img = document.createElement("img");
+        img.alt = f.name;
+        img.src = f.src;
+        b.appendChild(img);
+        b.addEventListener("click", function () { openBox(i); });
+        grid.appendChild(b);
+        return img;
+      });
 
-  function closeLightbox() {
-    lightbox.classList.remove("active");
-    currentIndex = -1;
-    // Optional: clear img to avoid old ratio flash
-    // lightboxImg.src = "";
-  }
+      // width ÷ height of each image, as soon as the browser knows it
+      function ratioOf(img) {
+        return new Promise(function (done) {
+          function finish() { done(img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 0); }
+          if (img.complete) return finish();
+          img.addEventListener("load", finish);
+          img.addEventListener("error", finish);
+          (function poll() {
+            if (img.naturalWidth) return finish();
+            if (!img.complete) requestAnimationFrame(poll);
+          })();
+        });
+      }
 
-  // Build gallery
-  friends.forEach((friend, index) => {
-    const item = document.createElement("div");
-    item.className = "gallery-item";
-    item.innerHTML = `
-      <img src="${friend.src}" alt="${friend.name}" />
-      <div class="caption">${friend.name}</div>
-    `;
-    item.addEventListener("click", () => openLightbox(index));
-    gallery.appendChild(item);
-  });
+      /* Every square of the grid has the same shape (the typical shape of
+         the collages), and the 3 x 3 grid is made as big as fits on screen.
+         Each collage sits whole inside its square, never stretched. */
+      function layout(cellRatio) {
+        var phone = window.matchMedia("(max-width: 760px)").matches;
+        var gap = parseFloat(getComputedStyle(grid).columnGap) || 6;
+        var cs = getComputedStyle(stage);
+        var W = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        var H = stage.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+        var rows = Math.ceil(FRIENDS.length / 3);
+        var w = (W - 2 * gap) / 3;
+        if (!phone) w = Math.min(w, ((H - (rows - 1) * gap) / rows) * cellRatio);
+        grid.style.setProperty("--cell-w", w + "px");
+        grid.style.setProperty("--cell-h", w / cellRatio + "px");
+        grid.classList.add("ready");
+      }
 
-  // Close handlers
-  closeBtn.addEventListener("click", closeLightbox);
-  lightbox.addEventListener("click", (e) => {
-    // Click on overlay (not inside content) closes
-    if (e.target === lightbox) closeLightbox();
-  });
+      Promise.all(imgs.map(ratioOf)).then(function (ratios) {
+        var ok = ratios.filter(function (r) { return r > 0; }).sort();
+        var cellRatio = ok.length ? ok[Math.floor(ok.length / 2)] : 0.7;   // the typical shape
+        layout(cellRatio);
+        var t;
+        window.addEventListener("resize", function () {
+          clearTimeout(t);
+          t = setTimeout(function () { layout(cellRatio); }, 60);
+        });
+      });
 
-  // Keyboard navigation
-  document.addEventListener("keydown", (e) => {
-    if (currentIndex === -1) return;
-    if (e.key === "Escape") closeLightbox();
-    if (e.key === "ArrowLeft") {
-      currentIndex = (currentIndex - 1 + friends.length) % friends.length;
-      openLightbox(currentIndex);
-    }
-    if (e.key === "ArrowRight") {
-      currentIndex = (currentIndex + 1) % friends.length;
-      openLightbox(currentIndex);
-    }
-  });
-</script>
+      // ----- enlarged view: ESC or click anywhere to close, arrows to move -----
+      var box = document.getElementById("lightbox");
+      var big = document.getElementById("lb-img");
+      var nameEl = document.getElementById("lb-name");
+      var capEl = document.getElementById("lb-caption");
+      var current = -1;
 
-<footer>
-  <p style="text-align:center;font-size:0.9rem;color:#fff;margin-bottom:0.7rem;margin-top:1rem;">
-    © 2025 Amandine Mangon
-  </p>
-</footer>
+      function show(i) {
+        current = (i + FRIENDS.length) % FRIENDS.length;
+        var f = FRIENDS[current];
+        big.src = f.src;
+        big.alt = f.name;
+        nameEl.textContent = f.name;
+        capEl.textContent = f.caption;
+        new Image().src = FRIENDS[(current + 1) % FRIENDS.length].src;                    // load next
+        new Image().src = FRIENDS[(current - 1 + FRIENDS.length) % FRIENDS.length].src;   // load previous
+      }
+      function openBox(i) {
+        show(i);
+        box.hidden = false;
+        document.body.classList.add("lb-open");
+      }
+      function closeBox() {
+        box.hidden = true;
+        current = -1;
+        document.body.classList.remove("lb-open");
+      }
+
+      box.addEventListener("click", closeBox);
+      document.addEventListener("keydown", function (e) {
+        if (current < 0) return;
+        if (e.key === "Escape") closeBox();
+        else if (e.key === "ArrowRight") { e.preventDefault(); show(current + 1); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); show(current - 1); }
+      });
+
+      // swipe on phones
+      var startX = null;
+      box.addEventListener("touchstart", function (e) { startX = e.touches[0].clientX; }, { passive: true });
+      box.addEventListener("touchend", function (e) {
+        if (startX === null || current < 0) return;
+        var dx = e.changedTouches[0].clientX - startX;
+        startX = null;
+        if (dx > 40) show(current - 1);
+        else if (dx < -40) show(current + 1);
+      });
+    })();
+  </script>
 </body>
 </html>
