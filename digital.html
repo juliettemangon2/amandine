@@ -11,8 +11,12 @@
       --pad-x: clamp(18px, 2.3vw, 44px);   /* left/right page margin (same as homepage) */
       --pad-y: clamp(18px, 3.6vh, 40px);   /* top/bottom page margin (same as homepage) */
       --fs: clamp(12px, calc(0.5vw + 6.5px), 17px);
-      --content-w: min(80vw, 1400px);      /* width of the image + text row */
-      --cover-h: 52vh;                     /* height of each cover image */
+      --gap: 1.3em;                        /* space between image and text */
+      --text-w: min(24vw, 26em);           /* width of the text next to the 3D render */
+      --shape: 1.78;                       /* widest cover's width ÷ height (the 3D render) */
+      /* height of every cover: up to 52% of the screen, smaller if needed to fit across */
+      --cover-h: min(52vh, calc((88vw - var(--text-w) - var(--gap)) / var(--shape)));
+      --box-w: calc(var(--cover-h) * var(--shape));   /* width of the 3D render */
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -68,11 +72,14 @@
       justify-content: center;
       padding: 0 var(--pad-x) calc(var(--pad-y) + 2.5em);
     }
+    /* Every category is exactly as wide in total (image + text) as the 3D one,
+       and centered. All images are the same height and keep their own shape;
+       the text gets whatever width is left, so narrower images get wider text. */
     .row {
-      width: var(--content-w);
+      width: calc(var(--box-w) + var(--gap) + var(--text-w));
       display: flex;
       align-items: flex-end;              /* text lines up with the bottom of the image */
-      gap: 1.3em;
+      gap: var(--gap);
     }
 
     .cover { flex: none; display: block; }
@@ -80,7 +87,7 @@
       display: block;
       height: var(--cover-h);
       width: auto;
-      max-width: 50vw;
+      max-width: var(--box-w);
       object-fit: contain;
       transition: opacity 0.25s ease;
     }
@@ -98,7 +105,7 @@
       color: #999;
     }
 
-    .text { display: block; max-width: 44em; }
+    .text { display: block; flex: 1; min-width: 0; }
     .text .title { margin-bottom: 1.3em; }
     .text p { line-height: 1.3; }
 
@@ -107,7 +114,9 @@
       .stage { position: static; overflow: visible; scroll-snap-type: none; padding-top: calc(var(--pad-y) + 3em); }
       .category { height: auto; padding-bottom: 3.5em; }
       .row { flex-direction: column; align-items: flex-start; width: 100%; }
+      .cover { display: block; }
       .cover, .cover img, .placeholder { width: 100%; height: auto; max-width: none; }
+      .text { width: 100%; }
       .placeholder { aspect-ratio: 4 / 3; }
     }
   </style>
@@ -122,7 +131,7 @@
     <!-- ============ GRAPHIC DESIGN ============ -->
     <section class="category" id="graphic-design">
       <div class="row">
-               <a class="cover" href="graphic-design.html#iconoclast">
+        <a class="cover" href="graphic-design.html#iconoclast">
           <img src="digital/iconoclast.jpeg" alt="Iconoclast magazine cover">
         </a>
         <a class="text" href="graphic-design.html">
@@ -136,9 +145,7 @@
     <section class="category" id="code">
       <div class="row">
         <a class="cover" href="code.html">
-          <!-- COVER IMAGE: replace the line below with
-               <img src="digital/YOUR-IMAGE.jpg" alt="Code"> -->
-          <div class="placeholder">Cover image</div>
+          <img src="digital/codecover.jpeg" alt="Code">
         </a>
         <a class="text" href="code.html">
           <div class="title">Code</div>
