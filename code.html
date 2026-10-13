@@ -98,6 +98,27 @@
       height: auto;
     }
 
+    /* about the project: image on the left, text on the right,
+       the image exactly as tall as the text, the pair centered on its own screen */
+    .about {
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 var(--pad-x) calc(var(--pad-y) + 1.5em);
+    }
+    .about-row { display: flex; align-items: flex-start; gap: calc(var(--gap) * 1.6); }
+    .about-row img { display: block; flex: none; }
+    .about-row.stacked { flex-direction: column; padding: 3em 0; }
+    .about-text { flex: none; line-height: 1.3; }
+    .about-text p + p { margin-top: 1.3em; }
+    .about-text a {
+      text-decoration: underline;
+      text-decoration-thickness: 0.09em;
+      text-underline-offset: 0.18em;
+    }
+    .about-text a:hover { opacity: 0.6; }
+
     /* ---------- phones ---------- */
     @media (max-width: 760px) {
       .section-nav { right: var(--pad-x); }
@@ -105,6 +126,10 @@
       .first { height: auto; padding-top: 1em; padding-bottom: 3em; }
       .piece { width: 100%; }
       .more img { width: 100%; }
+      .about { min-height: 0; padding-bottom: 3em; }
+      .about-row { flex-direction: column; }
+      .about-row img { width: 100% !important; height: auto !important; }
+      .about-text { width: auto !important; }
     }
   </style>
 </head>
@@ -163,10 +188,26 @@
         name: "The Five Stages of Grief",
         page: "five-stages-of-grief/index.html",
         noCaption: true,
-        images: [
-          "five-stages-of-grief/5stages1.jpeg",
-          "five-stages-of-grief/5stages2.jpeg"
-        ]
+        // image + text you see when you scroll down
+        aboutImage: "five-stages-of-grief/5stagesoriginal.jpg",
+        about: [
+          'The Five Stages of Grief is a coded visual animation made in collaboration with ' +
+          '<a href="https://irisazuloconnor.com/" target="_blank" rel="noopener">Iris Azul O’Connor</a> for ' +
+          '<a href="projects.html#ineverseeyou">ineverseeyou</a>, an art collective co-founded by Amandine Mangon ' +
+          'with over 20 other artists. Exquisite Corpse (Cycle 1: Entanglement, Project 1: Exploration) was also made for ' +
+          '<a href="projects.html#ineverseeyou">ineverseeyou</a>. The Five Stages of Grief was part of Cycle 1, ' +
+          'Project 2: Secret Santa. The project had two phases: in phase 1, each artist created a physical piece; ' +
+          'in phase 2, another artist manipulated it digitally.',
+
+          'For this piece, Iris painted the background (a close-up of a face) and used found art to add the other four pieces. ' +
+          'I assigned each of the five parts to one of the five stages of grief. The face with the added tear symbolizes depression, ' +
+          'the top-left corner with the added birds represents acceptance, the top-right corner is anger, the bottom-left is denial, ' +
+          'and the bottom-right is bargaining. The pieces are not shown in the usual linear order of the stages of grief ' +
+          '(denial, anger, bargaining, depression, and acceptance) to show that grief has no concrete shape. ' +
+          'The animations also happen all at once, which confuses the viewer: the audience must focus on one piece at a time ' +
+          'to understand which stage it represents. There is no sound, just visuals. Made with Adobe Illustrator and p5.js.'
+        ],
+        images: []
       }
     ];
 
@@ -175,7 +216,7 @@
     (function () {
       var tabs = document.getElementById("tabs");
       var stage = document.getElementById("stage");
-      var project, frame, caption;
+      var project, frame, caption, aboutRow;
 
       PROJECTS.forEach(function (p) {
         var a = document.createElement("a");
@@ -222,6 +263,29 @@
         first.appendChild(piece);
         stage.appendChild(first);
 
+        aboutRow = null;
+        if (project.about) {
+          var about = el("section", "about");
+          aboutRow = el("div", "about-row");
+          var text = el("div", "about-text");
+          project.about.forEach(function (html) {
+            var p = el("p");
+            p.innerHTML = html;
+            text.appendChild(p);
+          });
+          if (project.aboutImage) {
+            var pic = el("img");
+            pic.src = project.aboutImage;
+            pic.alt = project.name;
+            pic.addEventListener("load", sizeAbout);
+            pic.addEventListener("error", function () { pic.remove(); sizeAbout(); });   // not added yet → just the text
+            aboutRow.appendChild(pic);
+          }
+          aboutRow.appendChild(text);
+          about.appendChild(aboutRow);
+          stage.appendChild(about);
+        }
+
         if (project.images && project.images.length) {
           var more = el("section", "more");
           project.images.forEach(function (src) {
@@ -260,9 +324,70 @@
         caption.style.marginLeft = w * from + "px";
         caption.style.width = w * (1 - 2 * from) + "px";
         caption.style.textAlign = project.captionCenter ? "center" : "left";
+        sizeAbout();
+      }
+
+      /* Image + text together are as wide as the pictures underneath.
+         The image is exactly as tall as the text, so we try text widths
+         until image + gap + text add up to that width. */
+      function sizeAbout() {
+        if (!aboutRow) return;
+        var img = aboutRow.querySelector("img");
+        var text = aboutRow.querySelector(".about-text");
+        var total = Math.min(window.innerWidth * 0.88, 1500);   // width of image + text together
+        aboutRow.classList.remove("stacked");
+        if (window.matchMedia("(max-width: 760px)").matches) return;
+        if (!img || !img.naturalWidth) {
+          if (img) return;                        // still loading
+          text.style.width = Math.min(total, 1000) + "px";
+          return;
+        }
+        var ratio = img.naturalWidth / img.naturalHeight;
+        var gap = parseFloat(getComputedStyle(aboutRow).columnGap) || 0;
+        // full width of the pair when the text is t wide
+        function widthWith(t) {
+          text.style.width = t + "px";
+          return t + gap + text.offsetHeight * ratio;
+        }
+        // narrowest the pair can be (narrower text = taller text = wider image)
+        var a = total * 0.15, b = total, n;
+        for (n = 0; n < 24; n++) {
+          var m1 = a + (b - a) / 3, m2 = b - (b - a) / 3;
+          if (widthWith(m1) < widthWith(m2)) b = m2; else a = m1;
+        }
+        var t = (a + b) / 2;
+        // first choice: like the mockup, the image about half as wide as the text
+        var SHARE = 0.52, lo2 = t, hi2 = total;
+        for (n = 0; n < 22; n++) {
+          var m = (lo2 + hi2) / 2;
+          if (widthWith(m) - gap - m > SHARE * m) lo2 = m; else hi2 = m;
+        }
+        if (widthWith(hi2) <= total) {
+          t = hi2;
+        } else if (widthWith(t) <= total) {
+          // widest text that still fits, so the text isn't squeezed
+          var lo = t, hi = total;
+          for (n = 0; n < 22; n++) {
+            var mid = (lo + hi) / 2;
+            if (widthWith(mid) <= total) lo = mid; else hi = mid;
+          }
+          t = lo;
+        } else if (widthWith(t) > window.innerWidth * 0.94) {
+          // screen too narrow for side by side: image on top, text under
+          aboutRow.classList.add("stacked");
+          text.style.width = Math.min(total, 1000) + "px";
+          img.style.width = Math.min(total, 1000) + "px";
+          img.style.height = "auto";
+          return;
+        }
+        text.style.width = t + "px";
+        var h = text.offsetHeight;
+        img.style.height = h + "px";
+        img.style.width = h * ratio + "px";
       }
 
       window.addEventListener("resize", size);
+      if (document.fonts) document.fonts.ready.then(sizeAbout);
       window.addEventListener("hashchange", load);
       load();
     })();
