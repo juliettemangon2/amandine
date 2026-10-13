@@ -1,252 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Photography – Amandine Mangon</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Photography | Amandine Mangon</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
 
   <style>
+    :root {
+      --pad-x: clamp(18px, 2.3vw, 44px);   /* left/right page margin (same as homepage) */
+      --pad-y: clamp(18px, 3.6vh, 40px);   /* top/bottom page margin (same as homepage) */
+      --fs: clamp(12px, calc(0.5vw + 6.5px), 17px);
+      --col-gap: clamp(12px, 1.6vw, 30px); /* space between photos side by side */
+      --row-gap: clamp(14px, 1.8vw, 32px); /* space between rows */
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      width: 100%;
-      height: 100%;
-      font: 400 15px/1.3 "Helvetica Neue", Helvetica, Arial, sans-serif;
-      background: #000;
-      color: #fff;
-      overflow-x: hidden;
-      text-transform: uppercase;
-    }
-    footer {
-      bottom: 0;
-      left: 0;
-      width: 100%;
-    }
 
-
-    .home-btn {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      z-index: 1000;
-      background: #fff;
+    html, body { background: #fff; }
+    body {
       color: #000;
-      padding: 6px 12px;
-      font-weight: bold;
-      font-size: 0.75rem;
-      text-decoration: none;
-      letter-spacing: 0.05em;
-      border: none;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: var(--fs);
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:hover,
+    .current {
+      text-decoration: underline;
+      text-decoration-thickness: 0.09em;
+      text-underline-offset: 0.18em;
     }
 
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      padding: 60px 10px 20px;
+    /* ---------- top left: PHOTOGRAPHY + its pages ---------- */
+    .section-nav {
+      position: fixed;
+      top: var(--pad-y);
+      left: var(--pad-x);
+      z-index: 10;
     }
-    @media (min-width: 640px) {
-      .gallery { grid-template-columns: repeat(3, 1fr); }
+    .nav-row { display: flex; flex-wrap: wrap; column-gap: 0.95em; }
+
+    /* ---------- top right: name, goes home ---------- */
+    .site-name {
+      position: fixed;
+      top: var(--pad-y);
+      right: var(--pad-x);
+      z-index: 10;
     }
 
-    .gallery-item {
+    /* ---------- the box: 3 across, 4 rows showing, scrolls inside ---------- */
+    .stage {
+      height: 100vh;
+      height: 100dvh;
+      padding: calc(var(--pad-y) + 4.5em) var(--pad-x) calc(var(--pad-y) + 1.5em);
       display: flex;
-      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .photo-box {
+      width: var(--box-w);
+      height: var(--box-h);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: none;            /* hide the scroll bar */
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .photo-box::-webkit-scrollbar { display: none; }
+    .photo-box.ready { opacity: 1; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, var(--img-w));
+      grid-auto-rows: var(--item-h);
+      column-gap: var(--col-gap);
+      row-gap: var(--row-gap);
+    }
+    .item {
+      display: block;
+      padding: 0;
+      border: 0;
+      background: none;
       cursor: pointer;
-    }
-
-    .gallery img {
-      width: 100%;
-      height: auto;
-      border: 1px solid #444;
-      transition: transform 0.2s;
-    }
-    .gallery img:hover { transform: scale(1.03); }
-
-    .caption {
-      margin-top: 8px;
-      font-size: 1rem;
-      letter-spacing: .05em;
-      color: #fff;
       text-align: center;
-      font-weight: bold;
+      font: inherit;
+      color: inherit;
+      text-transform: inherit;
     }
+    .item img {
+      display: block;
+      width: var(--img-w);
+      height: var(--img-h);
+      object-fit: contain;              /* whole photo shows, never stretched */
+      transition: opacity 0.25s ease;
+    }
+    .item:hover img { opacity: 0.82; }
+    .item:focus:not(:focus-visible) { outline: none; }
+    .item .title { margin-top: 0.5em; }
 
+    /* ---------- enlarged photo with its title underneath ---------- */
     .lightbox {
-      display: none;
       position: fixed;
       inset: 0;
-      z-index: 200;
-      background: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-      text-align: center;
-    }
-    .lightbox.active {
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.93);
       display: flex;
       flex-direction: column;
-    }
-    .lightbox img {
-      max-width: 90%;
-      max-height: 70vh;
-      border: 1px solid #fff;
-      margin: 0 auto;
-    }
-    .lightbox-caption {
-      max-width: 900px;
-      margin: 18px auto 0;
-      font-size: 1.1rem;
-      line-height: 1.4;
-      color: #fff;
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-    .close-btn {
-      position: absolute;
-      top: 16px;
-      right: 22px;
-      font-size: 2rem;
-      color: #fff;
+      align-items: center;
+      justify-content: center;
+      padding: 4vh 4vw;
       cursor: pointer;
-      user-select: none;
+    }
+    .lightbox[hidden] { display: none; }
+    .lightbox img { display: block; max-width: 90vw; max-height: 80vh; }
+    .lb-title { margin-top: 1em; text-align: center; }
+    body.lb-open { overflow: hidden; }
+
+    /* ---------- phones: 2 across, normal page scroll ---------- */
+    @media (max-width: 760px) {
+      .stage { height: auto; overflow: visible; align-items: flex-start; }
+      .photo-box { height: auto; overflow: visible; }
+      .grid { grid-template-columns: repeat(2, var(--img-w)); }
     }
   </style>
 </head>
 <body>
 
-  <a class="home-btn" href="index.html">HOME</a>
+  <nav class="section-nav">
+    <div class="nav-row"><a href="photography.html">Photography</a></div>
+    <div class="nav-row">
+      <a href="photography.html" class="current">Photo</a>
+      <a href="video.html">Video</a>
+    </div>
+  </nav>
 
-  <div id="gallery" class="gallery"></div>
+  <a class="site-name" href="index.html">Amandine Mangon</a>
 
-  <div id="lightbox" class="lightbox">
-    <div class="close-btn" id="closeBtn">&times;</div>
-    <img id="lightbox-img" src="" alt="enlarged" />
-    <div id="lightbox-caption" class="lightbox-caption"></div>
+  <main class="stage" id="stage">
+    <div class="photo-box" id="box">
+      <div class="grid" id="grid"></div>
+    </div>
+  </main>
+
+  <div class="lightbox" id="lightbox" hidden>
+    <img id="lb-img" src="" alt="">
+    <div class="lb-title" id="lb-title"></div>
   </div>
 
   <script>
-    const DIR = 'photography';                        // your image folder
-    const gallery = document.getElementById('gallery');
-    const box = document.getElementById('lightbox');
-    const lbImg = document.getElementById('lightbox-img');
-    const lbCap = document.getElementById('lightbox-caption');
-    const closeBtn = document.getElementById('closeBtn');
+    /* ==============================================================
+       PHOTOS — in order. They are in the "photography" folder.
+       The title under each photo is its file name (fuir.JPG → FUIR).
+       ============================================================== */
+    var FOLDER = "photography/";
+    var PHOTOS = [
+      "fuir.JPG", "accident.JPG", "flash.JPG", "vert.JPG", "salsa.JPG", "marche.JPG",
+      "assis.JPG", "eglise.JPG", "toilettes.JPG", "vue.JPG", "tablejaune.JPG", "montagnes.JPG",
+      "linge.jpg", "fleurs.jpg", "france.jpg", "visage.jpg", "velo.jpg", "bain.jpg",
+      "rue.jpg", "plage.jpg", "port.jpg", "mammievelo.jpg", "clay.jpg", "train.jpg",
+      "frankie.jpg", "juma.jpg", "lucas.JPG", "fmn.jpg", "sol.jpg", "sean.JPG",
+      "JULIETTE.JPG", "poubelles.jpg", "iris.JPG", "bouche.JPG", "daniel.JPG", "fenetre.JPG",
+      "Enfant.jpeg", "Filles.jpeg", "FumerTue.jpeg", "Jardin.jpeg", "Mammie.jpeg", "Olivier.jpeg",
+      "Pince.jpeg", "Toi.jpeg", "Moi.jpeg", "Bulles.jpeg", "Charlie.jpeg", "ChezFelix.jpeg",
+      "Amis.jpeg", "Dos.jpeg", "Musique.jpeg", "Diner.jpeg", "Pantalons.jpeg", "Skate.jpeg",
+      "Inconnu.jpeg", "Joues.jpeg", "Lherbe.jpeg"
+    ];
+    var ROWS_SHOWING = 4;     // how many rows fit in the box at once
+    var PHOTO_SHAPE = 3 / 2;  // width ÷ height of each photo space
 
-    let items = [];   // [{src, caption, alt}]
-    let idx = -1;
+    /* ============================================================== */
 
-    // Build "photography/<encoded filename>"
-    function pathFor(fileName) {
-      const safe = encodeURIComponent(fileName);
-      return `${DIR}/${safe}`;
-    }
+    (function () {
+      var stage = document.getElementById("stage");
+      var box = document.getElementById("box");
+      var grid = document.getElementById("grid");
+      var root = document.documentElement;
 
-    // Turn "my-file_name.jpg" => "My file name"
-    function captionFromFilename(fileName) {
-      const base = fileName.replace(/\.[^.]+$/, '');
-      return base.replace(/[-_]+/g, ' ').trim().replace(/\s+/g, ' ')
-                 .replace(/^\w/, c => c.toUpperCase());
-    }
+      var items = PHOTOS.map(function (f) {
+        return {
+          src: FOLDER + encodeURIComponent(f),
+          title: f.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ")
+        };
+      });
 
-    // Accepts either ["a.jpg","b.png"] or [{src:"a.jpg", caption:"..."}, ...]
-    function normalize(list) {
-      return list.map((entry, i) => {
-        if (typeof entry === 'string') {
-          const src = pathFor(entry);
-          return {
-            src,
-            caption: captionFromFilename(entry),
-            alt: `photo ${i + 1}`
-          };
-        } else {
-          const raw = entry.src || '';
-          const src = pathFor(raw);
-          const cap = entry.caption && String(entry.caption).trim().length
-                        ? entry.caption
-                        : captionFromFilename(raw || `photo-${i+1}.jpg`);
-          return { src, caption: cap, alt: entry.alt || cap || `photo ${i + 1}` };
+      // ----- build the grid -----
+      var firstTitle;
+      items.forEach(function (it, i) {
+        var b = document.createElement("button");
+        b.className = "item";
+        b.type = "button";
+        var img = document.createElement("img");
+        img.src = it.src;
+        img.alt = it.title;
+        img.loading = i < 12 ? "eager" : "lazy";
+        var t = document.createElement("div");
+        t.className = "title";
+        t.textContent = it.title;
+        b.appendChild(img);
+        b.appendChild(t);
+        b.addEventListener("click", function () { openBox(i); });
+        grid.appendChild(b);
+        if (i === 0) firstTitle = t;
+      });
+
+      /* Size the box so exactly 3 photos across and 4 rows fit on screen. */
+      function layout() {
+        var phone = window.matchMedia("(max-width: 760px)").matches;
+        var cs = getComputedStyle(stage);
+        var gs = getComputedStyle(grid);
+        var colGap = parseFloat(gs.columnGap) || 20;
+        var rowGap = parseFloat(gs.rowGap) || 20;
+        var W = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        var H = stage.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+        var titleH = firstTitle.offsetHeight + parseFloat(getComputedStyle(firstTitle).marginTop);
+        var cols = phone ? 2 : 3;
+
+        var imgW = (W - (cols - 1) * colGap) / cols;
+        if (!phone) {
+          var rowH = (H - (ROWS_SHOWING - 1) * rowGap) / ROWS_SHOWING;
+          imgW = Math.min(imgW, (rowH - titleH) * PHOTO_SHAPE);
         }
+        var imgH = imgW / PHOTO_SHAPE;
+        var itemH = imgH + titleH;
+
+        root.style.setProperty("--img-w", imgW + "px");
+        root.style.setProperty("--img-h", imgH + "px");
+        root.style.setProperty("--item-h", itemH + "px");
+        root.style.setProperty("--box-w", cols * imgW + (cols - 1) * colGap + "px");
+        root.style.setProperty("--box-h", ROWS_SHOWING * itemH + (ROWS_SHOWING - 1) * rowGap + "px");
+        box.classList.add("ready");
+      }
+      layout();
+      var rt;
+      window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(layout, 60); });
+
+      // scrolling anywhere on the page moves the photos inside the box
+      window.addEventListener("wheel", function (e) {
+        if (window.matchMedia("(max-width: 760px)").matches) return;
+        if (document.body.classList.contains("lb-open") || box.contains(e.target)) return;
+        box.scrollTop += e.deltaY;
+      }, { passive: true });
+
+      // ----- enlarged view: ESC or click anywhere to close, arrows to move -----
+      var lb = document.getElementById("lightbox");
+      var big = document.getElementById("lb-img");
+      var bigTitle = document.getElementById("lb-title");
+      var current = -1;
+
+      function show(i) {
+        current = (i + items.length) % items.length;
+        big.src = items[current].src;
+        big.alt = items[current].title;
+        bigTitle.textContent = items[current].title;
+        new Image().src = items[(current + 1) % items.length].src;                  // load next
+        new Image().src = items[(current - 1 + items.length) % items.length].src;   // load previous
+      }
+      function openBox(i) {
+        show(i);
+        lb.hidden = false;
+        document.body.classList.add("lb-open");
+      }
+      function closeBox() {
+        lb.hidden = true;
+        current = -1;
+        document.body.classList.remove("lb-open");
+      }
+
+      lb.addEventListener("click", closeBox);
+      document.addEventListener("keydown", function (e) {
+        if (current < 0) return;
+        if (e.key === "Escape") closeBox();
+        else if (e.key === "ArrowRight") { e.preventDefault(); show(current + 1); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); show(current - 1); }
       });
-    }
 
-    function renderGrid() {
-      items.forEach((it, i) => {
-        const wrap = document.createElement('div');
-        wrap.className = 'gallery-item';
-        wrap.innerHTML = `
-          <img src="${it.src}" alt="${it.alt}">
-          <div class="caption">${it.caption}</div>
-        `;
-        wrap.onclick = () => { idx = i; openLightbox(); };
-        gallery.appendChild(wrap);
+      // swipe on phones
+      var startX = null;
+      lb.addEventListener("touchstart", function (e) { startX = e.touches[0].clientX; }, { passive: true });
+      lb.addEventListener("touchend", function (e) {
+        if (startX === null || current < 0) return;
+        var dx = e.changedTouches[0].clientX - startX;
+        startX = null;
+        if (dx > 40) show(current - 1);
+        else if (dx < -40) show(current + 1);
       });
-    }
-
-    function openLightbox() {
-      lbImg.src = items[idx].src;
-      lbImg.alt = items[idx].alt;
-      lbCap.textContent = items[idx].caption;
-      box.classList.add('active');
-    }
-    function closeLightbox() {
-      box.classList.remove('active');
-      idx = -1;
-      lbImg.src = '';
-    }
-    function next(d) {
-      idx = (idx + d + items.length) % items.length;
-      openLightbox();
-    }
-
-    // Click outside image closes
-    box.addEventListener('click', e => { if (e.target === box) closeLightbox(); });
-    closeBtn.addEventListener('click', closeLightbox);
-
-    // Keyboard controls
-    document.addEventListener('keydown', e => {
-      if (idx === -1) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowRight') next(1);
-      if (e.key === 'ArrowLeft') next(-1);
-    });
-
-    // Touch swipe
-    let startX = 0;
-    box.addEventListener('touchstart', e => {
-      if (e.touches.length === 1) startX = e.touches[0].clientX;
-    });
-    box.addEventListener('touchend', e => {
-      if (idx === -1 || !startX) return;
-      const dx = e.changedTouches[0].clientX - startX;
-      if (dx > 40) next(-1);
-      if (dx < -40) next(1);
-      startX = 0;
-    });
-
-    // Load JSON and go
-    fetch('photography.json')
-      .then(r => {
-        if (!r.ok) throw new Error(`photography.json not found (${r.status})`);
-        return r.json();
-      })
-      .then(list => {
-        if (!Array.isArray(list)) throw new Error('photography.json must be an array');
-        items = normalize(list);
-        renderGrid();
-      })
-      .catch(err => console.error('Error loading images:', err));
+    })();
   </script>
-    <footer>
-    <p style="
-            text-align: center;
-            font-size: 0.9rem;
-            color: #fff;
-            margin-bottom: 0.7rem;
-            margin-top: 1rem;
-          ">
-      © 2025 Amandine Mangon
-    </p>
-  </footer>
 </body>
 </html>
