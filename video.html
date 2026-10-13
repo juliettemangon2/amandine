@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Video | Amandine Mangon</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <style>
+    :root {
+      --pad-x: clamp(18px, 2.3vw, 44px);   /* left/right page margin (same as homepage) */
+      --pad-y: clamp(18px, 3.6vh, 40px);   /* top/bottom page margin (same as homepage) */
+      --fs: clamp(12px, calc(0.5vw + 6.5px), 17px);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { background: #fff; }
+    body {
+      color: #000;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: var(--fs);
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:hover,
+    .current {
+      text-decoration: underline;
+      text-decoration-thickness: 0.09em;
+      text-underline-offset: 0.18em;
+    }
+
+    /* ---------- top left: PHOTOGRAPHY + its pages ---------- */
+    .section-nav {
+      position: fixed;
+      top: var(--pad-y);
+      left: var(--pad-x);
+      z-index: 10;
+    }
+    .nav-row { display: flex; flex-wrap: wrap; column-gap: 0.95em; }
+
+    /* ---------- top right: name, goes home ---------- */
+    .site-name {
+      position: fixed;
+      top: var(--pad-y);
+      right: var(--pad-x);
+      z-index: 10;
+    }
+
+    /* ---------- video + caption, centered ---------- */
+    .stage {
+      height: 100vh;
+      height: 100dvh;
+      padding: calc(var(--pad-y) + 4.5em) var(--pad-x) calc(var(--pad-y) + 1.5em);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .film { width: var(--video-w, 60vw); }
+    .film video {
+      display: block;
+      width: 100%;
+      aspect-ratio: var(--video-ratio, 16 / 9);   /* real shape is filled in once the video loads */
+      background: #000;
+    }
+    .caption { margin-top: 1.1em; line-height: 1.5; }
+    .caption p + p { margin-top: 0.85em; }
+
+    /* ---------- phones ---------- */
+    @media (max-width: 760px) {
+      .stage { height: auto; align-items: flex-start; }
+      .film { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="section-nav">
+    <div class="nav-row"><a href="photography.html">Photography</a></div>
+    <div class="nav-row">
+      <a href="photography.html">Photo</a>
+      <a href="video.html" class="current">Video</a>
+    </div>
+  </nav>
+
+  <a class="site-name" href="index.html">Amandine Mangon</a>
+
+  <main class="stage" id="stage">
+    <figure class="film" id="film">
+
+      <!-- The video file: put ThereYouAre.mp4 in a folder called "video" -->
+      <video id="video" src="video/ThereYouAre.mp4" controls playsinline preload="metadata"></video>
+
+      <figcaption class="caption" id="caption">
+        <!-- WRITE YOUR CAPTION BETWEEN <p> AND </p>.
+             For a second line, add another <p></p> underneath. -->
+        <p>There You Are is an experimental film made of still images, text, and no audio.</p>
+<p>Still and moving images; NYU IDM, Fall 2026.</p>
+      </figcaption>
+
+    </figure>
+  </main>
+
+  <script>
+    /* The video is made as big as fits on screen (with room for the caption),
+       and the caption is always exactly as wide as the video. */
+    (function () {
+      var stage = document.getElementById("stage");
+      var video = document.getElementById("video");
+      var caption = document.getElementById("caption");
+      var ratio = 16 / 9;   // until the video tells us its real shape
+
+      function layout() {
+        if (window.matchMedia("(max-width: 760px)").matches) {
+          document.documentElement.style.removeProperty("--video-w");
+          return;
+        }
+        var cs = getComputedStyle(stage);
+        var W = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+        var H = stage.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+        var room = caption.offsetHeight + parseFloat(getComputedStyle(caption).marginTop);
+        var w = Math.min(W * 0.8, (H - room) * ratio);
+        document.documentElement.style.setProperty("--video-w", w + "px");
+      }
+
+      video.addEventListener("loadedmetadata", function () {
+        if (video.videoWidth && video.videoHeight) {
+          ratio = video.videoWidth / video.videoHeight;
+          document.documentElement.style.setProperty("--video-ratio", ratio);
+        }
+        layout();
+      });
+      layout();
+      window.addEventListener("resize", layout);
+    })();
+  </script>
+</body>
+</html>
