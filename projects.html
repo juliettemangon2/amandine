@@ -97,6 +97,35 @@
     }
 
     .caption { margin-top: 1.1em; line-height: 1.3; }
+
+    /* text-only tabs (like ineverseeyou): title on top, paragraphs under */
+    .text-page { width: min(56vw, 48em); line-height: 1.3; margin: auto 0; }
+    /* text tabs scroll under the top bar when they're taller than the screen */
+    .stage.scroll {
+      position: fixed;
+      inset: calc(var(--pad-y) + 4.5em) 0 0 0;
+      height: auto;
+      padding-top: 0;
+      align-items: flex-start;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .stage.scroll::-webkit-scrollbar { display: none; }
+    .photo-row { display: flex; gap: var(--gap); margin-top: 2.2em; }
+    .photo-row .tile { flex: none; }
+    .text-page p + p { margin-top: 1.3em; }
+    .text-page .title { margin-bottom: 1.3em; }
+    .text-page a {
+      text-decoration: underline;
+      text-decoration-thickness: 0.09em;
+      text-underline-offset: 0.18em;
+    }
+    .text-page a:hover { opacity: 0.6; }
+    @media (max-width: 760px) {
+      .text-page { width: 100%; }
+      .stage.scroll { position: static; overflow: visible; padding-top: calc(var(--pad-y) + 6em); }
+      .photo-row { flex-wrap: wrap; }
+    }
     .caption .desc { margin-top: 1.3em; }
     .caption p:empty { display: none; }
 
@@ -132,6 +161,7 @@
   <a class="site-name" href="index.html">Amandine Mangon</a>
 
   <main class="stage" id="stage">
+    <div class="text-page" id="text-page" hidden></div>
     <div class="work" id="work">
       <div class="fit" id="fit"></div>
       <div class="caption" id="caption"></div>
@@ -167,20 +197,44 @@
       {
         id: "ineverseeyou",
         name: "ineverseeyou",
-        folder: "projects/ineverseeyou/",
-        images: [],
-        columns: 3,
-        classLine: "",
-        desc: [""]
+        // text: [...] = this tab shows writing instead of images.
+        // Each "..." is one paragraph (joined with + when it's long).
+        text: [
+          '<a href="https://ineverseeyou.com/" target="_blank" rel="noopener">ineverseeyou</a> is an art collective ' +
+          'co-founded by Amandine Mangon: a group of creative people from different disciplines who share an interest ' +
+          'in art and technology. Through our work, we imagine new ways for nature, humans, and machines to live together.',
+
+          '<a href="code.html#exquisite-corpse">Exquisite Corpse</a> and ' +
+          '<a href="code.html#five-stages-of-grief">The Five Stages of Grief</a> were both made for ineverseeyou, ' +
+          'as part of our first cycle.',
+
+          'I also designed the website for <a href="https://ineverseeyou.com/origin.html" target="_blank" rel="noopener">Origin</a>. ' +
+          'Because it is our first work, it is inspired by the Garden of Eden and Pandora’s box. When you open Origin, ' +
+          'two Pandora’s boxes appear, each one opening one of its two parts. The first is a painting of the ' +
+          'Garden of Eden with our work blended into it as a collage.'
+        ]
       },
       {
         id: "juma",
         name: "Juma",
         folder: "projects/juma/",
-        images: [],
-        columns: 3,
-        classLine: "",
-        desc: [""]
+        text: [
+          'Juma is a jewelry brand co-founded by <a href="https://www.juliettemangon.com/index.html" target="_blank" rel="noopener">Juliette Mangon</a> and <a href="https://juliamajchrzak.com/" target="_blank" rel="noopener">Julia Majchrzak</a>. Each piece is made from handmade ' +
+        'glass beads and pendants, cord cut from leather and suede, and a range of found materials. At its core, Juma ' +
+          'is an attempt to rethink what jewelry can be beyond an accessory: a form of wearable art, where color and ' +
+          'shape play out on the body the way they would on a canvas.',
+
+          'Two principles guide our work. The first is that jewelry should be for everyone: our pieces are unisex by ' +
+          'design, made from the start to be worn by anyone. The second is a commitment to sustainability and ' +
+          'versatility. We work with found objects, secondhand leather and suede, and remnant glass wherever possible, ' +
+          'and we design each necklace to be worn in more than one way: cords can be tied differently, beads can be ' +
+          'added or removed, and pieces can be combined with one another to create new looks.',
+
+          'I take part in every stage of the process, from beadmaking and sourcing materials to designing the jewelry ' +
+          'and directing campaign photography.'
+        ],
+        // photos under the text, in one row, all the same height (click to enlarge)
+        images: ["juma1.jpeg", "juma2.jpeg", "juma3.jpeg", "juma4.jpeg"]
       }
     ];
     var PHONE_COLUMNS = 2;
@@ -193,6 +247,7 @@
       var work = document.getElementById("work");
       var fit = document.getElementById("fit");
       var caption = document.getElementById("caption");
+      var textPage = document.getElementById("text-page");
       var project, srcs = [], ratios = [], tiles = [], loadId = 0;
 
       PROJECTS.forEach(function (p) {
@@ -230,6 +285,53 @@
         closeBox();
         work.classList.remove("ready");
 
+        // text-only tab: show the writing, hide the images
+        if (project.text) {
+          loadId++;
+          textPage.innerHTML = "";
+          var t = el("p", "title", project.name);
+          textPage.appendChild(t);
+          project.text.forEach(function (html) {
+            var p = el("p");
+            p.innerHTML = html;
+            textPage.appendChild(p);
+          });
+          textPage.hidden = false;
+          work.style.display = "none";
+          stage.classList.add("scroll");
+          stage.scrollTop = 0;
+          srcs = []; tiles = []; ratios = [];
+
+          // photos under the text (any not added yet are skipped)
+          var row = el("div", "photo-row");
+          textPage.appendChild(row);
+          var myText = loadId;
+          var all = (project.images || []).map(function (f) { return project.folder + encodeURIComponent(f); });
+          var imgs = all.map(function (src) { var img = new Image(); img.src = src; return img; });
+          Promise.all(imgs.map(ratioOf)).then(function (rs) {
+            if (myText !== loadId) return;
+            imgs.forEach(function (img, i) {
+              if (!rs[i]) return;
+              var n = srcs.length;
+              srcs.push(all[i]);
+              ratios.push(rs[i]);
+              var b = el("button", "tile");
+              b.type = "button";
+              b.setAttribute("aria-label", "Open " + project.name + " photo " + (n + 1));
+              img.alt = "";
+              b.appendChild(img);
+              b.addEventListener("click", function () { openBox(n); });
+              tiles.push(b);
+              row.appendChild(b);
+            });
+            sizePhotos();
+          });
+          return;
+        }
+        textPage.hidden = true;
+        work.style.display = "";
+        stage.classList.remove("scroll");
+
         // caption
         caption.innerHTML = "";
         caption.appendChild(el("p", null, project.name));
@@ -266,7 +368,29 @@
       /* Images go into columns (across, then the next row). Each column gets
          its own width so every column ends at the same height — the set makes
          one clean rectangle. The caption sits underneath, the same width. */
+      // photos in one row, all the same height, exactly as wide as the text
+      function sizePhotos() {
+        var row = textPage.querySelector(".photo-row");
+        if (!row || !tiles.length) return;
+        var phone = window.matchMedia("(max-width: 760px)").matches;
+        var gap = parseFloat(getComputedStyle(row).columnGap) || 6;
+        if (phone) {
+          tiles.forEach(function (t, i) {
+            var w = (textPage.clientWidth - gap) / 2;
+            t.style.width = w + "px"; t.style.height = w / ratios[i] + "px";
+          });
+          return;
+        }
+        var W = textPage.clientWidth - (tiles.length - 1) * gap;
+        var h = W / ratios.reduce(function (a, r) { return a + r; }, 0);
+        tiles.forEach(function (t, i) {
+          t.style.width = h * ratios[i] + "px";
+          t.style.height = h + "px";
+        });
+      }
+
       function layout() {
+        if (project && project.text) { sizePhotos(); return; }
         if (!project) return;
         var phone = window.matchMedia("(max-width: 760px)").matches;
         var gap = parseFloat(getComputedStyle(fit).columnGap) || 6;
