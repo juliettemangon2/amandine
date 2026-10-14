@@ -112,6 +112,71 @@
     }
     .stage.scroll::-webkit-scrollbar { display: none; }
     .photo-row { display: flex; gap: var(--gap); margin-top: 2.2em; }
+
+    /* ---------- gallery tabs (Heritage): big title, then thumbnails | image | text ---------- */
+    .gallery-page {
+      --g-gap: clamp(14px, 1.5vw, 28px);
+      --thumb-w: min(9vw, 160px);
+      --info-w: 27em;
+      --title-size: clamp(44px, 6.5vw, 112px);
+      /* height left for the big image under the top bar and the title */
+      --g-avail: calc(100vh - 2 * var(--pad-y) - 6em - 1.25 * var(--title-size));
+      --g-img-w: min(
+        calc(90vw - var(--thumb-w) - var(--info-w) - 2 * var(--g-gap)),
+        calc(var(--g-avail) * 1.1)
+      );
+      margin: auto 0;
+    }
+    .brand-title {
+      color: #d6829b;
+      font-size: var(--title-size);
+      font-weight: 700;
+      text-transform: none;              /* stays lowercase */
+      letter-spacing: -0.02em;
+      line-height: 0.9;
+      margin-bottom: 0.3em;
+    }
+    .g-row { display: flex; align-items: flex-start; gap: var(--g-gap); }
+    .g-thumbs {
+      flex: none;
+      width: var(--thumb-w);
+      display: flex;
+      flex-direction: column;
+      gap: var(--g-gap);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+    }
+    .g-thumbs::-webkit-scrollbar { display: none; }
+    .g-thumbs .thumb {
+      display: block; flex: none; width: 100%;
+      padding: 0; border: 0; background: none; cursor: pointer;
+      opacity: 0.45; transition: opacity 0.2s ease;
+    }
+    .g-thumbs .thumb img { display: block; width: 100%; height: auto; }
+    .g-thumbs .thumb:hover, .g-thumbs .thumb.on { opacity: 1; }
+    .g-main {
+      flex: none;
+      width: var(--g-img-w);
+      display: flex;
+      justify-content: center;
+    }
+    .g-main img {
+      display: block;
+      width: auto; height: auto;
+      max-width: 100%;
+      max-height: var(--g-avail);
+      cursor: zoom-in;
+    }
+    .g-main .placeholder { width: 100%; aspect-ratio: 4 / 3; }
+    .g-info { flex: none; width: var(--info-w); align-self: flex-end; line-height: 1.3; }
+    .g-info p + p { margin-top: 1.3em; }
+    .g-info a {
+      text-decoration: underline;
+      text-decoration-thickness: 0.09em;
+      text-underline-offset: 0.18em;
+    }
+    .g-info a:hover { opacity: 0.6; }
     .photo-row .tile { flex: none; }
     .text-page p + p { margin-top: 1.3em; }
     .text-page .title { margin-bottom: 1.3em; }
@@ -125,6 +190,13 @@
       .text-page { width: 100%; }
       .stage.scroll { position: static; overflow: visible; padding-top: calc(var(--pad-y) + 6em); }
       .photo-row { flex-wrap: wrap; }
+      .gallery-page { width: 100%; }
+      .g-row { flex-direction: column; }
+      .g-main, .g-info { width: 100%; }
+      .g-main img { max-height: none; width: 100%; }
+      .g-thumbs { order: 2; width: 100%; height: auto !important; flex-direction: row; overflow-x: auto; }
+      .g-thumbs .thumb { width: 22vw; }
+      .g-info { order: 3; }
     }
     .caption .desc { margin-top: 1.3em; }
     .caption p:empty { display: none; }
@@ -162,6 +234,14 @@
 
   <main class="stage" id="stage">
     <div class="text-page" id="text-page" hidden></div>
+    <div class="gallery-page" id="gallery-page" hidden>
+      <h1 class="brand-title" id="brand-title"></h1>
+      <div class="g-row">
+        <div class="g-thumbs" id="g-thumbs"></div>
+        <div class="g-main" id="g-main"></div>
+        <div class="g-info" id="g-info"></div>
+      </div>
+    </div>
     <div class="work" id="work">
       <div class="fit" id="fit"></div>
       <div class="caption" id="caption"></div>
@@ -188,11 +268,27 @@
       {
         id: "heritage",
         name: "Heritage",
+        // gallery: true = laid out like Graphic Design: thumbnails on the left,
+        // the big image in the middle, the text on the right.
+        gallery: true,
+        brandTitle: "heritage",     // the big pink word at the top
         folder: "projects/heritage/",
-        images: [],                 // e.g. ["heritage1.jpeg", "heritage2.jpeg"]
-        columns: 3,
-        classLine: "",              // e.g. "Personal project, 2026."
-        desc: [""]                  // e.g. "What the project is about; tools used."
+        images: [
+          "heritage1.jpeg", "heritage2.jpeg", "heritage3.jpeg", "heritage4.jpeg",
+          "heritage5.jpeg", "heritage6.jpeg", "heritage7.jpeg", "heritage8.jpeg"
+        ],
+        text: [
+          '<a href="https://heritage.international/index.html" target="_blank" rel="noopener">Heritage</a> ' +
+          'started from one observation: the most interesting people are often lonely in the way only ambitious, ' +
+          'creative people can be. Not for lack of a social life, but for lack of the right one.',
+
+          'Heritage is not a networking app or a social media platform. It connects ambitious people to culturally ' +
+          'and personally relevant experiences: the right rooms and the right people. Every experience is handpicked, ' +
+          'with no open invites, because shared experience is the fastest path to real connection. ' +
+          'Heritage is launching in New York City.',
+
+          'I worked on Heritage’s brand imagery, the UI/UX design of the app, and market research.'
+        ]
       },
       {
         id: "ineverseeyou",
@@ -219,8 +315,8 @@
         name: "Juma",
         folder: "projects/juma/",
         text: [
-          'Juma is a jewelry brand co-founded by <a href="https://www.juliettemangon.com/index.html" target="_blank" rel="noopener">Juliette Mangon</a> and <a href="https://juliamajchrzak.com/" target="_blank" rel="noopener">Julia Majchrzak</a>. Each piece is made from handmade ' +
-        'glass beads and pendants, cord cut from leather and suede, and a range of found materials. At its core, Juma ' +
+          'Juma is a jewelry brand co-founded by Juliette Mangon and Julia Majchrzak. Each piece is made from handmade ' +
+          'glass beads and pendants, cord cut from leather and suede, and a range of found materials. At its core, Juma ' +
           'is an attempt to rethink what jewelry can be beyond an accessory: a form of wearable art, where color and ' +
           'shape play out on the body the way they would on a canvas.',
 
@@ -248,6 +344,14 @@
       var fit = document.getElementById("fit");
       var caption = document.getElementById("caption");
       var textPage = document.getElementById("text-page");
+      var galleryPage = document.getElementById("gallery-page");
+      var gThumbs = document.getElementById("g-thumbs");
+      var gMain = document.getElementById("g-main");
+      var gInfo = document.getElementById("g-info");
+      var gImg = document.createElement("img");
+      var gCurrent = 0;
+      gImg.addEventListener("load", matchGalleryThumbs);
+      gImg.addEventListener("click", function () { openBox(gCurrent); });
       var project, srcs = [], ratios = [], tiles = [], loadId = 0;
 
       PROJECTS.forEach(function (p) {
@@ -284,6 +388,55 @@
         document.title = project.name + " | Amandine Mangon";
         closeBox();
         work.classList.remove("ready");
+
+        galleryPage.hidden = true;
+
+        // gallery tab (Heritage): title, thumbnails | big image | text
+        if (project.gallery) {
+          loadId++;
+          var myGal = loadId;
+          textPage.hidden = true;
+          work.style.display = "none";
+          galleryPage.hidden = false;
+          stage.classList.add("scroll");
+          stage.scrollTop = 0;
+          document.getElementById("brand-title").textContent = project.brandTitle || project.name;
+          gInfo.innerHTML = "";
+          (project.text || []).forEach(function (html) {
+            var p = el("p");
+            p.innerHTML = html;
+            gInfo.appendChild(p);
+          });
+          gThumbs.innerHTML = "";
+          gMain.innerHTML = "";
+          srcs = []; tiles = []; ratios = [];
+          var gAll = (project.images || []).map(function (f) { return project.folder + encodeURIComponent(f); });
+          var gImgs = gAll.map(function (src) { var img = new Image(); img.src = src; return img; });
+          Promise.all(gImgs.map(ratioOf)).then(function (rs) {
+            if (myGal !== loadId) return;
+            gImgs.forEach(function (img, i) {
+              if (!rs[i]) return;                 // not added yet → skip it
+              var n = srcs.length;
+              srcs.push(gAll[i]);
+              var b = el("button", "thumb");
+              b.type = "button";
+              b.setAttribute("aria-label", "Show image " + (n + 1));
+              img.alt = "";
+              b.appendChild(img);
+              b.addEventListener("click", function () { galleryShow(n); });
+              gThumbs.appendChild(b);
+            });
+            gThumbs.style.visibility = srcs.length > 1 ? "" : "hidden";
+            if (srcs.length) {
+              gMain.appendChild(gImg);
+              galleryShow(0);
+            } else {
+              gMain.appendChild(el("div", "placeholder", "Images coming soon"));
+              matchGalleryThumbs();
+            }
+          });
+          return;
+        }
 
         // text-only tab: show the writing, hide the images
         if (project.text) {
@@ -368,6 +521,24 @@
       /* Images go into columns (across, then the next row). Each column gets
          its own width so every column ends at the same height — the set makes
          one clean rectangle. The caption sits underneath, the same width. */
+      // gallery: show image i big, light up its thumbnail
+      function galleryShow(i) {
+        if (!srcs.length) return;
+        gCurrent = (i + srcs.length) % srcs.length;
+        gImg.src = srcs[gCurrent];
+        gImg.alt = project.name;
+        Array.prototype.forEach.call(gThumbs.children, function (t, n) {
+          t.classList.toggle("on", n === gCurrent);
+        });
+        var on = gThumbs.children[gCurrent];
+        if (on && on.scrollIntoView) on.scrollIntoView({ block: "nearest" });
+      }
+      // the thumbnail column is as tall as the big image
+      function matchGalleryThumbs() {
+        if (window.matchMedia("(max-width: 760px)").matches) return;
+        gThumbs.style.height = gMain.offsetHeight + "px";
+      }
+
       // photos in one row, all the same height, exactly as wide as the text
       function sizePhotos() {
         var row = textPage.querySelector(".photo-row");
@@ -390,6 +561,7 @@
       }
 
       function layout() {
+        if (project && project.gallery) { matchGalleryThumbs(); return; }
         if (project && project.text) { sizePhotos(); return; }
         if (!project) return;
         var phone = window.matchMedia("(max-width: 760px)").matches;
@@ -455,6 +627,8 @@
         document.body.classList.add("lb-open");
       }
       function closeBox() {
+        // gallery: the big image follows where you were in the enlarged view
+        if (current >= 0 && project && project.gallery && !box.hidden) galleryShow(current);
         box.hidden = true;
         current = -1;
         document.body.classList.remove("lb-open");
@@ -462,6 +636,12 @@
 
       box.addEventListener("click", closeBox);
       document.addEventListener("keydown", function (e) {
+        // gallery tab, nothing enlarged: arrows move through the images
+        if (current < 0 && project && project.gallery && srcs.length) {
+          if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); galleryShow(gCurrent + 1); }
+          else if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); galleryShow(gCurrent - 1); }
+          return;
+        }
         if (current < 0) return;
         if (e.key === "Escape") closeBox();
         else if (e.key === "ArrowRight") { e.preventDefault(); show(current + 1); }
