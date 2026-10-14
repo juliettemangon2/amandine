@@ -11,15 +11,19 @@
       --pad-x: clamp(18px, 2.3vw, 44px);   /* left/right page margin (same as homepage) */
       --pad-y: clamp(18px, 3.6vh, 40px);   /* top/bottom page margin (same as homepage) */
       --fs: clamp(12px, calc(0.5vw + 6.5px), 17px);
-      --thumb-w: min(10vw, 180px);         /* width of the thumbnail column */
-      --info-w: min(25vw, 28em);           /* width of the text */
+      --thumb-w: min(9vw, 160px);          /* width of the thumbnail column */
+      --info-w: 27em;                      /* width of the text (the class line fits on one line) */
       --gap: clamp(14px, 1.5vw, 28px);
-      --widest: 1.6;                       /* the widest image's width ÷ height (Laura desktop) */
 
-      /* ONE height for every image on every project: as tall as possible (up to 58%
-         of the screen) while the widest image + thumbnails + text still fit across. */
-      --main-h: min(58vh, calc((90vw - var(--thumb-w) - var(--info-w) - 2 * var(--gap)) / var(--widest)));
-      --area-w: calc(var(--main-h) * var(--widest));   /* space kept for the image */
+      /* The big image column is the same width on every tab. Images fill that
+         width, except very tall ones, which are shrunk so they never go taller
+         than the screen (nothing is ever cut off). */
+      --avail-h: calc(100vh - 2 * var(--pad-y) - 6em);   /* height available under the top bar */
+      --img-w: min(
+        calc(90vw - var(--thumb-w) - var(--info-w) - 2 * var(--gap)),
+        calc(var(--avail-h) * 0.8)
+      );
+      --row-w: calc(var(--thumb-w) + var(--img-w) + var(--info-w) + 2 * var(--gap));   /* thumbnails + image + text */
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -63,33 +67,41 @@
     }
 
     /* ---------- thumbnails | big image | text ---------- */
+    /* the area under the top bar: scrolls on its own when an image is tall */
     .stage {
-      height: 100vh;
-      height: 100dvh;
-      padding: calc(var(--pad-y) + 4.5em) var(--pad-x) calc(var(--pad-y) + 1.5em);
+      position: fixed;
+      inset: calc(var(--pad-y) + 4.5em) 0 0 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+    }
+    .stage::-webkit-scrollbar { display: none; }
+    .stage-inner {
+      min-height: 100%;
+      padding: 0 var(--pad-x) calc(var(--pad-y) + 1.5em);
       display: flex;
-      align-items: center;
+      align-items: center;              /* short images: centered up and down */
       justify-content: center;
     }
-    /* thumbnails | image + text. Every project uses the same widths, so the
-       thumbnails, the image and the top/bottom line sit in exactly the same
-       place on every tab. */
+
+    /* thumbnails | image | text — the same three widths on every tab,
+       with the same white space (--gap) between them. */
     .project {
+      width: var(--row-w);
       display: flex;
-      align-items: flex-end;
+      align-items: flex-start;
       gap: var(--gap);
     }
     .work {
-      width: calc(var(--area-w) + var(--gap) + var(--info-w));
       display: flex;
-      align-items: flex-end;          /* text lines up with the bottom of the image */
+      align-items: stretch;
       gap: var(--gap);
     }
 
-    /* thumbnail column: scrolls on its own */
+    /* thumbnail column: as tall as the big image, scrolls on its own */
     .thumbs {
+      flex: none;
       width: var(--thumb-w);
-      height: var(--main-h);
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: none;
@@ -114,41 +126,47 @@
     .thumb:focus:not(:focus-visible) { outline: none; }
     .divider { flex: none; height: 1px; background: #000; }   /* line between the two projects */
 
-    /* big image: always the same height, the text sits right next to it */
+    /* big image: always the same width, never cropped */
     .main {
       flex: none;
-      height: var(--main-h);
+      width: var(--img-w);
       display: flex;
-      align-items: flex-end;
+      align-items: flex-start;
+      justify-content: center;
       gap: var(--gap);
     }
     .main img {
       display: block;
-      height: var(--main-h);
       width: auto;
-      max-width: var(--area-w);
-      object-fit: contain;
+      height: auto;
+      max-width: 100%;
+      max-height: var(--avail-h);       /* very tall images shrink to fit the screen */
+      transition: opacity 0.25s ease;
     }
+    .main img.loading { opacity: 0; transition: none; }
 
     /* black border on the images (projects marked border: true) */
     .bordered .main img,
     .bordered .thumb img { border: 1px solid #000; }
 
-    /* projects with one image, or with all images shown together: the thumbnail
-       column is hidden but its space is kept, so the image doesn't move */
-    .no-thumbs .thumbs { visibility: hidden; }
+    /* projects with one image: no thumbnail column — the image takes its
+       space instead, so the row is still the same total width */
+    .no-thumbs .thumbs { display: none; }
+    .no-thumbs .main { width: calc(var(--img-w) + var(--thumb-w) + var(--gap)); }
 
-    /* small images stretched so together they're exactly as tall as the big image (fillThumbs: true) */
-    .fill-thumbs .thumbs { width: auto; overflow: visible; }
-    .fill-thumbs .thumb { width: auto; }
-    .fill-thumbs .thumb img {
-      width: auto;
-      height: calc((var(--main-h) - (var(--count) - 1) * var(--gap)) / var(--count));
+    /* all images side by side (projects marked together: true) */
+    .main.together img { width: calc((100% - var(--gap)) / 2); }
+
+    /* text: same width on every tab, lined up with the bottom of the image
+       (when the image is taller than the screen, it stays in view) */
+    .info {
+      flex: none;
+      width: var(--info-w);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
     }
-    /* all images side by side at the same height (projects marked together: true) */
-    .main.together img { max-width: calc((var(--area-w) - var(--gap)) / 2); }
-
-    .info { flex: 1; min-width: 0; }
+    .info-inner { position: sticky; bottom: calc(var(--pad-y) + 1.5em); }
     .info p + p { margin-top: 0; }
     .info .desc { margin-top: 1.3em; }
 
@@ -169,17 +187,19 @@
     .lightbox img { display: block; max-width: 92vw; max-height: 90vh; }
     /* ---------- phones: big image, thumbnails in a row, then text ---------- */
     @media (max-width: 760px) {
-      .stage { height: auto; display: block; padding-top: calc(var(--pad-y) + 6.5em); padding-left: var(--pad-x); }
+      .stage { position: static; overflow: visible; }
+      .stage-inner { display: block; padding-top: calc(var(--pad-y) + 6.5em); }
       .section-nav { right: var(--pad-x); }
       .project, .work { flex-direction: column; align-items: stretch; width: 100%; }
       .project .work { order: 1; }
-      .main { width: 100%; height: auto; }
-      .main img { width: 100%; height: auto; max-width: none; }
-      .main.together img { width: calc(50% - var(--gap) / 2); max-width: none; }
-      .thumbs { order: 2; width: 100%; height: auto; flex-direction: row; overflow-x: auto; overflow-y: hidden; }
+      .main, .no-thumbs .main { width: 100%; }
+      .main img { width: 100%; max-height: none; }
+      .thumbs { order: 2; width: 100%; height: auto !important; flex-direction: row; overflow-x: auto; overflow-y: hidden; }
       .no-thumbs .thumbs { display: none; }
       .thumb { width: 22vw; }
       .divider { width: 1px; height: auto; }
+      .info { width: auto; }
+      .info-inner { position: static; }
     }
   </style>
 </head>
@@ -192,18 +212,22 @@
 
   <a class="site-name" href="index.html">Amandine Mangon</a>
 
-  <main class="stage">
+  <main class="stage" id="stage">
+   <div class="stage-inner">
     <div class="project" id="project">
       <div class="thumbs" id="thumbs"></div>
       <div class="work">
         <div class="main" id="main"></div>
         <div class="info">
-          <p id="info-name"></p>
-          <p id="info-class"></p>
-          <p class="desc" id="info-desc"></p>
+          <div class="info-inner">
+            <p id="info-name"></p>
+            <p id="info-class"></p>
+            <p class="desc" id="info-desc"></p>
+          </div>
         </div>
       </div>
     </div>
+   </div>
   </main>
   <!-- larger view: ESC or click anywhere to close, arrows to move -->
   <div class="lightbox" id="lightbox" hidden>
@@ -251,7 +275,7 @@
       { id: "evidemment", name: "Evidemment", parts: [
         { desc: "Album cover; adobe illustrator.", images: ["digital/albumfront.png", "digital/albumback.png"] }
       ]},
-{ id: "good-mourning", name: "Good Mourning", fillThumbs: true, parts: [        { desc: "Political posters; Adobe illustrator.", images: ["digital/goodmourning.png", "digital/shoothere.png"] }
+{ id: "good-mourning", name: "Good Mourning", parts: [        { desc: "Political posters; Adobe illustrator.", images: ["digital/goodmourning.png", "digital/shoothere.png"] }
       ]}
     ];
 
@@ -263,6 +287,8 @@
       var main = document.getElementById("main");
       var projectEl = document.getElementById("project");
       var mainImg = document.createElement("img");
+      mainImg.addEventListener("load", function () { mainImg.classList.remove("loading"); });
+      mainImg.addEventListener("error", function () { mainImg.classList.remove("loading"); });
       var infoName = document.getElementById("info-name");
       var infoClass = document.getElementById("info-class");
       var infoDesc = document.getElementById("info-desc");
@@ -299,7 +325,10 @@
         current = (i + flat.length) % flat.length;
         var item = flat[current];
         if (!project.together) {
-          mainImg.src = item.src;
+          if (mainImg.getAttribute("src") !== item.src) {
+            mainImg.classList.add("loading");          // hide the old picture until the new one is ready
+            mainImg.src = item.src;
+          }
           mainImg.alt = project.name;
         }
          if (!box.hidden) big.src = item.src;
@@ -347,7 +376,6 @@
         thumbs.scrollTop = 0;
 
         projectEl.classList.toggle("bordered", !!project.border);
-        projectEl.classList.toggle("fill-thumbs", !!project.fillThumbs);
         thumbs.style.setProperty("--count", flat.length);
         projectEl.classList.toggle("no-thumbs", !!project.together || flat.length < 2);
         main.classList.toggle("together", !!project.together);
@@ -374,10 +402,22 @@
         else if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); show(current - 1); }
       });
 
-      // scrolling anywhere on the page scrolls the thumbnail column
+      // the thumbnail column is always exactly as tall as the big image
+      var stage = document.getElementById("stage");
+      function matchThumbs() {
+        if (window.matchMedia("(max-width: 760px)").matches) return;
+        thumbs.style.height = main.offsetHeight + "px";
+      }
+      main.addEventListener("load", matchThumbs, true);   // whenever a big image finishes loading
+      window.addEventListener("resize", matchThumbs);
+      window.addEventListener("hashchange", function () { stage.scrollTop = 0; });
+
+      // scrolling: if the image is taller than the screen, the page scrolls;
+      // otherwise scrolling anywhere moves the thumbnail column
       window.addEventListener("wheel", function (e) {
         if (window.matchMedia("(max-width: 760px)").matches) return;
         if (thumbs.contains(e.target)) return;
+        if (stage.scrollHeight > stage.clientHeight + 1) return;
         thumbs.scrollTop += e.deltaY;
       }, { passive: true });
     })();
