@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About | Amandine Mangon</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+  <style>
+    :root {
+      --pad-x: clamp(18px, 2.3vw, 44px);   /* left/right page margin (same as homepage) */
+      --pad-y: clamp(18px, 3.6vh, 40px);   /* top/bottom page margin (same as homepage) */
+      --fs: clamp(12px, calc(0.5vw + 6.5px), 17px);
+      --gap: clamp(28px, 4vw, 72px);       /* space between the photo and the text */
+      --photo-w: min(30vw, 520px);
+      --text-w: min(46vw, 50em);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { background: #fff; }
+    body {
+      color: #000;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 700;
+      font-size: var(--fs);
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    .site-name:hover {
+      text-decoration: underline;
+      text-decoration-thickness: 0.09em;
+      text-underline-offset: 0.18em;
+    }
+
+    /* ---------- top bar ---------- */
+    .section-nav {
+      position: fixed;
+      top: var(--pad-y);
+      left: var(--pad-x);
+      z-index: 10;
+    }
+    .site-name {
+      position: fixed;
+      top: var(--pad-y);
+      right: var(--pad-x);
+      z-index: 10;
+    }
+
+    /* ---------- the area under the top bar: scrolls on its own ---------- */
+    .stage {
+      position: fixed;
+      inset: calc(var(--pad-y) + 2.5em) 0 0 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+    }
+    .stage::-webkit-scrollbar { display: none; }
+
+    /* photo on the left (stays put while the text scrolls), text on the right */
+    .about {
+      width: calc(var(--photo-w) + var(--gap) + var(--text-w));
+      margin: 0 auto;
+      padding: 9vh 0 14vh;
+      display: flex;
+      align-items: flex-start;
+      gap: var(--gap);
+    }
+    .photo {
+      flex: none;
+      width: var(--photo-w);
+      position: sticky;
+      top: 9vh;
+    }
+    .photo img { display: block; width: 100%; height: auto; }
+    .photo .placeholder {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      background: #eee;
+      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .text { flex: none; width: var(--text-w); line-height: 1.35; }
+    .text a {
+      text-decoration: underline;
+      text-decoration-thickness: 0.09em;
+      text-underline-offset: 0.18em;
+    }
+    .text a:hover { opacity: 0.6; }
+    .text h1 { font-size: 1em; font-weight: 700; margin-bottom: 1.35em; }
+    .bio p + p { margin-top: 1.35em; }
+
+    /* resume sections */
+    .section {
+      margin-top: 4em;
+      padding-top: 1em;
+      border-top: 1px solid #000;
+    }
+    .section h2 { font-size: 1em; font-weight: 700; margin-bottom: 1.35em; }
+    .entry + .entry { margin-top: 1.6em; }
+    .entry-head { display: flex; justify-content: space-between; gap: 2em; }
+    .entry-head .when { flex: none; text-align: right; }
+    .entry p { margin-top: 0.15em; }
+    .rows { display: grid; grid-template-columns: 8em 1fr; column-gap: 2em; row-gap: 0.5em; }
+
+    /* ---------- phones: photo on top, text under ---------- */
+    @media (max-width: 760px) {
+      :root { --photo-w: 100%; --text-w: 100%; }
+      .stage { position: static; overflow: visible; }
+      .about {
+        width: auto;
+        flex-direction: column;
+        padding: calc(var(--pad-y) + 4em) var(--pad-x) 4em;
+      }
+      .photo { position: static; }
+      .entry-head { flex-direction: column; gap: 0; }
+      .entry-head .when { text-align: left; }
+      .rows { grid-template-columns: 1fr; row-gap: 0; }
+      .rows dd { margin-bottom: 0.6em; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="section-nav"><span>About</span></nav>
+  <a class="site-name" href="index.html">Amandine Mangon</a>
+
+  <main class="stage" id="stage">
+    <div class="about">
+
+      <!-- PHOTO: put your picture in a folder called "about", named amandine.jpeg -->
+      <div class="photo">
+        <img src="about/amandine.jpeg" alt="Amandine Mangon"
+             onerror="this.outerHTML='<div class=&quot;placeholder&quot;>Photo</div>'">
+      </div>
+
+      <div class="text">
+        <h1>Amandine Mangon</h1>
+
+        <div class="bio">
+          <p>Amandine Mangon is a French-American multidisciplinary artist and designer based in Brooklyn, New York.
+            She studies <a href="https://engineering.nyu.edu/academics/programs/integrated-design-media-bs" target="_blank" rel="noopener">Integrated Design and Media</a>
+            at NYU’s Tandon School of Engineering, with a minor in the
+            <a href="https://www.stern.nyu.edu/experience-stern/about/departments-centers-initiatives/interdisciplinary-initiatives/entertainment-media-and-technology-program/academic-programs/undergraduate/bemt-minor" target="_blank" rel="noopener">Business of Entertainment, Media, and Technology</a>.</p>
+
+          <p>Her work sits at the intersection of art and technology, moving between screens and physical objects.
+            She designed the brand identity and UI/UX for <a href="projects.html#heritage">Heritage</a>, a goal-based app
+            connecting people to personalized opportunities. She currently works at <a href="projects.html#juma">Juma Jewelry</a>,
+            where she flame-works and hand-fabricates glass beads for necklaces. She is drawn to the craft of making
+            things people can connect with.</p>
+
+          <p>The environment is a recurring thread in her practice. At Earth Celebrations, she designed visual materials
+            for an annual urban ecological pilgrimage: a public procession through the East Village of giant puppets and
+            site-specific performances across music, dance, theater, and poetry. Her <a href="postcards.html">collages</a>
+            are made from secondhand magazines and collected materials.</p>
+
+          <p>Her personal projects blend code, sound, and visuals, and are all rooted in storytelling. She built this site
+            herself, down to its <a href="code.html#custom-collage">randomized collage generator</a>. She co-founded
+            <a href="projects.html#ineverseeyou">ineverseeyou</a>, an art and technology collective that brings together
+            artists and engineers through theme-based creative “cycles,” with contributions from more than 20 artists.</p>
+
+          <p>At the core of it all is a love of problem solving. With curiosity and optimism, Amandine approaches every
+            project as a puzzle worth understanding.</p>
+        </div>
+
+        <!-- ============ EXPERIENCE ============ -->
+        <section class="section">
+          <h2>Experience</h2>
+
+          <div class="entry">
+            <div class="entry-head"><span>Product &amp; Brand Design Intern, Juma Jewelry</span><span class="when">May 2026 – Present</span></div>
+            <p>Brand identity and web presence; flame-worked glass beads; styling and art direction of the collection.</p>
+          </div>
+
+          <div class="entry">
+            <div class="entry-head"><span>Product Designer, Heritage</span><span class="when">Jan 2026 – June 2026</span></div>
+            <p>UI/UX and brand identity for a goal-based app; user personas, competitive analysis, and user research.</p>
+          </div>
+
+          <div class="entry">
+            <div class="entry-head"><span>Graphic Design Intern, Earth Celebrations</span><span class="when">Jan 2026 – May 2026</span></div>
+            <p>Posters, infographics, and visual assets for an annual urban ecological pilgrimage and its public procession.</p>
+          </div>
+        </section>
+
+        <!-- ============ PROJECTS ============ -->
+        <section class="section">
+          <h2>Projects</h2>
+
+          <div class="entry">
+            <div class="entry-head"><span>Cofounder, ineverseeyou</span><span class="when">Mar 2026 – Present</span></div>
+            <p>Art and technology collective; designed its theme-based “cycle” model; curates work from 20+ artists alongside 8 founding members.</p>
+          </div>
+
+          <div class="entry">
+            <div class="entry-head"><span>Personal Website, amandinemangon.com</span><span class="when">Apr 2025 – Present</span></div>
+            <p>Designed and built from scratch in HTML, CSS, JavaScript, and p5.js, including the randomized collage generator.</p>
+          </div>
+        </section>
+
+        <!-- ============ EDUCATION ============ -->
+        <section class="section">
+          <h2>Education</h2>
+
+          <div class="entry">
+            <div class="entry-head"><span>New York University, Tandon School of Engineering</span><span class="when">Sept 2024 – May 2028</span></div>
+            <p>B.S. Integrated Design &amp; Media</p>
+            <p>Minor in Business of Entertainment, Media, and Technology</p>
+          </div>
+        </section>
+
+        <!-- ============ SKILLS ============ -->
+        <section class="section">
+          <h2>Skills</h2>
+          <dl class="rows">
+            <dt>Tools</dt>
+            <dd>Adobe Suite, Figma, Autodesk Maya, Google Suite, Excel</dd>
+            <dt>Code</dt>
+            <dd>HTML, CSS, JavaScript, p5.js, Processing</dd>
+            <dt>Languages</dt>
+            <dd>English, French, Spanish (conversational)</dd>
+          </dl>
+        </section>
+
+        <!-- ============ CONTACT ============ -->
+        <section class="section" id="contact">
+          <h2>Contact</h2>
+          <dl class="rows">
+            <dt>Email</dt>
+            <dd><a href="mailto:amandineemangon@gmail.com">amandineemangon@gmail.com</a></dd>
+            <dt>LinkedIn</dt>
+            <dd><a href="https://www.linkedin.com/in/amandine-mangon" target="_blank" rel="noopener">linkedin.com/in/amandine-mangon</a></dd>
+            <dt>GitHub</dt>
+            <dd><a href="https://github.com/amandinemangon" target="_blank" rel="noopener">github.com/amandinemangon</a></dd>
+          </dl>
+        </section>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // scrolling over the top bar still scrolls the page
+    var stage = document.getElementById("stage");
+    window.addEventListener("wheel", function (e) {
+      if (window.matchMedia("(max-width: 760px)").matches) return;
+      if (stage.contains(e.target)) return;
+      stage.scrollTop += e.deltaY;
+    }, { passive: true });
+    // about.html#contact jumps straight to the contact section
+    if (location.hash === "#contact") {
+      var c = document.getElementById("contact");
+      if (c) stage.scrollTop = c.offsetTop - 40;
+    }
+  </script>
+  <script src="menu.js"></script>
+</body>
+</html>
