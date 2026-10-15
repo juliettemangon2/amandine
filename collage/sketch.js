@@ -674,3 +674,28 @@ function typeText(){
   return RiTa.randomWord({ pos: "nn" }) + " that " + RiTa.randomWord({ pos: "vb" });
 }
 */
+// ----- phones and tablets: a tap on the collage works like a click -----
+// (some phones never send a "click" to the collage, so taps are handled here.
+//  A finger that slides is a scroll, not a tap, so it's ignored.)
+let tapStart = null;
+function touchStarted(event) {
+	if (event && event.target === cnv.elt && event.touches && event.touches.length === 1) {
+		tapStart = { x: event.touches[0].clientX, y: event.touches[0].clientY, t: millis(), mx: mouseX, my: mouseY };
+	} else {
+		tapStart = null;
+	}
+}
+function touchMoved(event) {
+	if (!tapStart || !event || !event.touches || !event.touches.length) return;
+	let dx = event.touches[0].clientX - tapStart.x, dy = event.touches[0].clientY - tapStart.y;
+	if (dx * dx + dy * dy > 15 * 15) tapStart = null;   // the finger moved: it's a scroll
+}
+function touchEnded(event) {
+	if (!tapStart) return;
+	let s = tapStart;
+	tapStart = null;
+	if (millis() - s.t > 700) return;                 // a long press isn't a tap
+	mouseX = s.mx;                                     // where the finger first touched
+	mouseY = s.my;
+	mousePressed({ target: cnv.elt });
+}

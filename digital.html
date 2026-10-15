@@ -33,7 +33,8 @@
       -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
-    a:hover {
+    a:hover,
+    .current {
       text-decoration: underline;
       text-decoration-thickness: 0.09em;
       text-underline-offset: 0.18em;
@@ -46,6 +47,7 @@
       left: var(--pad-x);
       z-index: 10;
     }
+    .nav-row { display: flex; flex-wrap: wrap; column-gap: 1.9em; }
     .site-name {
       position: fixed;
       top: var(--pad-y);
@@ -56,7 +58,7 @@
     /* ---------- the scrolling area: one category per screen ---------- */
     .stage {
       position: fixed;
-      inset: calc(var(--pad-y) + 2.5em) 0 0 0;
+      inset: calc(var(--pad-y) + 4.5em) 0 0 0;
       overflow-y: auto;
       scroll-snap-type: y mandatory;      /* each scroll lands on the next category */
       overscroll-behavior: contain;
@@ -111,7 +113,7 @@
 
     /* ---------- phones: image on top, text under, normal scrolling ---------- */
     @media (max-width: 760px) {
-      .stage { position: static; overflow: visible; scroll-snap-type: none; padding-top: calc(var(--pad-y) + 3em); }
+      .stage { position: static; overflow: visible; scroll-snap-type: none; padding-top: calc(var(--pad-y) + 5em); }
       .category { height: auto; padding-bottom: 3.5em; }
       .row { flex-direction: column; align-items: flex-start; width: 100%; }
       .cover { display: block; }
@@ -123,7 +125,16 @@
 </head>
 <body>
 
-  <nav class="section-nav"><span>Digital</span></nav>
+  <nav class="section-nav">
+    <div class="nav-row"><span>Digital</span></div>
+    <!-- tabs: the one you're looking at is underlined; click one to scroll there -->
+    <div class="nav-row" id="tabs">
+      <a href="#graphic-design">Graphic Design</a>
+      <a href="#code">Code</a>
+      <a href="#3d">3D</a>
+      <a href="#sound">Sound</a>
+    </div>
+  </nav>
   <a class="site-name" href="index.html">Amandine Mangon</a>
 
   <main class="stage" id="stage">
@@ -222,6 +233,36 @@
         pending = 0;
         lockedUntil = now + 800;
       }, { passive: false });
+
+      // tabs under DIGITAL: underline the category on screen, click to scroll to it
+      var tabs = Array.prototype.slice.call(document.querySelectorAll("#tabs a"));
+      function markTab() {
+        var i = Math.max(0, Math.min(sections.length - 1, currentIndex()));
+        if (window.matchMedia("(max-width: 760px)").matches) {
+          // phones scroll normally: pick the category nearest the top of the screen
+          i = 0;
+          sections.forEach(function (sec, n) { if (sec.getBoundingClientRect().top < window.innerHeight * 0.4) i = n; });
+        }
+        tabs.forEach(function (a) {
+          a.classList.toggle("current", a.getAttribute("href") === "#" + sections[i].id);
+        });
+      }
+      tabs.forEach(function (a) {
+        a.addEventListener("click", function (e) {
+          e.preventDefault();
+          var i = sections.map(function (sec) { return "#" + sec.id; }).indexOf(a.getAttribute("href"));
+          if (window.matchMedia("(max-width: 760px)").matches) {
+            sections[i].scrollIntoView({ behavior: "smooth" });
+          } else {
+            goTo(i);
+          }
+          history.replaceState(null, "", a.getAttribute("href"));
+        });
+      });
+      stage.addEventListener("scroll", markTab, { passive: true });
+      window.addEventListener("scroll", markTab, { passive: true });
+      window.addEventListener("resize", markTab);
+      markTab();
 
       // keyboard: arrows, Page Up / Page Down, space
       document.addEventListener("keydown", function (e) {

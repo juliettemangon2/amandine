@@ -137,6 +137,29 @@ var MENU = [
     window.addEventListener("resize", function () { if (menu.classList.contains("open")) place(); });
   }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
-  else build();
+  /* Phones: a white band behind the top bar, so the page scrolling
+     underneath never runs into the title or the name. */
+  function band() {
+    if (document.body.classList.contains("home")) return;
+    var parts = [document.querySelector(".section-nav"), document.querySelector(".site-name")].filter(Boolean);
+    if (!parts.length) return;
+    var el = document.createElement("div");
+    el.className = "top-band";
+    el.style.cssText = "position:fixed;top:0;left:0;right:0;background:#fff;z-index:9;pointer-events:none;display:none;";
+    document.body.appendChild(el);
+    function size() {
+      if (!window.matchMedia("(max-width: 760px)").matches) { el.style.display = "none"; return; }
+      var bottom = 0;
+      parts.forEach(function (p) { bottom = Math.max(bottom, p.getBoundingClientRect().bottom); });
+      el.style.height = Math.ceil(bottom + 10) + "px";
+      el.style.display = "block";
+    }
+    size();
+    window.addEventListener("resize", size);
+    if (document.fonts) document.fonts.ready.then(size);
+  }
+
+  function start() { build(); band(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
 })();

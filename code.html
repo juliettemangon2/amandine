@@ -118,6 +118,11 @@
     .about-text a:hover { opacity: 0.6; }
 
     /* ---------- phones ---------- */
+    .rotate-hint { display: none; margin-top: 1.1em; }
+    @media (max-width: 760px) and (orientation: portrait) {
+      .rotate-hint { display: block; }
+    }
+
     @media (max-width: 760px) {
       .section-nav { right: var(--pad-x); }
       .stage { inset: calc(var(--pad-y) + 6em) 0 0 0; }
@@ -161,6 +166,7 @@
         page: "collage-embed.html",
         shape: 1840 / 880,
         captionFrom: 0.16,
+        rotateHint: true,       // phones held upright: "turn your phone sideways" under it
         classLine: "Creative Coding; NYU IDM, Fall 2025.",
         desc: [
           "Creative coding final project; p5.js.",
@@ -256,6 +262,7 @@
           caption.appendChild(el("p", i === 0 ? "desc" : null, line));
         });
         piece.appendChild(frame);
+        if (project.rotateHint) piece.appendChild(el("p", "rotate-hint", "Turn your phone sideways to play"));
         piece.appendChild(caption);
         if (project.noCaption) caption.style.display = "none";
         first.appendChild(piece);
@@ -315,6 +322,12 @@
         if (project.shape) {
           h = w / project.shape;
           if (!phone && h > H) { h = H; w = h * project.shape; }
+        }
+        // phones held sideways: keep the whole project on the screen
+        if (phone && window.innerWidth > window.innerHeight) {
+          var maxH = stage.clientHeight - 24;
+          if (h > maxH) { h = maxH; if (project.shape) w = h * project.shape; }
+          first.querySelector(".piece").style.alignItems = "center";
         }
         frame.style.width = w + "px";
         frame.style.height = h + "px";

@@ -127,6 +127,7 @@
       height: 100vh;
       height: 100dvh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
@@ -152,6 +153,7 @@
       top: calc(-100% * 25 / 880);
       width: calc(100% * 1960 / 1840) !important;
       height: calc(100% * 920 / 880) !important;
+      touch-action: manipulation;     /* phones: taps respond right away (no double-tap zoom) */
     }
     /* each screen of the collage is slid so its content sits in the middle */
     .collage[data-screen="home"] canvas { left: calc(100% * 195 / 1840); }
@@ -164,6 +166,21 @@
       justify-content: center;
     }
     .collage:has(canvas) .collage-loading { display: none; }
+
+    /* phones held upright: a small note under the collage */
+    .rotate-hint { display: none; margin-top: 1.4em; }
+    @media (max-width: 760px) and (orientation: portrait) {
+      .rotate-hint { display: block; }
+    }
+    /* phones held sideways: the collage as big as the screen allows */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .home-stage .collage {
+        width: min(
+          calc(100vw - 2 * (var(--pad-x) + 2.4em)),
+          calc((100vh - 2 * (var(--pad-y) + 1.6em)) * 1840 / 880)
+        );
+      }
+    }
 
     .about-link {
       position: fixed;
@@ -198,6 +215,7 @@
     <div class="collage" id="collage">
       <div class="collage-loading">Loading</div>
     </div>
+    <p class="rotate-hint">Turn your phone sideways to play</p>
   </main>
 
   <!-- ABOUT: points to about.html (not made yet) -->

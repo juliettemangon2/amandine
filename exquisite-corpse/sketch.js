@@ -78,6 +78,36 @@ function drawPart(img, x, y, targetH, box) {
 }
 
 function mousePressed() {
+  press();
+}
+
+// ----- phones and tablets: a tap works like a click -----
+// (some phones never send a "click" to the sketch, so taps are handled here.
+//  A finger that slides is a scroll, not a tap, so it's ignored.)
+let tapStart = null;
+function touchStarted(event) {
+  if (event && event.touches && event.touches.length === 1) {
+    tapStart = { x: event.touches[0].clientX, y: event.touches[0].clientY, t: millis(), mx: mouseX, my: mouseY };
+  } else {
+    tapStart = null;
+  }
+}
+function touchMoved(event) {
+  if (!tapStart || !event || !event.touches || !event.touches.length) return;
+  let dx = event.touches[0].clientX - tapStart.x, dy = event.touches[0].clientY - tapStart.y;
+  if (dx * dx + dy * dy > 15 * 15) tapStart = null;   // the finger moved: it's a scroll
+}
+function touchEnded() {
+  if (!tapStart) return;
+  let s = tapStart;
+  tapStart = null;
+  if (millis() - s.t > 700) return;                   // a long press isn't a tap
+  mouseX = s.mx;
+  mouseY = s.my;
+  press();
+}
+
+function press() {
   userStartAudio();
 
   if (!started) {

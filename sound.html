@@ -125,6 +125,7 @@
       height: 1.4em;
       position: relative;
       cursor: pointer;
+      touch-action: none;                 /* phones: dragging the dot doesn't scroll the page */
     }
     .track::before {                      /* thin line: the whole length */
       content: "";
@@ -154,6 +155,11 @@
     @media (max-width: 760px) {
       :root { --content-w: calc(100vw - 2 * var(--pad-x)); }
       .list { padding-top: 2em; }
+      .track { height: 2.6em; }           /* bigger area for a finger */
+      .player button { width: 1.4em; height: 1.4em; }
+      .player button::before { border-width: 0.7em 0 0.7em 1.2em; }
+      .player button.playing::before, .player button.playing::after { width: 0.4em; height: 1.4em; }
+      .player button.playing::after { left: 0.85em; }
     }
   </style>
 </head>
