@@ -16,7 +16,14 @@
       overflow: hidden;
       background: white;
     }
-    canvas { display: block; }
+       canvas {
+      display: block;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
   </style>
 </head>
 <body>

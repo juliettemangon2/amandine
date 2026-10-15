@@ -32,7 +32,12 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  let c = createCanvas(windowWidth, windowHeight);
+  c.elt.addEventListener("pointerdown", onDown);
+  c.elt.addEventListener("pointerup", onUp);
+  c.elt.addEventListener("pointercancel", function () { down = null; });
+  // iPhones only allow sound to start during a touch, so unlock it on every touch
+  document.addEventListener("touchend", function () { try { userStartAudio(); } catch (e) {} }, { passive: true });
   imageMode(CENTER);
 
   // start downloading the first sound of each part
@@ -77,69 +82,60 @@ function drawPart(img, x, y, targetH, box) {
   box.h = targetH;
 }
 
-function mousePressed() {
-  press();
+// ----- taps and clicks -----
+// Handled straight on the canvas with "pointer" events, which phones
+// (including iPhones) and computers all send the same way. A finger that
+// slides is a scroll, not a tap, so it's ignored.
+let down = null;
+function onDown(e) {
+  down = { x: e.clientX, y: e.clientY, t: Date.now() };
+}
+function onUp(e) {
+  if (!down) return;
+  let d = down;
+  down = null;
+  let dx = e.clientX - d.x, dy = e.clientY - d.y;
+  if (dx * dx + dy * dy > 15 * 15 || Date.now() - d.t > 700) return;
+  let r = e.target.getBoundingClientRect();
+  press(e.clientX - r.left, e.clientY - r.top);
 }
 
-// ----- phones and tablets: a tap works like a click -----
-// (some phones never send a "click" to the sketch, so taps are handled here.
-//  A finger that slides is a scroll, not a tap, so it's ignored.)
-let tapStart = null;
-function touchStarted(event) {
-  if (event && event.touches && event.touches.length === 1) {
-    tapStart = { x: event.touches[0].clientX, y: event.touches[0].clientY, t: millis(), mx: mouseX, my: mouseY };
-  } else {
-    tapStart = null;
-  }
-}
-function touchMoved(event) {
-  if (!tapStart || !event || !event.touches || !event.touches.length) return;
-  let dx = event.touches[0].clientX - tapStart.x, dy = event.touches[0].clientY - tapStart.y;
-  if (dx * dx + dy * dy > 15 * 15) tapStart = null;   // the finger moved: it's a scroll
-}
-function touchEnded() {
-  if (!tapStart) return;
-  let s = tapStart;
-  tapStart = null;
-  if (millis() - s.t > 700) return;                   // a long press isn't a tap
-  mouseX = s.mx;
-  mouseY = s.my;
-  press();
-}
-
-function press() {
-  userStartAudio();
-
-  if (!started) {
-    playPart("head", headIndex);
-    playPart("torso", torsoIndex);
-    playPart("legs", legIndex);
-    playPart("feet", feetIndex);
-    started = true;
-  }
-
-  if (inside(headBox)) {
+function press(x, y) {
+  // change the picture first, so it always works even if sound is blocked
+  let changed = null;
+  if (inside(headBox, x, y)) {
     headIndex = (headIndex + 1) % 6;
-    playPart("head", headIndex);
-  } else if (inside(torsoBox)) {
+    changed = ["head", headIndex];
+  } else if (inside(torsoBox, x, y)) {
     torsoIndex = (torsoIndex + 1) % 6;
-    playPart("torso", torsoIndex);
-  } else if (inside(legBox)) {
+    changed = ["torso", torsoIndex];
+  } else if (inside(legBox, x, y)) {
     legIndex = (legIndex + 1) % 6;
-    playPart("legs", legIndex);
-  } else if (inside(feetBox)) {
+    changed = ["legs", legIndex];
+  } else if (inside(feetBox, x, y)) {
     feetIndex = (feetIndex + 1) % 6;
-    playPart("feet", feetIndex);
+    changed = ["feet", feetIndex];
+  }
+
+  // then the sound
+  try {
+    userStartAudio();
+    if (!started) {
+      playPart("head", headIndex);
+      playPart("torso", torsoIndex);
+      playPart("legs", legIndex);
+      playPart("feet", feetIndex);
+      started = true;
+    } else if (changed) {
+      playPart(changed[0], changed[1]);
+    }
+  } catch (err) {
+    console.warn("sound could not start:", err);
   }
 }
 
-function inside(box) {
-  return (
-    mouseX > box.x &&
-    mouseX < box.x + box.w &&
-    mouseY > box.y &&
-    mouseY < box.y + box.h
-  );
+function inside(box, x, y) {
+  return x > box.x && x < box.x + box.w && y > box.y && y < box.y + box.h;
 }
 
 // get a part's sound, downloading it the first time
